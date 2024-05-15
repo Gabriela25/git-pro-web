@@ -1,0 +1,9 @@
+{
+  "login":{
+    "email": "Correo electrónico",
+    "password":"Contraseña",
+    "isEmailRequired": "El correo electrónico es requerido",
+    "isEmailValid": "El correo electrónico es invalido",
+    "isPasswordRequired": "La clave es requerida"
+  }
+}
