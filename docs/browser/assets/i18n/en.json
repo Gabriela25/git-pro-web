@@ -1,0 +1,12 @@
+
+{
+    "login":{
+        "email": "Email address",
+        "password": "Password",
+        "isEmailRequired": "Email is required",
+        "isEmailValid": "Email is invalid",
+        "isPasswordRequired": "Password is required"
+    }
+    
+}
+  

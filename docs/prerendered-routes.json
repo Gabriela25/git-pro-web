@@ -1,5 +1,6 @@
 {
   "routes": [
-    "/home"
+    "/home",
+    "/login"
   ]
 }
