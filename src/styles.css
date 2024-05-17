@@ -1,1 +1,8 @@
 /* You can add global styles to this file, and also import other style files */
+.no-underline {
+    text-decoration: none;
+}
+.alert {
+    --bs-alert-padding-x: 0.5rem !important;
+    --bs-alert-padding-y: 0.5rem !important;
+}

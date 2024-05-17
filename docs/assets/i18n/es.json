@@ -1,9 +1,17 @@
 {
-  "login":{
+  "sign-in":{
+    "sign-in": "Iniciar sesión",
+    "log-in": "Iniciar sesión",
+    "register": "Registro",
+    "first-name":"Nombre",
+    "last-name": "Apellido",
     "email": "Correo electrónico",
     "password":"Contraseña",
     "isEmailRequired": "El correo electrónico es requerido",
     "isEmailValid": "El correo electrónico es invalido",
-    "isPasswordRequired": "La clave es requerida"
+    "isFirstNameRequired": "El nombre es requerido",
+    "isLastNameRequired": "El apellido es requerido",
+    "isPasswordRequired": "La clave es requerida",
+    "forgotpassword": "¿Has olvidado tu contraseña?"
   }
 }

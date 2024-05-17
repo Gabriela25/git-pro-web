@@ -1,6 +1,8 @@
 {
   "routes": [
     "/home",
-    "/login"
+    "/sign-in",
+    "/sign-in/password-recovery",
+    "/sign-in/register"
   ]
 }

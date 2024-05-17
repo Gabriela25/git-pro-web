@@ -1,11 +1,19 @@
 
 {
-    "login":{
+    "sign-in":{
+        "sign-in": "Sign in",
+        "log-in": "Log in",
+        "register": "Register",
+        "first-name":"First name",
+        "last-name": "Last name",
         "email": "Email address",
         "password": "Password",
         "isEmailRequired": "Email is required",
         "isEmailValid": "Email is invalid",
-        "isPasswordRequired": "Password is required"
+        "isFirstNameRequired": "First name is required",
+        "isLastNameRequired": "Last name is required",
+        "isPasswordRequired": "Password is required",
+        "forgotpassword": "Forgot Password?"
     }
     
 }
