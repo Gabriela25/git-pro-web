@@ -13,7 +13,28 @@
         "isFirstNameRequired": "First name is required",
         "isLastNameRequired": "Last name is required",
         "isPasswordRequired": "Password is required",
-        "forgotpassword": "Forgot Password?"
+        "forgotpassword": "Forgot Password?",
+        "current-password": "Current password",
+        "new-password": "New password",
+        "confirm-new-password":"Confirm new password",
+        "minimum-8-characters":"Minimum 8 characters",
+        "maximum-15-characters":"Maximum 15 characters",
+        "at-least-one-uppercase-letter":"At least one uppercase letter",
+        "one-lowercase-letter-and-one-number":"One lowercase letter and one number",
+        "the-passwords-do-not-match":"The passwords do not match"
+    },
+    "header":{
+        "profile":"Profile",
+        "log-out": "Log out"
+    },
+    "profile":{
+        "phone":"Phone",
+        "password": "Password"
+       
+    },
+    "config":{
+        "save":"Save",
+        "cancel":"Cancel"
     }
     
 }

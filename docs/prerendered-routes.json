@@ -1,7 +1,10 @@
 {
   "routes": [
+    "/customer/profile",
     "/home",
+    "/sidebar",
     "/sign-in",
+    "/sign-in/password",
     "/sign-in/password-recovery",
     "/sign-in/register"
   ]

@@ -1,0 +1,6 @@
+.sidebar-collapsed .d-none.d-sm-inline {
+    display: none !important;
+}
+.sidebar-collapsed .nav-link {
+    justify-content: center;
+}

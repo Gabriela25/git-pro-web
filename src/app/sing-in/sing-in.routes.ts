@@ -16,6 +16,11 @@ export const  routes: Routes = [
     {
         path:'password-recovery',
         loadComponent:() => import('./password-recovery/password-recovery.component')
+    },
+    
+    {
+        path:'password',
+        loadComponent:() => import('./password/password.component')
     }
 
 ]
