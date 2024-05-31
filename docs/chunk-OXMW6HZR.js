@@ -1,1 +1,0 @@
-import"./chunk-TMC7WMLO.js";var o=[{path:"",loadComponent:()=>import("./chunk-XPKWC43R.js")},{path:"register",loadComponent:()=>import("./chunk-F5MXEX4I.js")},{path:"password-recovery",loadComponent:()=>import("./chunk-XHE2CUTU.js")},{path:"password",loadComponent:()=>import("./chunk-ZJJH2KWX.js")}],t=o;export{t as default,o as routes};
