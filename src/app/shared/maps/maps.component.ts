@@ -69,7 +69,7 @@ export class MapsComponent implements OnInit{
       this.resultc += 'Quito está dentro de los 100km de Cuenca';
       
     } else {
-      this.resultc += 'Quito fuera  de los 100km de Cuenca';
+      this.resultc += 'Quito fuera de los 100km de Cuenca';
       
     }
 }
