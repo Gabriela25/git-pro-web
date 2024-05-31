@@ -1,0 +1,21 @@
+<div height="1000px">
+
+<google-map height="600px" width="800px" [options]="options"> 
+    @for (location of nzLocations; track location) {
+        <map-advanced-marker
+          #markerElem="mapAdvancedMarker"
+          [position]="{ lat: location.lat, lng: location.lng }"
+        />
+        }
+        <map-circle [center]="circleCenterB" [radius]="radiusB" />
+        <map-circle [center]="circleCenterC" [radius]="radiusC" />
+</google-map>
+<div>
+    <p>{{resultb}}</p>
+    <p>{{resultc}}</p>
+</div>
+<!--google-map height="400px" width="750px" [center]="center" [zoom]="zoom">
+    <map-circle [center]="circleCenter" [radius]="radius"></map-circle>
+  </!--google-map-->
+
+</div>

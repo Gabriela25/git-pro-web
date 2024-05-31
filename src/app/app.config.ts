@@ -4,8 +4,9 @@ import { provideRouter } from '@angular/router';
 import { routes } from './app.routes';
 import { provideClientHydration } from '@angular/platform-browser';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
-import { HttpClient, HttpClientModule, provideHttpClient, withFetch } from '@angular/common/http';
+import { HttpClient,  provideHttpClient, withFetch } from '@angular/common/http';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { GoogleMapsModule } from '@angular/google-maps';
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
 }
@@ -14,7 +15,7 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes), 
     provideClientHydration(),
     provideHttpClient(withFetch()),
-    importProvidersFrom(HttpClientModule), // or provideHttpClient() in Angular v15
+    importProvidersFrom(HttpClient), // or provideHttpClient() in Angular v15
     importProvidersFrom(TranslateModule.forRoot({
         defaultLanguage:'es',
         loader: {
@@ -24,6 +25,7 @@ export const appConfig: ApplicationConfig = {
             deps: [HttpClient]
         }
     }),
+    
     )
    
   ]
