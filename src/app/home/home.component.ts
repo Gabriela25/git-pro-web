@@ -1,3 +1,4 @@
+import { environment } from './../../environments/environment.development';
 import { Component, ViewChild } from '@angular/core';
 import { HeaderComponent } from '../shared/header/header.component';
 import { SidebarComponent } from '../sidebar/sidebar.component';
@@ -14,6 +15,8 @@ import { SidebarComponent } from '../sidebar/sidebar.component';
 })
 export class HomeComponent {
   @ViewChild(SidebarComponent) sidebar!: SidebarComponent;
+
+  maps_key:string = environment.MAPS_KEY;
 
   
 }

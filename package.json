@@ -4,7 +4,10 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
+    "start:staging": "ng serve  --configuration=staging",
     "build": "ng build",
+    "build:staging": "ng build --configuration=staging",
+    "build:development": "ng build --configuration=development",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "serve:ssr:git-pro-web": "node dist/git-pro-web/server/server.mjs"
