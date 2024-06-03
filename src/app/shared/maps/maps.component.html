@@ -1,6 +1,6 @@
 <div height="1000px">
 
-<google-map height="600px" width="800px" [options]="options"> 
+<google-map height="800px" width="1000px" [options]="options"> 
     @for (location of nzLocations; track location) {
         <map-advanced-marker
           #markerElem="mapAdvancedMarker"
@@ -9,7 +9,13 @@
         }
         <map-circle [center]="circleCenterB" [radius]="radiusB" />
         <map-circle [center]="circleCenterC" [radius]="radiusC" />
+
 </google-map>
+<div class="d-flex justify-content-center mt-3">
+  <button type="button" (click)="calculateRadiusMinus()"><span><i class="bi bi-dash-circle-fill"></i></span></button>
+  <span> {{ radiusC | number:'1.2-2' }} mts</span>
+  <button type="button" (click)="calculateRadiusAdd()"><span><i class="bi bi-plus-square-fill"></i></span></button>
+</div>
 <div>
     <p>{{resultb}}</p>
     <p>{{resultc}}</p>
