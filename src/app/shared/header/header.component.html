@@ -10,10 +10,7 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
         <li>
-
-
           <select class="form-select" #languaje (change)="switchLanguage(languaje.value)" id="floatingSelectGrid">
-
             <option value="es">Español</option>
             <option value="en">English</option>
           </select>
@@ -28,10 +25,12 @@
               <img src="assets/logo.png" class="rounded-circle" alt="Cinque Terre" width="30" height="30"/>
               {{firtsName}}
             </button>
-            <ul class="dropdown-menu">
-              <li><a class="dropdown-item" routerLink="/customer/profile" >{{'header.profile' | translate}}</a></li>
-              <li><a class="dropdown-item" href="#">{{'header.log-out' | translate}}</a></li>
-            </ul>
+            <button class="btn btn-body-tertiary dropdown-toggle" type="button" data-bs-toggle="dropdown" routerLink="/pro/profile"
+              aria-expanded="false">
+              <img src="assets/logo.png" class="rounded-circle" alt="Cinque Terre" width="30" height="30"/>
+              pro
+            </button>
+            
           </div>
           }
 

@@ -23,11 +23,12 @@ export class MapsComponent implements OnInit {
   pointC: google.maps.LatLngLiteral = { lat: -2.90055, lng: -79.00453 }; // Coordenadas de C
   radiusB: number = 300000; // Radio de B en Metros
   radiusC: number = 100000; // Radio de C en Metros
-
+  radiusCMiles = this.convertMetersToMiles(this.radiusC)
   options: google.maps.MapOptions = {
     mapId: "DEMO_MAP_ID",
     center: this.pointA,
-    zoom: 7
+    zoom: 7,
+    zoomControl: true,
   };
   nzLocations: any[] = [
     this.pointA,
@@ -40,6 +41,9 @@ export class MapsComponent implements OnInit {
   distanceB: number = this.haversineDistance(this.pointA, this.pointB);
 
   distanceC: number = this.haversineDistance(this.pointA, this.pointC);
+  convertMetersToMiles(meters: number): number {
+    return meters / 1609.34;
+  }
   haversineDistance(coord1: google.maps.LatLngLiteral, coord2: google.maps.LatLngLiteral): number {
     const R = 6371e3; // Radio de la Tierra en millas
     const toRad = (x: number): number => x * Math.PI / 180; // Convertir grados a radianes
@@ -56,9 +60,8 @@ export class MapsComponent implements OnInit {
     return R * c;
   }
 
-  calculate() {
-    console.log(this.distanceB);
-    console.log(this.distanceC)
+   calculate()  {
+
     if (this.distanceB <= this.radiusB) {
       this.resultb = 'Quito está dentro de los 300km de Guayaquil'
       console.log('B está dentro del radio de 300km de A</br>');
@@ -80,13 +83,20 @@ export class MapsComponent implements OnInit {
    
     
     this.resultc = '';
-    this.radiusC = this.radiusC - ((this.radiusC)*0.15)
+    this.radiusC -= this.radiusC * 0.15;
+    this.radiusCMiles = this.convertMetersToMiles(this.radiusC)
     this.calculate();
+    this.options = {center: this.pointC,zoom: this.options.zoom!+1}
+  
+    
   }
 
-  calculateRadiusAdd(){
+  async calculateRadiusAdd(){
     this.resultc = '';
-    this.radiusC = this.radiusC + ((this.radiusC)*0.15)
+    this.radiusC += this.radiusC * 0.15;
+    this.radiusCMiles = this.convertMetersToMiles(this.radiusC)
+   
     this.calculate();
+    this.options = {center: this.pointC,zoom: this.options.zoom!-1}
   }
 }

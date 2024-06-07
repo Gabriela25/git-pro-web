@@ -1,0 +1,14 @@
+<div class="map-container">
+    <input type="text" #searchInput placeholder="Ingresa una ubicación"  [value]="direccion"/>
+    <google-map [center]="center" [zoom]="zoom" height="400px" width="100%">
+        @if (markerPosition) {
+            <map-marker  [position]="markerPosition!"
+            [options]="markerOptions"
+            (mapDragend)="updatePosition($event)"
+            ></map-marker>
+        }
+     
+    </google-map>
+  </div>
+  
+

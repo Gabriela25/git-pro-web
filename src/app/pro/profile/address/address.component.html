@@ -1,0 +1,28 @@
+<app-header/>
+<div class="container-fluid">
+    <div class="row">
+
+        <div class="col-md-2">
+            <app-sidebar/>
+        </div>
+        
+        <div class="col-md-10 d-flex justify-content-center">
+            <div class="mt-5">
+                <div class="mb-5">
+                    <app-autocomplete></app-autocomplete>
+                </div>
+                <p>direccion: {{direction}}</p>
+                <google-map height="600px" width="800px" [options]="options"> 
+                    @for (location of nzLocations; track location) {
+                        <map-advanced-marker
+                        #markerElem="mapAdvancedMarker"
+                        [position]="{ lat: location.lat, lng: location.lng }"
+                        />
+                        }
+                </google-map>
+            </div>
+        </div>     
+    </div>
+
+</div>
+

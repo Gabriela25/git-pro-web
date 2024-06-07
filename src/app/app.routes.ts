@@ -21,7 +21,12 @@ export const routes: Routes = [
     {
         path:'customer/profile',
         loadChildren:()=>import('./customer/profile/profile.routes')
-    },{
+    },
+    {
+        path:'pro/profile',
+        loadChildren:()=>import('./pro/profile/profile.routes')
+    },
+    {
         path:'',
         redirectTo:'home',
         pathMatch:'full'

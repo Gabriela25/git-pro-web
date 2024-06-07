@@ -2,6 +2,8 @@
   "routes": [
     "/customer/profile",
     "/home",
+    "/pro/profile",
+    "/pro/profile/address",
     "/sidebar",
     "/sign-in",
     "/sign-in/password",

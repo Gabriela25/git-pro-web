@@ -35,7 +35,16 @@
     "config":{
         "save":"Save",
         "cancel":"Cancel"
+    },
+    "pro":{
+        "profile":{
+            "phone":"Phone",
+            "password": "Password",
+            "web-site": "Web site",
+            "address": "Address"
+        }
     }
+    
     
 }
   
