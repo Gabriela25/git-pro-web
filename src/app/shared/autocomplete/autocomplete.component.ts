@@ -15,7 +15,7 @@ import { ComunicationService } from '../../services/comunication.service';
 })
 export class AutocompleteComponent implements OnInit, AfterViewInit {
   @ViewChild('searchInput', { static: false }) searchElementRef!: ElementRef;
-  direccion: String ='';
+  direccion: string| undefined ='';
   center: google.maps.LatLngLiteral = { lat: 32.774961057402194, lng: -96.80725954388643 }; // Default center (New York City)
  
   zoom = 12;
@@ -28,7 +28,9 @@ export class AutocompleteComponent implements OnInit, AfterViewInit {
     private comunication: ComunicationService
   ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.getAddress(this.center.lat, this.center.lng )
+  }
 
   ngAfterViewInit(): void {
     if (this.isBrowser()) {
@@ -66,6 +68,9 @@ export class AutocompleteComponent implements OnInit, AfterViewInit {
         this.markerPosition = this.center;
 
         console.log('Selected place:', place);
+        console.log('en la selección',place['formatted_address'])
+        this.direccion = place['formatted_address'];
+        this.comunication.changeData(this.direccion )
         console.log('Coordinates:', this.center);
       });
     });

@@ -30,7 +30,7 @@
             <div class="row">
                 <div class="col-12 p-5">
                     <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" autocomplete="off">
-                        <div class="row mb-3">
+                        <!--div class="row mb-3">
                             <div class="col-12 col-md-6">
                                 <label for="firstName" class="form-label fw-bold">{{'sign-in.first-name' | translate}}</label>
                                 <input type="text" class="form-control" placeholder="" id="firstName" type="firstName"
@@ -64,10 +64,16 @@
         
         
         
+                        </div-->
+                       
+                        <div class="mb-3">
+                            <label for="firtname" class="form-label fw-bold">{{'sign-in.first-name' | translate}}</label>
+                            <input class="form-control" id="firtname" placeholder="" type="text"
+                                formControlName="phone" />
                         </div>
                         <div class="mb-3">
                             <label for="phone" class="form-label fw-bold">{{'pro.profile.phone' | translate}}</label>
-                            <input type="phone" class="form-control" id="phone" placeholder="" type="phone"
+                            <input type="number" class="form-control" id="phone" placeholder="" 
                                 formControlName="phone" />
                         </div>
                         <div class="mb-3">
@@ -94,18 +100,59 @@
                            }
                         </div>
                         <div class="mb-3">
+                            <label for="year-founded" class="form-label fw-bold">{{'pro.profile.year-founded' | translate}}</label>
+                            <input type="number" class="form-control" id="year-founded" min="1900"/>
+        
+        
+                        </div>
+                        <div class="mb-3">
                             <label for="email" class="form-label fw-bold">{{'sign-in.email' | translate}}</label>
-                            <input type="email" class="form-control" id="email" type="email"  readonly
+                            <input type="email" class="form-control" id="email"  readonly
                                 value="{{email}}" />
         
         
                         </div>
-                       
-                       
-                        <div class="d-flex justify-content-end">
+                        <div class="mb-3">
+                            <label for="number-of-employees" class="form-label fw-bold">{{'pro.profile.number-of-employees' | translate}}</label>
+                            <input type="number" class="form-control" id="number-of-employees" min="0"/>
+        
+        
+                        </div>
+                        <div class="mb-3">
+                            <label for="social-media-link" class="form-label fw-bold">{{'pro.profile.social-media-link' | translate}}</label>
+                            <input type="text" class="form-control" id="social-media-link" />
+        
+        
+                        </div>
+                        <div class="mb-3">
+                            <label for="your-introduction" class="form-label fw-bold">{{'pro.profile.your-introduction' | translate}}</label>
+                            <input type="text" class="form-control" id="your-introduction" />
+        
+                        </div>
+                        <div class="mb-3">
+                            <label for="background-check" class="form-label fw-bold">{{'pro.profile.background-check' | translate}}</label>
+                            <input type="text" class="form-control" id="background-check" />
+        
+                        </div>
+                        <div class="mb-3">
+                            <div>
+                                <ul>
+                                    <li>Licences 1 <button type="button" class="btn btn-lg btn-outline-link" (click)="addLicenses(true)"><i class="bi bi-pencil-fill"></i></button> </li>
+                                    <li>Licences 2 <button type="button" class="btn btn-lg btn-outline-link" (click)="addLicenses(true)"><i class="bi bi-pencil-fill"></i></button> </li>
+                                    <li>Licences 3 <button type="button" class="btn btn-lg btn-outline-link" (click)="addLicenses(true)"><i class="bi bi-pencil-fill"></i></button> </li>
+                                </ul>
+                            </div>
+                            <button type="button" class="btn btn-lg btn-outline-link mt-3" (click)="addLicenses(true)"><i class="bi bi-plus-circle-fill"></i> Add licences
+                                
+                            </button> 
+                            @if(licenses){
+                               <app-licenses  (dataEmitter)="handleEvent(false)"/>
+                            }
+                        </div>
+                        <!--div class="d-flex justify-content-end">
         
                             <button class="btn btn-primary"  type="submit" [disabled]="!registerForm.valid">{{'config.save'| translate}}</button>
-                        </div>
+                        </div-->
                         
                     </form>
                 </div>

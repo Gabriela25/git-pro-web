@@ -6,6 +6,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { SidebarComponent } from '../../sidebar/sidebar.component';
 import { ComunicationService } from '../../services/comunication.service';
 import { AutocompleteComponent } from '../../shared/autocomplete/autocomplete.component';
+import { LicensesComponent } from './licenses/licenses.component';
 
 @Component({
   selector: 'app-profile',
@@ -16,7 +17,8 @@ import { AutocompleteComponent } from '../../shared/autocomplete/autocomplete.co
     RouterLink,
     HeaderComponent,
     SidebarComponent,
-    AutocompleteComponent
+    AutocompleteComponent,
+    LicensesComponent
   ],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.css'
@@ -25,6 +27,7 @@ export default class ProfileComponent implements OnInit {
   firtsName: String = "Gabriela"
   email: String = "gabrielabarreto25@gmail.com"
   value : boolean =false;
+  licenses: boolean = false;
   registerForm = new FormGroup({
     firstName: new FormControl('', [Validators.required]),
     lastName: new FormControl('', [Validators.required]),
@@ -53,5 +56,12 @@ export default class ProfileComponent implements OnInit {
   }
   viewMaps(value: boolean) {
    this.value = value 
+  }
+  addLicenses( licenses: boolean){
+
+    this.licenses = licenses;
+  }
+  handleEvent(licenses: boolean) {
+    this.licenses = licenses;
   }
 }

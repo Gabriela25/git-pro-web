@@ -41,7 +41,15 @@
             "phone":"Phone",
             "password": "Password",
             "web-site": "Web site",
-            "address": "Address"
+            "address": "Address",
+            "year-founded":"Year founded",
+            "number-of-employees":"Number of employees",
+            "social-media-link":"Social media link",
+            "business-faqs":"Business FAQs",
+            "your-introduction":"Your introduction",
+            "credentials":"Credentials",
+            "background-check":"Background check",
+            "professional-licenses":"Professional licenses"
         }
     }
     
