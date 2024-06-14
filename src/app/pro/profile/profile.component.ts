@@ -28,6 +28,8 @@ export default class ProfileComponent implements OnInit {
   email: String = "gabrielabarreto25@gmail.com"
   value : boolean =false;
   licenses: boolean = false;
+  selectedFile: File | null = null;
+  filePreview: string | ArrayBuffer | null | undefined= null;
   registerForm = new FormGroup({
     firstName: new FormControl('', [Validators.required]),
     lastName: new FormControl('', [Validators.required]),
@@ -43,11 +45,11 @@ export default class ProfileComponent implements OnInit {
     console.warn(this.registerForm.value);
   }
 
-  direction: string = 'Hola';
+  direction: string = '';
   ngOnInit() {
-    console.log('entre a profile del componente')
+  
     this.comunication.currentData.subscribe(direction => {
-      console.log('esperando el valor del componente')
+
       console.log(direction)
       this.direction = direction;
       //this.comunication.triggerDirection().pipe(catchError(() => EMPTY)
@@ -63,5 +65,24 @@ export default class ProfileComponent implements OnInit {
   }
   handleEvent(licenses: boolean) {
     this.licenses = licenses;
+  }
+  onFileSelected(event: Event): void {
+
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      this.selectedFile = input.files[0];
+      const reader = new FileReader();
+      reader.onload = (e) => {
+       
+        this.filePreview = e.target?.result;
+      };
+      reader.readAsDataURL(this.selectedFile);
+    }
+  }
+  triggerFileInput(): void {
+    const fileInput = document.getElementById('fileInput') as HTMLInputElement;
+    if (fileInput) {
+      fileInput.click();
+    }
   }
 }

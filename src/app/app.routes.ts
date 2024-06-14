@@ -3,6 +3,7 @@ import { HomeComponent } from './home/home.component';
 
 import SingInComponent from './sing-in/sing-in.component';
 import { SidebarComponent } from './sidebar/sidebar.component';
+import { ServiceComponent } from './pro/service/service.component';
 
 
 
@@ -25,6 +26,10 @@ export const routes: Routes = [
     {
         path:'pro/profile',
         loadChildren:()=>import('./pro/profile/profile.routes')
+    },
+    {
+        path:'pro/service',
+        component:ServiceComponent
     },
     {
         path:'',
