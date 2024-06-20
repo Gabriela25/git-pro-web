@@ -1,0 +1,2 @@
+import './polyfills.server.mjs';
+import{Qa as i,Ra as r,U as n,ab as a,eb as p}from"./chunk-PNWRIPDB.mjs";import"./chunk-NDYDZJSS.mjs";var s=(()=>{let t=class t{};t.\u0275fac=function(o){return new(o||t)},t.\u0275cmp=n({type:t,selectors:[["app-list"]],standalone:!0,features:[p],decls:2,vars:0,template:function(o,c){o&1&&(i(0,"p"),a(1,"list works!"),r())}});let e=t;return e})();var l=[{path:"",component:s},{path:"electrical",loadComponent:()=>import("./chunk-DJBNN3T4.mjs")}],x=l;export{x as default,l as routes};

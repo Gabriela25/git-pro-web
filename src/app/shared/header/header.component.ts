@@ -13,7 +13,7 @@ import { TranslateModule } from '@ngx-translate/core';
   styleUrl: './header.component.css'
 })
 export class HeaderComponent {
-  idSignLog:boolean= true;
+  idSignLog:boolean= false;
   firtsName: String = "Gabriela"
   constructor(private trans: TranslateService) {
     this.trans.addLangs(['es', 'en']); 

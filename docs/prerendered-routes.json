@@ -2,6 +2,8 @@
   "routes": [
     "/customer/profile",
     "/home",
+    "/list",
+    "/list/electrical",
     "/pro/profile",
     "/pro/profile/address",
     "/pro/service",

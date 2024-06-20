@@ -32,6 +32,10 @@ export const routes: Routes = [
         component:ServiceComponent
     },
     {
+        path:'list',
+        loadChildren:()=>import('./list/list.routes')
+    },
+    {
         path:'',
         redirectTo:'home',
         pathMatch:'full'

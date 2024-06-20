@@ -1,0 +1,2 @@
+import './polyfills.server.mjs';
+import{Qa as r,Ra as a,U as n,ab as s,eb as i}from"./chunk-PNWRIPDB.mjs";import"./chunk-NDYDZJSS.mjs";var f=(()=>{let e=class e{};e.\u0275fac=function(o){return new(o||e)},e.\u0275cmp=n({type:e,selectors:[["app-password-recovery"]],standalone:!0,features:[i],decls:2,vars:0,template:function(o,c){o&1&&(r(0,"p"),s(1,"password-recovery works!"),a())}});let t=e;return t})();export{f as default};

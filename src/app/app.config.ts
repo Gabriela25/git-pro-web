@@ -17,7 +17,7 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(withFetch()),
     importProvidersFrom(HttpClient), // or provideHttpClient() in Angular v15
     importProvidersFrom(TranslateModule.forRoot({
-        defaultLanguage:'es',
+        defaultLanguage:'en',
         loader: {
           
             provide: TranslateLoader,
