@@ -11,14 +11,18 @@
                 <h1><b>Find the best professionals who will satisfy all your needs</b></h1>
            </div>
            <div class="row pt-5">
-            <div class="col-md-2 text-center bg-white p-4 rounded shadow m-2"><a href="http://"><img src="assets/electrical.jpg" alt="" width="120" height="180"></a></div>
-            <div class="col-md-2 text-center bg-white p-4 rounded shadow m-2"><a href="http://"><img src="assets/plumbing.jpg" alt="" width="120" height="180"></a></div>
-            <div class="col-md-2">3</div>
-            <div class="col-md-2">4</div>
-            <div class="col-md-2">5</div>
-            <div class="col-md-2">6</div>
+            @for (item of listServices; track item) {
+                <div class="col-md-2 text-center bg-white p-4 rounded shadow m-2">
+                    <a routerLink="/list"><img src="{{item.img}}" alt="" width="120" height="120">
+                    <div class="text-center"><span><b>{{item.name}}</b></span></div>
+                </a>
+                </div>
+                
+              }
+           
+           
             
-           </div>
+          
         </div>
         <div class="col-md-1">
            

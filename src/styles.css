@@ -12,7 +12,9 @@
     --bs-alert-padding-x: 0.5rem !important;
     --bs-alert-padding-y: 0.5rem !important;
 }
-
+.btn {
+    --bs-btn-font-weight: 600 !important;
+}
 .btn-color-primary {
     --bs-btn-color: #fff !important;
     --bs-btn-bg: var(--color-primary) !important;
