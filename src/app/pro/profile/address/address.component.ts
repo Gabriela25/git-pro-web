@@ -43,7 +43,7 @@ export default class AddressComponent  implements OnInit {
     this.comunication.currentData.subscribe(direction => {
       this.direction = direction;
     //this.comunication.triggerDirection().pipe(catchError(() => EMPTY)
-  })
-}
+    })
+  }
   
 }

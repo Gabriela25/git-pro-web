@@ -17,11 +17,13 @@
         "current-password": "Current password",
         "new-password": "New password",
         "confirm-new-password":"Confirm new password",
+        "confirm-password":"Confirm password",
         "minimum-8-characters":"Minimum 8 characters",
         "maximum-15-characters":"Maximum 15 characters",
         "at-least-one-uppercase-letter":"At least one uppercase letter",
         "one-lowercase-letter-and-one-number":"One lowercase letter and one number",
         "the-passwords-do-not-match":"The passwords do not match"
+        
     },
     "header":{
         "profile":"Profile",
@@ -34,22 +36,26 @@
     },
     "config":{
         "save":"Save",
-        "cancel":"Cancel"
+        "cancel":"Cancel",
+        "add":"Add"
     },
     "pro":{
         "profile":{
+            "services":"Services",
+            "zip-code":"ZIP Code",
+            "name-business":"Name business",
             "phone":"Phone",
             "password": "Password",
             "web-site": "Web site",
             "address": "Address",
-            "year-founded":"Year founded",
-            "number-of-employees":"Number of employees",
             "social-media-link":"Social media link",
             "business-faqs":"Business FAQs",
             "your-introduction":"Your introduction",
             "credentials":"Credentials",
             "background-check":"Background check",
-            "professional-licenses":"Professional licenses"
+            "professional-licenses":"Professional licenses",
+            "year-founded": "Year founded",
+            "number-employees":"Number of employees"
         }
     }
     

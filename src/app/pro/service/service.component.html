@@ -8,7 +8,28 @@
         
         <div class="col-md-10">
             <div class="p-5">
-                <app-form/>
+                <form  autocomplete="off">
+    
+   
+                    <div class="mb-3">
+                        <label for="service" class="form-label fw-bold">Service</label>
+                        
+                        <select class="form-select" aria-label="Default select example" id="service">
+                            @for (service of listServices; track service) {
+                                <option selected>{{service.name}}</option>
+                            }
+                            
+                            
+                      </select>
+                    </div>
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-end pt-3">
+                            <button type="button" class="btn btn-color-primary">Add</button>
+                        </div>
+                    </div>
+                    
+                    
+                </form>
             </div>
     </div>
 

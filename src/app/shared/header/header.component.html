@@ -1,5 +1,5 @@
-<div class="container-fluid bg-white pt-3">
-  <nav class="navbar navbar-expand-lg m-2">
+<div class="container-fluid bg-white pt-1">
+  <nav class="navbar navbar-expand-lg m-1">
     <div class="container-fluid div-header">
       <a class="navbar-brand" routerLink="/">
         <img src="assets/logo2.png" width="100" height="50" class="d-inline-block align-top" alt="">
@@ -16,13 +16,15 @@
               <option value="en">English</option>
             </select>
           </li-->
-          <li class="nav-item d-none d-lg-block"><button type="button" class="btn btn-color-primary">Join as a pro</button></li>
-          <li class="nav-item d-none d-lg-block"><span><b>Sign in</b></span>
+          <li class="nav-item d-none d-lg-block">
+            <button type="button" class="btn btn-color-primary"  routerLink="/sign-in/register" [queryParams]="{ isCustomer: false }">Join as a pro</button></li>
+            <button type="button" class="btn btn-color-primary d-none d-lg-block" routerLink="/sign-in">Sign in</button>
+          <!--li class="nav-item d-none d-lg-block"><span><b>Sign in</b></span>
             <ul class="submenu">
               <li><a routerLink="/sign-in"><b>Sign in</b></a></li>
               <li><a routerLink="/sign-in/register"><b>Sign up</b></a></li>
             </ul>
-          </li>
+          </!--li-->
         </ul>
         <!-- Mobile version -->
         <div class="d-lg-none w-100 mt-2">

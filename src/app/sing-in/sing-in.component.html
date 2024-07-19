@@ -37,6 +37,9 @@
                     </div>
                     }
                 </div> 
+                <div class="mb-3">
+                    <span>{{message}}</span>
+                </div>
                 <div class="mb-3 d-flex justify-content-end">
                     <a  routerLink="/sign-in/password-recovery" class="no-underline a-color-primary">{{'sign-in.forgotpassword' | translate}}</a>
                 </div>
@@ -44,7 +47,7 @@
                     <button class="btn btn-color-primary"  type="submit" [disabled]="!loginForm.valid">{{'sign-in.log-in' | translate}}</button>
                 </div>
                 <div class="mt-3 d-flex justify-content-center">
-                    <a routerLink="/sign-in/register" aria-current="page" class="no-underline a-color-primary">{{'sign-in.register' | translate}}</a>
+                    <a routerLink="/sign-in/register" [queryParams]="{ isCustomer: true }" aria-current="page" class="no-underline a-color-primary">{{'sign-in.register' | translate}}</a>
                 </div>
             </form>
         </div>

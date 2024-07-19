@@ -1,0 +1,9 @@
+.container-center-img{
+    transition: transform 0.3s ease-in-out;
+}
+.container-center-img:hover {
+    transform: scale(1.05);
+}
+.img-carousel{
+    height: 450px;
+}
