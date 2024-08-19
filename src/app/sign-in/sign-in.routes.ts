@@ -7,7 +7,7 @@ export const  routes: Routes = [
 
     {
         path:'',
-        loadComponent:() => import('./sing-in.component'),
+        loadComponent:() => import('./sign-in.component'),
     },
     {
         path:'register',

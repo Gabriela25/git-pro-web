@@ -5,22 +5,22 @@ import { FormComponent } from './form/form.component';
 import { CategoryService } from '../../services/category.service';
 
 @Component({
-  selector: 'app-service',
+  selector: 'app-categories',
   standalone: true,
   imports: [
     HeaderComponent,
     SidebarComponent,
     FormComponent
   ],
-  templateUrl: './service.component.html',
-  styleUrl: './service.component.css'
+  templateUrl: './categories.component.html',
+  styleUrl: './categories.component.css'
 })
-export class ServiceComponent implements OnInit{
-  listServices: Array<any> =[]
+export class CategoriesComponent implements OnInit{
+  listCategories: Array<any> =[]
    constructor(
     private category: CategoryService,){
    }
    ngOnInit(){
-    this.listServices = this.category.getCategory();
+    this.listCategories = this.category.getCategory();
    }
 }

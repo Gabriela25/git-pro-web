@@ -1,22 +1,24 @@
 import { AfterViewInit, Component, EventEmitter, Inject, OnInit, Output } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { CategoryService } from '../../services/category.service';
 
-import { getAuth , RecaptchaVerifier} from "firebase/auth";
-import { WINDOW } from './window.token'; 
-import { AngularFireAuth } from '@angular/fire/compat/auth';
-import { AuthService } from '../../services/auth.service';
+
+
+import { getAuth, RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
+import { initializeApp } from 'firebase/app';
+import { environment } from '../../../environments/environment.development';
 @Component({
   selector: 'app-phone',
   standalone: true,
   imports: [
     ReactiveFormsModule,
+    FormsModule
   ],
   templateUrl: './phone.component.html',
   styleUrl: './phone.component.css'
 })
-export class PhoneComponent  implements OnInit{
+export class PhoneComponent {
+  window: any; 
   phoneCustomer: number = 0;
   isValidPhoneCustomer: boolean= false;
   phoneCustomerForm = new FormGroup({
@@ -26,14 +28,17 @@ export class PhoneComponent  implements OnInit{
 
   
   constructor(
-    private route: ActivatedRoute,
-    
-    
-  ){
-
+    private route: ActivatedRoute){
+  
   }
-  ngOnInit(): void {}
+ 
+ 
+  phoneNumber: string = '';
+  verificationCode: string = '';
 
+  
+
+ 
  
  
   onSubmit() {

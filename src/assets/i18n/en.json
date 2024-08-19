@@ -1,11 +1,12 @@
 
 {
-    "sign-in":{
-        "sign-in": "Sign in",
-        "log-in": "Log in",
+    "signIn":{
+        "signIn": "Sign in",
+        "logIn": "Log in",
         "register": "Register",
-        "first-name":"First name",
-        "last-name": "Last name",
+        "firstName":"First name",
+        "phone":"Phone",
+        "lastName": "Last name",
         "email": "Email address",
         "password": "Password",
         "isEmailRequired": "Email is required",
@@ -14,20 +15,20 @@
         "isLastNameRequired": "Last name is required",
         "isPasswordRequired": "Password is required",
         "forgotpassword": "Forgot Password?",
-        "current-password": "Current password",
-        "new-password": "New password",
-        "confirm-new-password":"Confirm new password",
-        "confirm-password":"Confirm password",
-        "minimum-8-characters":"Minimum 8 characters",
-        "maximum-15-characters":"Maximum 15 characters",
-        "at-least-one-uppercase-letter":"At least one uppercase letter",
-        "one-lowercase-letter-and-one-number":"One lowercase letter and one number",
-        "the-passwords-do-not-match":"The passwords do not match"
+        "currentPassword": "Current password",
+        "newPassword": "New password",
+        "confirmNewPassword":"Confirm new password",
+        "confirmPassword":"Confirm password",
+        "minimum6Characters":"Minimum 6 characters",
+        "maximum15Characters":"Maximum 15 characters",
+        "atLeastOneUppercaseLetter":"At least one uppercase letter",
+        "oneLowercaseLetterAndOneNumber":"One lowercase letter and one number",
+        "thePasswordsDoNotMatch":"The passwords do not match"
         
     },
     "header":{
         "profile":"Profile",
-        "log-out": "Log out"
+        "logOut": "Log out"
     },
     "profile":{
         "phone":"Phone",
@@ -41,21 +42,26 @@
     },
     "pro":{
         "profile":{
-            "services":"Services",
-            "zip-code":"ZIP Code",
-            "name-business":"Name business",
+            "firstName":"First name",
+            "lastName": "Last name",
+            "email": "Email address",
             "phone":"Phone",
             "password": "Password",
-            "web-site": "Web site",
+            "services":"Services",
+            "zipCode":"ZIP Code",
+            "imgProfile":"Image profile",
+            "nameBusiness":"Name business",
+           
+            "webSite": "Web site",
             "address": "Address",
-            "social-media-link":"Social media link",
-            "business-faqs":"Business FAQs",
-            "your-introduction":"Your introduction",
+            "socialMediaLink":"Social media link",
+            "businessFaqs":"Business FAQs",
+            "yourIntroduction":"Your introduction",
             "credentials":"Credentials",
-            "background-check":"Background check",
-            "professional-licenses":"Professional licenses",
-            "year-founded": "Year founded",
-            "number-employees":"Number of employees"
+            "backgroundCheck":"Background check",
+            "professionalLicenses":"Professional licenses",
+            "yearFounded": "Year founded",
+            "numberEmployees":"Number of employees"
         }
     }
     

@@ -10,6 +10,9 @@ import {  GoogleSigninButtonModule } from '@abacritt/angularx-social-login';
 import { RecaptchaService } from '../../services/recaptcha.service';
 import { NgxCaptchaModule } from 'ngx-captcha';
 import { PlatformService } from '../../services/platform.service';
+import { NgxMaskDirective } from 'ngx-mask';
+import { AuthService } from '../../services/auth.service';
+import { User } from '../../interface/user.interface';
 
 @Component({
   selector: 'app-register',
@@ -21,7 +24,8 @@ import { PlatformService } from '../../services/platform.service';
     HeaderComponent,
     SocialLoginModule,
     GoogleSigninButtonModule,
-    NgxCaptchaModule
+    NgxCaptchaModule,
+    NgxMaskDirective
   ],
   templateUrl: './register.component.html',
   styleUrl: './register.component.css'
@@ -30,30 +34,37 @@ export default class RegisterComponent  implements OnInit{
   isCustomer: boolean | null = true;
   user: SocialUser = new SocialUser();
   loggedIn: boolean = false;
-  recaptchaToken: string|null='';
-  siteKey: string = '6LeyixEqAAAAAJYntUQr0-bDYNkfORIW3Uiabz-8'; 
+  isLoading = false;
+  backendMessage = '';
+  alertMessage = '';
+  alertTimeout: any;
+  //recaptchaToken: string|null='';
+  //siteKey: string = '6Lem3hsqAAAAAAsAG7jDfkCvssYtibGVCiSzTo5P'; 
   isBrowser: boolean= true;
-   
-  registerForm = new FormGroup({
-      firstName: new FormControl('', [Validators.required]),
-      lastName: new FormControl('', [Validators.required]),
-      email: new FormControl('', [Validators.required, Validators.email]),
-      isTerm : new FormControl(false, Validators.requiredTrue),
-      recaptcha: new FormControl('', [Validators.required]),
-      password: new FormControl(
-        '', [Validators.required,Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,15}$/)],
-      ),
-      confirmPassword: new FormControl('', [Validators.required,Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,15}$/)])
-    }, { validators: this.passwordMatchValidator });
   constructor(
     private route: ActivatedRoute,
-    private authService: SocialAuthService,
-    private _recaptcha: RecaptchaService,
+    //private socialService: SocialAuthService,
+    //private _recaptcha: RecaptchaService,
     private platformService: PlatformService,
+
+    private authService:  AuthService
       ){
     this.isBrowser = this.platformService.isBrowser() 
     console.log(this.platformService.isBrowser() )
   }
+  registerForm = new FormGroup({
+      firstName: new FormControl('', [Validators.required]),
+      lastName: new FormControl('', [Validators.required]),
+      phone: new FormControl('', [Validators.required,Validators.min(10)]),
+      email: new FormControl('', [Validators.required, Validators.email]),
+      isTerm : new FormControl(false, Validators.requiredTrue),
+      //recaptcha: new FormControl('', [Validators.required]),
+      password: new FormControl(
+        '', [Validators.required,Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{6,15}$/)],
+      ),
+      confirmPassword: new FormControl('', [Validators.required,Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{6,15}$/)])
+    }, { validators: this.passwordMatchValidator });
+  
   ngOnInit(): void {
     
     this.route.queryParamMap.subscribe((paramMap) => {
@@ -62,14 +73,14 @@ export default class RegisterComponent  implements OnInit{
       this.isCustomer = paramValue === 'true' ? true : paramValue === 'false' ? false : null;
       
     });
-    this.authService.authState.subscribe((user) => {
+    /*this.socialService.authState.subscribe((user) => {
       
       this.user = user ? user : new SocialUser();
       this.loggedIn = (user != null);
       if (this.loggedIn) {
         this.dataUser(user);
       }
-    });
+    });*/
     /*this.registerForm.controls['recaptcha'].valueChanges.subscribe(value => {
       this.recaptchaToken = value;
     });*/
@@ -95,22 +106,55 @@ export default class RegisterComponent  implements OnInit{
   }
   onSubmit() {
     // TODO: Use EventEmitter with form value
-    console.warn(this.registerForm.value);
-    if(this.registerForm.value.recaptcha){
+    this.isLoading = true; 
+    const formData = this.registerForm.value;
+    const user: User = {
+      firstname:formData.firstName || '',
+      lastname: formData.lastName || '',
+      email: formData.email || '',
+      phone: formData.phone || '',
+      password: formData.password || '',
+      enabled: false
+    };
+    this.authService.postRegister(user).subscribe({
+      next: (response) => {
+        this.alertMessage = 'alert-success'
+        this.backendMessage = response.message; 
+        this.isLoading = false; 
+        this.startAlertTimer();
+      },
+      error: (error) => {
+        console.log(error)
+        this.alertMessage = 'alert-danger'
+        this.backendMessage = error.error.message; 
+        this.isLoading = false; 
+        this.startAlertTimer();
+      }
+    });
+    /*if(this.registerForm.value.recaptcha){
       const data ={
         token : this.registerForm.value.recaptcha
       }
       this._recaptcha.getRecaptcha(data).subscribe((resp)=>{
         if(resp.message){
-          console.log('procesamos el formulario')
+          console.log('procesamos el formulario') 
+          //this.authService.postRegister()
         }
       })
-    }
+    }*/
     //this.recaptcha.getRecaptcha(this.registerForm.value)
+  }
+  startAlertTimer() {
+    if (this.alertTimeout) {
+      clearTimeout(this.alertTimeout); 
+    }
+    this.alertTimeout = setTimeout(() => {
+      this.backendMessage = '';
+    }, 3000); 
   }
  
   onCaptchaResolved(recaptchaToken: any) {
-    console.log('en el evento')
+   
     console.log(recaptchaToken)
     //this.http.post('/verify-recaptcha', { recaptchaToken }).subscribe(response => {
       //console.log('Backend response:', response);
@@ -118,7 +162,7 @@ export default class RegisterComponent  implements OnInit{
   }
 
   signInWithGoogle(): void {
-    this.authService.signIn(GoogleLoginProvider.PROVIDER_ID);
+   // this.socialService.signIn(GoogleLoginProvider.PROVIDER_ID);
   }
 
   dataUser(user: SocialUser) {
@@ -126,6 +170,6 @@ export default class RegisterComponent  implements OnInit{
     
   }
   signOut(){
-    this.authService.signOut();
+    //this.socialService.signOut();
   }
 }

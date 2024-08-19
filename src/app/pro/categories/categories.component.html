@@ -12,11 +12,11 @@
     
    
                     <div class="mb-3">
-                        <label for="service" class="form-label fw-bold">Service</label>
+                        <label for="category" class="form-label fw-bold">Category</label>
                         
-                        <select class="form-select" aria-label="Default select example" id="service">
-                            @for (service of listServices; track service) {
-                                <option selected>{{service.name}}</option>
+                        <select class="form-select" aria-label="Default select example" id="category">
+                            @for (category of listCategories; track category) {
+                                <option selected>{{category.name}}</option>
                             }
                             
                             

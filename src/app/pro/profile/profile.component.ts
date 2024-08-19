@@ -10,6 +10,7 @@ import { LicensesComponent } from './licenses/licenses.component';
 import { CategoryService } from '../../services/category.service';
 import { ModalComponent } from '../../shared/modal/modal.component';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { NgxMaskDirective } from 'ngx-mask';
 
 @Component({
   selector: 'app-profile',
@@ -22,7 +23,8 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
     SidebarComponent,
     AutocompleteComponent,
     LicensesComponent,
-    ModalComponent
+    ModalComponent,
+    NgxMaskDirective
   ],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.css'
@@ -52,6 +54,10 @@ export default class ProfileComponent implements OnInit {
       private el: ElementRef
     ) {
       this.proOneForm = this.fb.group({
+        firstName: ['', Validators.required],
+        lastName: ['', Validators.required],
+        email: ['', Validators.required],
+       
         category: ['', Validators.required],
         zipCode: ['', Validators.required],
         //nameBusiness: ['', Validators.required],

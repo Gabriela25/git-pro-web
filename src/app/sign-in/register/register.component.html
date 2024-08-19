@@ -1,33 +1,33 @@
-<app-header />
+
 <div class="container p-5">
     <div class="row">
-        <div class="col"></div>
-        <div class="col-12 col-md-6 p-5 col-login  text-light-emphasis bg-white rounded">
+        <div class="col-4"></div>
+        <div class="col-8 col-md-8 p-5 col-login  text-light-emphasis bg-white rounded">
             <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" autocomplete="off" method="post">
                 <div class="row mb-3">
                     <div class="col-12 col-md-6">
-                        <label for="firstName" class="form-label fw-bold">{{'sign-in.first-name' | translate}}</label>
-                        <input type="text" class="form-control" placeholder="" id="firstName" type="firstName"
+                        <label for="firstName" class="form-label fw-bold">{{'signIn.firstName' | translate}}</label>
+                        <input type="text" class="form-control" placeholder="" id="firstName"
                             formControlName="firstName" />
                         @if(registerForm.get('firstName')?.invalid && (registerForm.get('firstName')?.dirty || registerForm.get('firstName')?.touched )){
                         <div class="alert alert-danger mt-2 mt-2">
                             @if(registerForm.get('firstName')?.errors?.['required']){
                             <span>
-                                {{'sign-in.isFirstNameRequired' | translate}}
+                                {{'signIn.isFirstNameRequired' | translate}}
                             </span>
                             }
                         </div>
                         }
                     </div>
                     <div class="col-12 col-md-6">
-                        <label for="lastName" class="form-label fw-bold">{{'sign-in.last-name' | translate}}</label>
-                        <input type="text" class="form-control" placeholder="" id="lastName" type="lastName"
+                        <label for="lastName" class="form-label fw-bold">{{'signIn.lastName' | translate}}</label>
+                        <input type="text" class="form-control" placeholder="" id="lastName" 
                             formControlName="lastName" />
                         @if(registerForm.get('lastName')?.invalid && (registerForm.get('lastName')?.dirty || registerForm.get('lastName')?.touched )){
                         <div class="alert alert-danger mt-2">
                             @if(registerForm.get('lastName')?.errors?.['required']){
                             <span>
-                                {{'sign-in.isLastNameRequired' | translate}}
+                                {{'signIn.isLastNameRequired' | translate}}
                             </span>
                             }
                         </div>
@@ -38,19 +38,25 @@
 
                 </div>
                 <div class="mb-3">
-                    <label for="email" class="form-label fw-bold">{{'sign-in.email' | translate}}</label>
-                    <input type="email" class="form-control" id="email" placeholder="Email" type="email"
+                    <label for="phone" class="form-label fw-bold">{{'signIn.phone' | translate}}</label>
+                    <input type="tel" class="form-control" id="phone" placeholder="(123) 4567890"  mask="(000) 000-0000"  formControlName="phone"
+                       />
+                    
+                </div>
+                <div class="mb-3">
+                    <label for="email" class="form-label fw-bold">{{'signIn.email' | translate}}</label>
+                    <input type="email" class="form-control" id="email" placeholder="Email" 
                         formControlName="email" />
                     @if(registerForm.get('email')?.invalid && (registerForm.get('email')?.dirty || registerForm.get('email')?.touched )){
                     <div class="alert alert-danger mt-2">
                         @if(registerForm.get('email')?.errors?.['required']){
                         <span>
-                            {{'sign-in.isEmailRequired' | translate}}
+                            {{'signIn.isEmailRequired' | translate}}
                         </span>
                         }
                         @if(registerForm.get('email')?.errors?.['email']){
                         <span>
-                            {{'sign-in.isEmailValid' | translate}}
+                            {{'signIn.isEmailValid' | translate}}
                         </span>
                         }
                     </div>
@@ -58,53 +64,53 @@
 
                 </div>
                 <div class="mb-3">
-                    <label for="password" class="form-label fw-bold">{{'sign-in.password' | translate}}</label>
-                    <input type="password" class="form-control" id="password" placeholder="" type="password"
+                    <label for="password" class="form-label fw-bold">{{'signIn.password' | translate}}</label>
+                    <input type="password" class="form-control" id="password" placeholder="" type="password" minlength="6"
                         formControlName="password" />
                     @if(registerForm.get('password')?.invalid && (registerForm.get('password')?.dirty ||
                     registerForm.get('password')?.touched )){
                     <div class="alert alert-danger mt-2">
                         @if(registerForm.get('password')?.errors?.['required']){
                         <span>
-                            {{'sign-in.isPasswordRequired' | translate}}
+                            {{'signIn.isPasswordRequired' | translate}}
                         </span>
                         }
                         @if(registerForm.get('password')?.errors?.['pattern']){
                             <ul>
-                                <li>{{'sign-in.minimum-8-characters' | translate}}</li>
-                                <li>{{'sign-in.maximum-15-characters' | translate}}</li>
-                                <li>{{'sign-in.at-least-one-uppercase-letter' | translate}}</li>
-                                <li>{{'sign-in.one-lowercase-letter-and-one-number' | translate}}</li>
+                                <li>{{'signIn.minimum6Characters' | translate}}</li>
+                                <li>{{'signIn.maximum15Characters' | translate}}</li>
+                                <li>{{'signIn.atLeastOneUppercaseLetter' | translate}}</li>
+                                <li>{{'signIn.oneLowercaseLetterAndOneNumber' | translate}}</li>
                             </ul>
                             }
                     </div>
                     }
                 </div>
                 <div class="mb-3">
-                    <label for="confirmPassword" class="form-label fw-bold">{{'sign-in.confirm-password' | translate}}</label>
-                    <input type="password" class="form-control" id="confirmPassword" placeholder="" type="password"
+                    <label for="confirmPassword" class="form-label fw-bold">{{'signIn.confirmPassword' | translate}}</label>
+                    <input type="password" class="form-control" id="confirmPassword" placeholder="" type="password" minlength="6"
                         formControlName="confirmPassword" />
                     @if(registerForm.get('confirmPassword')?.invalid && (registerForm.get('confirmPassword')?.dirty ||
                     registerForm.get('confirmPassword')?.touched )){
                     <div class="alert alert-danger mt-2">
                         @if(registerForm.get('confirmPassword')?.errors?.['required']){
                         <span>
-                            {{'sign-in.isPasswordRequired' | translate}}
+                            {{'signIn.isPasswordRequired' | translate}}
                         </span>
                         
                         }
                         @if(registerForm.get('password')?.errors?.['pattern']){
                             <ul>
 
-                                <li>{{'sign-in.minimum-8-characters' | translate}}</li>
-                                <li>{{'sign-in.maximum-15-characters' | translate}}</li>
-                                <li>{{'sign-in.at-least-one-uppercase-letter' | translate}}</li>
-                                <li>{{'sign-in.one-lowercase-letter-and-one-number' | translate}}</li>
+                                <li>{{'signIn.minimum6Characters' | translate}}</li>
+                                <li>{{'signIn.maximum15Characters' | translate}}</li>
+                                <li>{{'signIn.atLeastOneUppercaseLetter' | translate}}</li>
+                                <li>{{'signIn.oneLowercaseLetterAndOneNumber' | translate}}</li>
                             </ul>
                             } 
                         @if(registerForm.get('confirmPassword')?.errors?.['mismatch']){
                             <span>
-                                {{'sign-in.the-passwords-do-not-match' | translate}}
+                                {{'signIn.thePasswordsDoNotMatch' | translate}}
                             </span>
                             }
                     </div>
@@ -121,45 +127,35 @@
                       </div>
                 </div>
 
-                @if(isBrowser){
-                    <ngx-recaptcha2 
-                            formControlName="recaptcha" 
-                            [siteKey]="siteKey">
-                    </ngx-recaptcha2>
-                }
+                
                 <div class="d-grid mt-3">
-                    <button class="btn btn-color-primary" type="submit" [disabled]="!registerForm.valid">{{'sign-in.register'
+                    <button class="btn btn-color-primary" type="submit" [disabled]="!registerForm.valid || isLoading">{{'signIn.register'
                         | translate}}</button>
                 </div>
                 @if(isCustomer){
                     <div class="mt-3 d-flex justify-content-center">
-                        <a routerLink="/sign-in" aria-current="page" class="no-underline a-color-primary">{{'sign-in.sign-in' |
+                        <a routerLink="/signIn" aria-current="page" class="no-underline a-color-primary">{{'signIn.signIn' |
                             translate}}</a>
                     </div>
                 }
             </form>
-            
-            <div id="g_id_onload" class="mt-3"
-                data-client_id="243578235578-qdc8sj7knvtkj61e52d94v86ns04jqm2.apps.googleusercontent.com"
-                data-context="signup"
-                data-ux_mode="popup"
-                data-login_uri="http://localhost:4200"
-                data-auto_prompt="false">
-            </div>
-           
-            <div class="g_id_signin"
-                data-type="standard"
-                data-shape="rectangular"
-                data-theme="outline"
-                data-text="signin_with"
-                data-size="large"
-                data-logo_alignment="left">
-            </div>
+            @if(isLoading){       
+                <div class="d-flex justify-content-center mt-3">
+                    <div class="spinner-border" role="status"> 
+                    </div>
+                </div>
+            }
+            @if(backendMessage){    
+            <div  class="alert {{alertMessage}} mt-3">
+                {{ backendMessage }}
+              </div>
+            }
             @if(loggedIn){
                 <div class="mt-3 text-center">
                     <button  class="btn btn-color-primary"(click)="signOut()">Cerrar sesión</button>
                 </div>
             }
+
         </div>
        
        

@@ -1,12 +1,11 @@
 import { Routes } from '@angular/router';
 import { HomeComponent } from './home/home.component';
-
-import SingInComponent from './sing-in/sing-in.component';
 import { SidebarComponent } from './sidebar/sidebar.component';
-import { ServiceComponent } from './pro/service/service.component';
 import { ProComponent } from './pro/pro.component';
 import { LeadsComponent } from './pro/leads/leads.component';
 import AddressComponent from './pro/profile/address/address.component';
+import { PhoneComponent } from './phone/phone.component';
+import { CategoriesComponent } from './pro/categories/categories.component';
 
 
 
@@ -20,7 +19,7 @@ export const routes: Routes = [
         component:SidebarComponent
     },{
         path:'sign-in',
-        loadChildren:()=>import('./sing-in/sing-in.routes')
+        loadChildren:()=>import('./sign-in/sign-in.routes')
     }, 
     {
         path:'customer/profile',
@@ -31,8 +30,8 @@ export const routes: Routes = [
         loadChildren:()=>import('./pro/profile/profile.routes')
     },
     {
-        path:'pro/service',
-        component:ServiceComponent
+        path:'pro/categories',
+        component:CategoriesComponent
     },
     {
         path:'pro',
@@ -49,6 +48,11 @@ export const routes: Routes = [
     {
         path:'list',
         loadChildren:()=>import('./list/list.routes')
+    },
+    {
+        path:'phone',
+    
+        component:PhoneComponent
     },
     {
         path:'',

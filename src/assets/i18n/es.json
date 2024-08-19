@@ -1,10 +1,11 @@
 {
-  "sign-in":{
-    "sign-in": "Iniciar sesión",
-    "log-in": "Iniciar sesión",
+  "signIn":{
+    "signIn": "Iniciar sesión",
+    "logIn": "Iniciar sesión",
     "register": "Registro",
-    "first-name":"Nombre",
-    "last-name": "Apellido",
+    "firstName":"Nombre",
+    "lastName": "Apellido",
+    "phone":"Telefóno",
     "email": "Correo electrónico",
     "password":"Contraseña",
     "isEmailRequired": "El correo electrónico es requerido",
@@ -13,21 +14,21 @@
     "isLastNameRequired": "El apellido es requerido",
     "isPasswordRequired": "La clave es requerida",
     "forgotpassword": "¿Has olvidado tu contraseña?",
-    "current-password": "Contraseña actual",
-    "new-password": "Contraseña nueva",
-    "confirm-new-password":"Confirma contraseña nueva",
-    "confirm-password":"Confirma contraseña",
-    "minimum-8-characters":"Mínimo 8 caracteres",
-    "maximum-15-characters":"Máximo 15 caracteres",
-    "at-least-one-uppercase-letter":"Al menos una letra mayúscula",
-    "one-lowercase-letter-and-one-number":"Una letra minúscula y un número",
-    "the-passwords-do-not-match":"Las contraseñas no coinciden"
+    "currentPassword": "Contraseña actual",
+    "newPassword": "Contraseña nueva",
+    "confirmNewPassword":"Confirma contraseña nueva",
+    "confirmPassword":"Confirma contraseña",
+    "minimum6Characters":"Mínimo 6 caracteres",
+    "maximum15Characters":"Máximo 15 caracteres",
+    "atLeastOneUppercaseLetter":"Al menos una letra mayúscula",
+    "oneLowercaseLetterAndOneNumber":"Una letra minúscula y un número",
+    "thePasswordsDoNotMatch":"Las contraseñas no coinciden"
     
     
   },
   "header":{
     "profile":"Perfil",
-    "log-out": "Cerrar sesión"
+    "logOut": "Cerrar sesión"
   },
   "profile":{
     "phone":"Teléfono",
@@ -41,23 +42,29 @@
   },
   "pro":{
       "profile":{
-          "services":"Categoría",
-          "zip-code":"Código postal",
-          "name-business":"Nombre del negocio",
+          "firstName":"Nombre",
+          "lastName": "Apellido",
+          "email": "Correo electrónico",
           "phone":"Telefóno",
+         
+          "services":"Categoría",
+          "zipCode":"Código postal",
+          "imgProfile":"Imagen de perfil",
+          "nameBusiness":"Nombre del negocio",
+      
           "password": "Password",
-          "web-site": "Sitio Web",
+          "webSite": "Sitio Web",
           "address": "Dirección",
           
-          "number-of-employees":"Número de empleados",
-          "social-media-link":"Redes sociales",
-          "business-faqs":"Preguntas frecuentes de negocios",
-          "your-introduction":"Tu introducción",
+          "numberOfEmployees":"Número de empleados",
+          "socialMediaLink":"Redes sociales",
+          "businessFaqs":"Preguntas frecuentes de negocios",
+          "yourIntroduction":"Tu introducción",
           "credentials":"Cartas credenciales",
-          "background-check":"Verificación de antecedentes",
-          "professional-licenses":"Licencia profesionales",
-          "year-founded": "Año de fundada",
-          "number-employees":"Número de empleados"
+          "backgroundCheck":"Verificación de antecedentes",
+          "professionalLicenses":"Licencia profesionales",
+          "yearFounded": "Año de fundada",
+          "numberEmployees":"Número de empleados"
     
       }
   }
