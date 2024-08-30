@@ -1,56 +1,47 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { inject, Injectable } from '@angular/core';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { environment } from '../../environments/environment.development';
+import { Category } from '../interface/category.interface';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CategoryService {
-
-
-    private  listServices : Array<any>=[
-      {
-        "id": 1,
-        "name":"Air Conditioning",
-        "img": "assets/ac.png"
-      },
-      {
-        "id": 2,
-        "name":"Electrical",
-        "img": "assets/electrical.png"
-      },
-      {
-        "id": 3,
-        "name":"Plumbing",
-        "img": "assets/plumbing.png"
-      },
-      {
-        "id": 4,
-        "name":"Handyman",
-        "img": "assets/handyman.png"
-      },
-      {
-        "id": 5,
-        "name":"Cleaning",
-        "img": "assets/cleaning.png"
-      },
-      {
-        "id": 6,
-        "name":"Roofing",
-        "img": "assets/roofing.png"
-      },
+  private readonly _http = inject(HttpClient);
+  private apiUrlBackend = environment.apiUrlBackend;
+  private token:string = '';
+  constructor() {
+    
+  }
+  getAllCategories(): Observable<{ categories:Category[]}> {
+    /*if (typeof window !== 'undefined') {
       
-  ];
+      this.token = localStorage.getItem('token') || ''; 
+    }*/
+    const options = {
+      
+      headers: {
+        'Content-Type': 'application/json',
 
-  private triggerCategory = new BehaviorSubject<any>(null);
-  currentCategory = this.triggerCategory.asObservable();
+      },
 
-
-  constructor() { }
+    };
+    return this._http.get<{ categories:Category[]}>(`${this.apiUrlBackend}/categories`, options);
+  }
   
-  changeCategory(data: any) {
+    
+
+  //private triggerCategory = new BehaviorSubject<any>(null);
+  //currentCategory = this.triggerCategory.asObservable();
+
+
+  //constructor() { }
+  
+  /*changeCategory(data: any) {
     this.triggerCategory.next(data);
   }
   getCategory(){
     return this.listServices;
-  }
+  }*/
 }

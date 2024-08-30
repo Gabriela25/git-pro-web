@@ -12,7 +12,10 @@ export const  routes: Routes = [
     {
         path:'address',
         loadComponent:() => import('./address/address.component'),
+    },
+    {
+        path:'basic',
+        loadComponent:() => import('./basic-info/basic-info.component'),
     }
-    
 ]
 export default routes;

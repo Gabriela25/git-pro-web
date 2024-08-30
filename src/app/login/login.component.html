@@ -5,18 +5,18 @@
         <div class="col-8 col-md-8 p-5 col-login  text-light-emphasis bg-white rounded">
             <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" autocomplete="off">
                 <div class="mb-3" >
-                    <label for="email" class="form-label fw-bold">{{'signIn.email' | translate}}</label>
+                    <label for="email" class="form-label fw-bold">{{'login.email' | translate}}</label>
                     <input type="email" class="form-control" id="email" placeholder="Email"  type="email"  formControlName="email"/>
                     @if(loginForm.get('email')?.invalid &&  (loginForm.get('email')?.dirty || loginForm.get('email')?.touched )){
                     <div class="alert alert-danger mt-2">
                     @if(loginForm.get('email')?.errors?.['required']){
                         <span>
-                        {{'signIn.isEmailRequired' | translate}}
+                        {{'login.isEmailRequired' | translate}}
                         </span>
                     }
                     @if(loginForm.get('email')?.errors?.['email']){
                         <span>
-                        {{'signIn.isEmailValid' | translate}}
+                        {{'login.isEmailValid' | translate}}
                         </span>
                     }
                 </div>
@@ -24,18 +24,18 @@
                 
                 </div>
                 <div class="mb-3">
-                    <label for="password" class="form-label fw-bold">{{'signIn.password' | translate}}</label>
+                    <label for="password" class="form-label fw-bold">{{'login.password' | translate}}</label>
                     <input type="password" class="form-control" id="password" placeholder=""  type="password" formControlName="password"/>
-                @if(loginForm.get('password')?.invalid && (loginForm.get('password')?.dirty || loginForm.get('password')?.touched )){
+                    @if(loginForm.get('password')?.invalid && (loginForm.get('password')?.dirty || loginForm.get('password')?.touched )){
                         <div class="alert alert-danger mt-2">
                         @if(loginForm.get('password')?.errors?.['required']){
                             <span>
-                                {{'signIn.isPasswordRequired' | translate}}
+                                {{'login.isPasswordRequired' | translate}}
                             </span>
                         }
                         @else if(loginForm.get('password')?.errors?.['minlength']){
                             <span>
-                                {{'signIn.minimum6Characters' | translate}}
+                                {{'login.minimum6Characters' | translate}}
                             </span>
                         }
                     </div>
@@ -43,13 +43,13 @@
                 </div> 
                 
                 <div class="mb-3 d-flex justify-content-end">
-                    <a  routerLink="/signIn/password-recovery" class="no-underline a-color-primary">{{'signIn.forgotpassword' | translate}}</a>
+                    <a  routerLink="/login/password-recovery" class="link-underline-opacity-0 link-secondary">{{'login.forgotpassword' | translate}}</a>
                 </div>
                 <div class="d-grid">
-                    <button class="btn btn-color-primary"  type="submit" [disabled]="!loginForm.valid || isLoading">{{'signIn.logIn' | translate}}</button>
+                    <button class="btn btn-primary"  type="submit" [disabled]="!loginForm.valid || isLoading">{{'login.login' | translate}}</button>
                 </div>
                 <div class="mt-3 d-flex justify-content-center">
-                    <a routerLink="/sign-in/register" [queryParams]="{ isCustomer: true }" aria-current="page" class="no-underline a-color-primary">{{'signIn.register' | translate}}</a>
+                    <a routerLink="/login/register" [queryParams]="{ isCustomer: true }" aria-current="page" class="link-underline-opacity-0 link-secondary">{{'login.register' | translate}}</a>
                 </div>
             </form>
             @if(isLoading){       

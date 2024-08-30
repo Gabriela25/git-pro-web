@@ -1,9 +1,9 @@
 
 {
-    "signIn":{
-        "signIn": "Sign in",
+    "login":{
+        "login": "Login",
         "logIn": "Log in",
-        "register": "Register",
+        "sign-in": "Sign in",
         "firstName":"First name",
         "phone":"Phone",
         "lastName": "Last name",
@@ -14,6 +14,8 @@
         "isFirstNameRequired": "First name is required",
         "isLastNameRequired": "Last name is required",
         "isPasswordRequired": "Password is required",
+        "isPhoneRequired": "Phone is required",
+        "isPhoneMaximum10":"The phone number is 10 digits",
         "forgotpassword": "Forgot Password?",
         "currentPassword": "Current password",
         "newPassword": "New password",
@@ -47,7 +49,7 @@
             "email": "Email address",
             "phone":"Phone",
             "password": "Password",
-            "services":"Services",
+            "categories":"Categories",
             "zipCode":"ZIP Code",
             "imgProfile":"Image profile",
             "nameBusiness":"Name business",
@@ -61,7 +63,13 @@
             "backgroundCheck":"Background check",
             "professionalLicenses":"Professional licenses",
             "yearFounded": "Year founded",
-            "numberEmployees":"Number of employees"
+            "numberEmployees":"Number of employees",
+            
+            "isCategoryIdsRequired":"Category is required",
+           
+            "isZipcodeRequired":"Zip code is required",
+            "isAddressRequired":"Address is required",
+            "isImagePersonalRequired":"Image is required"
         }
     }
     

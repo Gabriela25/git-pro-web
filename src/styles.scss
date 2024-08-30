@@ -1,0 +1,7 @@
+
+$purple:  #7e01e0 !default;  
+$teal:  #3cd7ac  !default;  
+$primary :$purple;
+$secondary:$teal;
+// Importa Bootstrap después de sobrescribir los colores
+@import "bootstrap/scss/bootstrap";

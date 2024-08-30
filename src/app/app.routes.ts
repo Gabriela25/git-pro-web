@@ -6,6 +6,7 @@ import { LeadsComponent } from './pro/leads/leads.component';
 import AddressComponent from './pro/profile/address/address.component';
 import { PhoneComponent } from './phone/phone.component';
 import { CategoriesComponent } from './pro/categories/categories.component';
+import { VerifyAccountComponent } from './login/verify-account/verify-account.component';
 
 
 
@@ -18,8 +19,12 @@ export const routes: Routes = [
         path:'sidebar',
         component:SidebarComponent
     },{
-        path:'sign-in',
-        loadChildren:()=>import('./sign-in/sign-in.routes')
+        path:'login',
+        loadChildren:()=>import('./login/login.routes')
+    }, 
+    {
+        path:'auth/verify/:id',
+        component:VerifyAccountComponent
     }, 
     {
         path:'customer/profile',

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { HeaderComponent } from '../../shared/header/header.component';
 import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { GoogleLoginProvider, SocialAuthService, SocialLoginModule, SocialUser } from "@abacritt/angularx-social-login";
 import { FacebookLoginProvider } from "@abacritt/angularx-social-login";
 
@@ -15,7 +15,7 @@ import { AuthService } from '../../services/auth.service';
 import { User } from '../../interface/user.interface';
 
 @Component({
-  selector: 'app-register',
+  selector: 'app-sign-in',
   standalone: true,
   imports: [
     ReactiveFormsModule,
@@ -27,10 +27,10 @@ import { User } from '../../interface/user.interface';
     NgxCaptchaModule,
     NgxMaskDirective
   ],
-  templateUrl: './register.component.html',
-  styleUrl: './register.component.css'
+  templateUrl: './sign-in.component.html',
+  styleUrl: './sign-in.component.css'
 })
-export default class RegisterComponent  implements OnInit{
+export default class SingInComponent  implements OnInit{
   isCustomer: boolean | null = true;
   user: SocialUser = new SocialUser();
   loggedIn: boolean = false;
@@ -43,6 +43,7 @@ export default class RegisterComponent  implements OnInit{
   isBrowser: boolean= true;
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     //private socialService: SocialAuthService,
     //private _recaptcha: RecaptchaService,
     private platformService: PlatformService,
@@ -118,10 +119,11 @@ export default class RegisterComponent  implements OnInit{
     };
     this.authService.postRegister(user).subscribe({
       next: (response) => {
-        this.alertMessage = 'alert-success'
-        this.backendMessage = response.message; 
+        /*this.alertMessage = 'alert-success'
+        this.backendMessage = response.message; */
         this.isLoading = false; 
-        this.startAlertTimer();
+        this.router.navigate(['/login/verify-email']);
+        //this.startAlertTimer();
       },
       error: (error) => {
         console.log(error)

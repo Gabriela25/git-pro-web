@@ -23,17 +23,18 @@
                     </ul>
                 </div>
                 <div class="card-body">
-                    <form [formGroup]="proOneForm" (ngSubmit)="onSubmit()" autocomplete="off">
-                        @if(currentStep === 1){
-                        <div  class="fade-in">
-                            <div class="row mb-3">
+
+                    @if(currentStep === 1){
+                    <form [formGroup]="proPersonalForm" (ngSubmit)="onSubmit()" autocomplete="off">
+                        <div class="fade-in">
+                            <!--div class="row mb-3">
                                 <div class="col-12 col-md-6">
                                     <label for="firstName" class="form-label fw-bold">{{'signIn.firstName' | translate}}</label>
                                     <input type="text" class="form-control" placeholder="" id="firstName"
                                         formControlName="firstName" />
-                                    @if(proOneForm.get('firstName')?.invalid && (proOneForm.get('firstName')?.dirty || proOneForm.get('firstName')?.touched )){
+                                    @if(proPersonalForm.get('firstName')?.invalid && (proPersonalForm.get('firstName')?.dirty || proPersonalForm.get('firstName')?.touched )){
                                     <div class="alert alert-danger mt-2 mt-2">
-                                        @if(proOneForm.get('firstName')?.errors?.['required']){
+                                        @if(proPersonalForm.get('firstName')?.errors?.['required']){
                                         <span>
                                             {{'signIn.isFirstNameRequired' | translate}}
                                         </span>
@@ -45,9 +46,9 @@
                                     <label for="lastName" class="form-label fw-bold">{{'signIn.lastName' | translate}}</label>
                                     <input type="text" class="form-control" placeholder="" id="lastName" 
                                         formControlName="lastName" />
-                                    @if(proOneForm.get('lastName')?.invalid && (proOneForm.get('lastName')?.dirty || proOneForm.get('lastName')?.touched )){
+                                    @if(proPersonalForm.get('lastName')?.invalid && (proPersonalForm.get('lastName')?.dirty || proPersonalForm.get('lastName')?.touched )){
                                     <div class="alert alert-danger mt-2">
-                                        @if(proOneForm.get('lastName')?.errors?.['required']){
+                                        @if(proPersonalForm.get('lastName')?.errors?.['required']){
                                         <span>
                                             {{'signIn.isLastNameRequired' | translate}}
                                         </span>
@@ -58,7 +59,7 @@
             
             
             
-                            </div>
+                            </!--div>
                             <div class="form-group">
                                 <div class="mb-3">
                                     <label for="phone" class="form-label fw-bold">{{'pro.profile.phone' | translate}}</label>
@@ -83,94 +84,177 @@
                                     <input type="email" class="form-control" id="phone" formControlName="email" />
                                 </div>
                             </div>
-                            <div class="form-group">
+                            <div-- class="form-group">
                                 <div class="mb-3">
                                     <label for="address" class="form-label fw-bold">{{'pro.profile.address' | translate}}</label>
                                     <input type="text" class="form-control" id="adress" formControlName="address" />
                                 </div>
-                            </div>
-                            
+                            </div-->
                             <div class="form-group">
                                 <div class="mb-3">
-                                    <label for="zipCode" class="form-label fw-bold">{{'pro.profile.zipCode' | translate}}</label>
-                                    <input type="text" class="form-control" id="zipCode" formControlName="zipCode" />
+                                    <label for="category" class="form-label fw-bold">{{'pro.profile.categories' |
+                                        translate}}</label>
+                                    <select class="form-select" multiple aria-label="multiple select example"
+                                        id="category"  formControlName="categories">
+                                        @for (item of listCategories; track item) {
+                                            <option [value]="item.id" [selected]="proPersonalForm.get('categories')?.value && proPersonalForm.get('categories')?.value.includes(item.id)">{{item.name}}</option>
+                                        }
+
+                                    </select>
+                                    @if(proPersonalForm.get('categories')?.invalid && (proPersonalForm.get('categories')?.dirty || proPersonalForm.get('categories')?.touched )){
+                                        <div class="alert alert-danger mt-2">
+                                        @if(proPersonalForm.get('categories')?.errors?.['required']){
+                                            <span>
+                                                {{'pro.profile.isCategoryIdsRequired' | translate}}
+                                            </span>
+                                        }
+                                        
+                                    </div>
+                                    }
                                 </div>
                             </div>
                             <div class="form-group">
                                 <div class="mb-3">
-                                    <label for="imageProfile" class="form-label fw-bold">{{'pro.profile.imgProfile' | translate}}</label>
-                                    <input type="file" class="form-control" id="imageProfile"  />
+                                    <label for="zipcode" class="form-label fw-bold">{{'pro.profile.zipCode' |
+                                        translate}}</label>
+                                    <select class="form-select" aria-label="select" id="zipcode" formControlName="zipcode">
+                                        <option >Seleccione</option>
+                                        @for (item of listZipcode; track item) {
+                                           
+                                        <option [value]="item.id">{{item.name}}</option>
+                                        }
+
+                                    </select>
+                                    @if(proPersonalForm.get('zipcode')?.invalid && (proPersonalForm.get('zipcode')?.dirty || proPersonalForm.get('zipcode')?.touched )){
+                                        <div class="alert alert-danger mt-2">
+                                        @if(proPersonalForm.get('zipcode')?.errors?.['required']){
+                                            <span>
+                                                {{'pro.profile.isZipcodeRequired' | translate}}
+                                            </span>
+                                        }
+                                        
+                                    </div>
+                                    }
+                                </div>
+                            </div>
+                            <!--div class="form-group">
+                                <div class="mb-3">
+                                    <label for="imagePersonal" class="form-label fw-bold">{{'pro.profile.imgProfile' |
+                                        translate}}</label>
+                                    <input type="file" class="form-control" id="imagePersonal" />
+                                </div>
+                            </div-->
+                            <div class="form-group">
+                                <div class="mb-3">
+                                    <label for="address" class="form-label fw-bold">{{'pro.profile.address' |
+                                        translate}}</label>
+                                    <input type="text" class="form-control" id="address" formControlName="address"/>
+                                    @if(proPersonalForm.get('address')?.invalid && (proPersonalForm.get('address')?.dirty || proPersonalForm.get('address')?.touched )){
+                                        <div class="alert alert-danger mt-2">
+                                        @if(proPersonalForm.get('address')?.errors?.['required']){
+                                            <span>
+                                                {{'pro.profile.isAddressRequired' | translate}}
+                                            </span>
+                                        }
+                                        
+                                    </div>
+                                    }
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="mb-3">
+                                    <label for="imagePersonal" class="form-label fw-bold">{{'pro.profile.imgProfile' |
+                                        translate}}</label>
+                                    <input type="text" class="form-control" id="imagePersonal" formControlName="imagePersonal"/>
+                                    @if(proPersonalForm.get('imagePersonal')?.invalid && (proPersonalForm.get('imagePersonal')?.dirty || proPersonalForm.get('imagePersonal')?.touched )){
+                                        <div class="alert alert-danger mt-2">
+                                        @if(proPersonalForm.get('imagePersonal')?.errors?.['required']){
+                                            <span>
+                                                {{'pro.profile.isImagePersonalRequired' | translate}}
+                                            </span>
+                                        }
+                                        
+                                    </div>
+                                    }
                                 </div>
                             </div>
                             <div class="form-group">
                                 <div class="mb-3">
                                     <label for="introduction" class="form-label fw-bold">Introduction</label>
-                                    <textarea class="form-control" id="introduction" rows="3"></textarea>
-                                  </div>
+                                    <textarea class="form-control" id="introduction" rows="3" formControlName="introduction"></textarea>
+                                </div>
                             </div>
-                            
-                            
+
+
                             <div class="d-flex justify-content-between mt-3">
-                                <button type="button" class="btn btn-primary mt-3" (click)="nextStep()">Next</button>
+                                <button type="submit" class="btn btn-primary mt-3" [disabled]="!proPersonalForm.valid">Next</button>
                             </div>
                         </div>
-                       }
-                       @if(currentStep === 2){
-                        <div  class="fade-in">
-                            <div class="form-group">
-                                <div class="mb-3">
-                                    <label for="nameBusiness" class="form-label fw-bold">{{'pro.profile.nameBusiness' | translate}}</label>
-                                    <input type="text" class="form-control" id="nameBusiness"  />
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <div class="mb-3">
-                                    <label for="yearFounded" class="form-label fw-bold">{{'pro.profile.yearFounded' | translate}}</label>
-                                    <input type="text" class="form-control" id="yearFounded"  />
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <div class="mb-3">
-                                    <label for="numberEmployees" class="form-label fw-bold">{{'pro.profile.numberEmployees' | translate}}</label>
-                                    <input type="text" class="form-control" id="numberEmployees" />
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <div class="mb-3">
-                                    <label for="imageProfile" class="form-label fw-bold">{{'pro.profile.imgProfile' | translate}}</label>
-                                    <input type="file" class="form-control" id="imageProfile"  />
-                                </div>
-                            </div>
-                            <div class="d-flex justify-content-between mt-3">
-                                <button type="button" class="btn btn-outline-primary mt-3" (click)="previousStep()">Previous</button>
-                                <button type="button" class="btn btn-primary mt-3" (click)="nextStep()">Next</button>
+                    </form>
+                    }
+                    @if(currentStep === 2){
+                    <div class="fade-in">
+                        <div class="form-group">
+                            <div class="mb-3">
+                                <label for="nameBusiness" class="form-label fw-bold">{{'pro.profile.nameBusiness' |
+                                    translate}}</label>
+                                <input type="text" class="form-control" id="nameBusiness" />
                             </div>
                         </div>
+                        <div class="form-group">
+                            <div class="mb-3">
+                                <label for="yearFounded" class="form-label fw-bold">{{'pro.profile.yearFounded' |
+                                    translate}}</label>
+                                <input type="text" class="form-control" id="yearFounded" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="mb-3">
+                                <label for="numberEmployees" class="form-label fw-bold">{{'pro.profile.numberEmployees'
+                                    | translate}}</label>
+                                <input type="text" class="form-control" id="numberEmployees" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="mb-3">
+                                <label for="imagePersonal" class="form-label fw-bold">{{'pro.profile.imgProfile' |
+                                    translate}}</label>
+                                <input type="file" class="form-control" id="imagePersonal" />
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-between mt-3">
+                            <button type="button" class="btn btn-outline-primary mt-3"
+                                (click)="previousStep()">Previous</button>
+                            <button type="button" class="btn btn-primary mt-3" >Next</button>
+                        </div>
+                    </div>
                     }
                     @if(currentStep === 3){
-                        <div  class="fade-in">
-                           
-                           
-                            
-                            <div class="d-flex justify-content-between mt-3">
-                                <button type="button" class="btn btn-outline-primary mt-3" (click)="previousStep()">Previous</button>
-                                <button type="button" class="btn btn-primary mt-3" (click)="nextStep()">Next</button>
-                            </div>
+                    <div class="fade-in">
+
+
+
+                        <div class="d-flex justify-content-between mt-3">
+                            <button type="button" class="btn btn-outline-primary mt-3"
+                                (click)="previousStep()">Previous</button>
+                            <button type="button" type="submit" class="btn btn-primary mt-3" >Next</button>
                         </div>
+                    </div>
                     }
                     @if(currentStep === 4){
-                        <div  class="fade-in">
-                            <div class="form-group">
-                                <label for="satisfaction">Satisfaction</label>
-                                <input type="tel" id="phone" class="form-control" id="satisfaction" />
-                            </div>
-                            <div class="d-flex justify-content-between mt-3">
-                                <button type="button" class="btn btn-outline-primary mt-3 mr-3" (click)="previousStep()">Previous</button>
-                                <button type="submit" class="btn btn-success mt-3">Submit</button>
-                            </div>
+                    <div class="fade-in">
+                        <div class="form-group">
+                            <label for="satisfaction">Satisfaction</label>
+                            <input type="tel" id="phone" class="form-control" id="satisfaction" />
                         </div>
+                        <div class="d-flex justify-content-between mt-3">
+                            <button type="button" class="btn btn-outline-primary mt-3 mr-3"
+                                (click)="previousStep()">Previous</button>
+                            <button type="submit" class="btn btn-success mt-3">Submit</button>
+                        </div>
+                    </div>
                     }
-                    </form>
+
                 </div>
             </div>
         </div>

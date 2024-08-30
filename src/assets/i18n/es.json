@@ -1,8 +1,7 @@
 {
-  "signIn":{
-    "signIn": "Iniciar sesión",
-    "logIn": "Iniciar sesión",
-    "register": "Registro",
+  "login":{
+    "login": "Iniciar sesión",
+    "sign-in": "Registro",
     "firstName":"Nombre",
     "lastName": "Apellido",
     "phone":"Telefóno",
@@ -46,8 +45,7 @@
           "lastName": "Apellido",
           "email": "Correo electrónico",
           "phone":"Telefóno",
-         
-          "services":"Categoría",
+          "categories":"Categorías",
           "zipCode":"Código postal",
           "imgProfile":"Imagen de perfil",
           "nameBusiness":"Nombre del negocio",

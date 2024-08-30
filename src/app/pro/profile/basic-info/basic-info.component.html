@@ -1,0 +1,123 @@
+<app-header></app-header>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-4 col-img">
+        </div>
+        <div class="col-md-8 p-5">
+            <div class="card">
+                <div class="card-header">
+                    <ul class="nav nav-tabs card-header-tabs">
+                        <li class="nav-item">
+                            <a class="nav-link" [class.active]="currentStep === 1">Basic</a>
+                        </li>
+
+
+                    </ul>
+                </div>
+                <div class="card-body">
+
+                    @if(currentStep === 1){
+                    <form [formGroup]="basicInfoForm" (ngSubmit)="onSubmit()" autocomplete="off">
+                        <div class="fade-in">
+                            <div class="row mb-3">
+                                <div class="col-12 col-md-6">
+                                    <label for="firstName" class="form-label fw-bold">{{'pro.profile.firstName' |
+                                        translate}}</label>
+                                    <input type="text" class="form-control" placeholder="" id="firstName"
+                                        formControlName="firstname" value="{{user.firstname}}"/>
+                                    @if(basicInfoForm.get('firstname')?.invalid &&
+                                    (basicInfoForm.get('firstname')?.dirty || basicInfoForm.get('firstname')?.touched
+                                    )){
+                                    <div class="alert alert-danger mt-2 mt-2">
+                                        @if(basicInfoForm.get('firstname')?.errors?.['required']){
+                                        <span>
+                                            {{'login.isFirstNameRequired' | translate}}
+                                        </span>
+                                        }
+                                    </div>
+                                    }
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <label for="lastName" class="form-label fw-bold">{{'pro.profile.lastName' |
+                                        translate}}</label>
+                                    <input type="text" class="form-control" placeholder="" id="lastName"
+                                        formControlName="lastname" />
+                                    @if(basicInfoForm.get('lastname')?.invalid && (basicInfoForm.get('lastname')?.dirty
+                                    || basicInfoForm.get('lastname')?.touched )){
+                                    <div class="alert alert-danger mt-2">
+                                        @if(basicInfoForm.get('lastname')?.errors?.['required']){
+                                        <span>
+                                            {{'login.isLastNameRequired' | translate}}
+                                        </span>
+                                        }
+                                    </div>
+                                    }
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="mb-3">
+                                    <label for="phone" class="form-label fw-bold">{{'pro.profile.phone' |
+                                        translate}}</label>
+                                    <input type="tel" class="form-control" id="phone" formControlName="phone" 
+                                        mask="(000) 0000000" />
+                                        @if(basicInfoForm.get('phone')?.invalid &&
+                                        (basicInfoForm.get('phone')?.dirty || basicInfoForm.get('phone')?.touched
+                                        )){
+                                        <div class="alert alert-danger mt-2 mt-2">
+                                            @if(basicInfoForm.get('phone')?.errors?.['required']){
+                                            <span>
+                                                {{'login.isPhoneRequired' | translate}}
+                                            </span>
+                                            }
+                                            @else if(basicInfoForm.get('phone')?.errors?.['pattern']){
+                                                <span>
+                                                    {{'login.isPhoneMaximum10' | translate}}
+                                                </span>
+                                                }
+                                        </div>
+                                        }
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="mb-3">
+                                    <label for="email" class="form-label fw-bold">{{'pro.profile.email' |
+                                        translate}}</label>
+                                    <input type="email" class="form-control" id="email" formControlName="email"/>
+                                    @if(basicInfoForm.get('email')?.invalid &&
+                                        (basicInfoForm.get('email')?.dirty || basicInfoForm.get('email')?.touched
+                                        )){
+                                        <div class="alert alert-danger mt-2 mt-2">
+                                            @if(basicInfoForm.get('email')?.errors?.['required']){
+                                            <span>
+                                                {{'login.isEmailRequired' | translate}}
+                                            </span>
+                                            }
+                                        </div>
+                                        }
+                                </div>
+                            </div>
+
+                            <div class="d-flex justify-content-between mt-3">
+                                <button type="submit" class="btn btn-primary mt-3"
+                                    [disabled]="!basicInfoForm.valid">Save</button>
+                            </div>
+                        </div>
+                    </form>
+                    }
+                    @if(isLoading){       
+                        <div class="d-flex justify-content-center mt-3">
+                            <div class="spinner-border" role="status"> 
+                            </div>
+                        </div>
+                    }
+                    @if(backendMessage){    
+                    <div  class="alert {{alertMessage}} mt-3">
+                        {{ backendMessage }}
+                      </div>
+                    } 
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,38 +1,39 @@
-<div class="container-fluid bg-white pt-1">
+<div class="container-fluid bg-secondary pt-1">
   <nav class="navbar navbar-expand-lg m-1">
     <div class="container-fluid div-header">
       <a class="navbar-brand" routerLink="/">
-        <img src="assets/logo2.png" width="100" height="50" class="d-inline-block align-top" alt="">
+        <img src="assets/logo.jpg" width="50" height="50" class="d-inline-block align-top" alt="">
       </a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
         aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav ms-auto mb-2 mb-lg-0 menu">
-          <!--li class="nav-item ml-3 d-none d-lg-block">
-            <select class="form-select" #languaje (change)="switchLanguage(languaje.value)" id="floatingSelectGrid">
-              <option value="es">Español</option>
-              <option value="en">English</option>
-            </select>
-          </li-->
-          <li class="nav-item d-none d-lg-block">
-            <button type="button" class="btn btn-color-primary"  routerLink="/sign-in/register" [queryParams]="{ isCustomer: false }">Join as a pro</button></li>
-            <button type="button" class="btn btn-color-primary d-none d-lg-block" routerLink="/sign-in">Sign in</button>
-          <!--li class="nav-item d-none d-lg-block"><span><b>Sign in</b></span>
-            <ul class="submenu">
-              <li><a routerLink="/sign-in"><b>Sign in</b></a></li>
-              <li><a routerLink="/sign-in/register"><b>Sign up</b></a></li>
-            </ul>
-          </!--li-->
+        <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            @if(isAuthenticated){
+              <div class="dropdown text-end">
+                <a href="#" class="d-block link-body-emphasis text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                  <img src="../../../assets/avatar_profile.png" alt="User Avatar" width="32" height="32" class="rounded-circle">
+                </a>
+                <ul class="dropdown-menu text-small">
+                  <li><a class="dropdown-item" href="#"><i class="bi bi-person-circle"></i> {{ nameUser }}</a></li>
+                  <li><a class="dropdown-item" href="#"><i class="bi bi-envelope"></i> {{ emailUser }}</a></li>
+                  <li><a class="dropdown-item" routerLink="/pro/profile/basic"><i class="bi bi-person"></i> Profile</a></li>
+                  <li><a class="dropdown-item" routerLink="/pro/profile"><i class="bi bi-briefcase"></i> Join in pro</a></li>
+                  <li><hr class="dropdown-divider"></li>
+                  <li><a class="dropdown-item" href="#" (click)="signOut()"><i class="bi bi-box-arrow-right"></i> Sign out</a></li>
+                </ul>
+              </div>
+            } @else {
+              <!-- Contenedor para centrar y ajustar los botones -->
+              <div class="d-flex gap-2 justify-content-end">
+                <button type="button" class="btn btn-primary" routerLink="/login/register" [queryParams]="{ isCustomer: false }">Sign&nbsp;in</button>
+                <button type="button" class="btn btn-primary" routerLink="/login">Login</button>
+              </div>
+            }
+          </li>
         </ul>
-        <!-- Mobile version -->
-        <div class="d-lg-none w-100 mt-2">
-          <div class="d-flex justify-content-between">
-            <button type="button" class="btn btn-color-primary w-48">Join as a pro</button>
-            <button type="button" routerLink="/sign-in" class="btn btn-outline-success w-48">Sign in</button>
-          </div>
-        </div>
       </div>
     </div>
   </nav>

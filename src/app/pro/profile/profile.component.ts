@@ -11,6 +11,12 @@ import { CategoryService } from '../../services/category.service';
 import { ModalComponent } from '../../shared/modal/modal.component';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { NgxMaskDirective } from 'ngx-mask';
+import { ZipcodeService } from '../../services/zipcode.service';
+import { Category } from '../../interface/category.interface';
+import { Zipcode } from '../../interface/zipcode.interface';
+import { User } from '../../interface/user.interface';
+import { Profile } from '../../interface/profile.interface';
+import { UserService } from '../../services/user.service';
 
 @Component({
   selector: 'app-profile',
@@ -34,118 +40,225 @@ export default class ProfileComponent implements OnInit {
   @ViewChild('contentTemplate') contentTemplate!: TemplateRef<any>;
   @ViewChild('modalContainer', { static: false }) modalContainer!: ElementRef;
   content: SafeHtml | null = null;
-  firtsName: String = "Gabriela"
-  email: String = "gabrielabarreto25@gmail.com"
-  value : boolean =false;
+
+  value: boolean = false;
   licenses: boolean = false;
   selectedFile: File | null = null;
-  filePreview: string | ArrayBuffer | null | undefined= null;
-  listServices : Array<any>=[]
-  listServicesPro : Array<any>=[]
- 
-    proOneForm: FormGroup;
-    currentStep: number = 1;
-  
-    constructor(
-      private fb: FormBuilder, 
-      private category: CategoryService,
-      private sanitizer: DomSanitizer,
-      private renderer: Renderer2,
-      private el: ElementRef
-    ) {
-      this.proOneForm = this.fb.group({
-        firstName: ['', Validators.required],
-        lastName: ['', Validators.required],
-        email: ['', Validators.required],
-       
-        category: ['', Validators.required],
-        zipCode: ['', Validators.required],
-        //nameBusiness: ['', Validators.required],
-        phone: ['', [Validators.required, Validators.pattern(/^[0-9]{10}$/)]],
-        //yearFounded: ['', Validators.required],
-        //numberEmployees: ['', Validators.required],
-        address: ['', Validators.required]
-      });
-    }
-  
-    ngOnInit(): void {
+  filePreview: string | ArrayBuffer | null | undefined = null;
+  listCategories: Array<Category> = []
+  listServicesPro: Array<any> = []
+  listZipcode: Array<Zipcode> = []
+  isLoading = false;
+  backendMessage = '';
+  alertMessage = '';
+  alertTimeout: any;
+  token: string = '';
+  proPersonalForm: FormGroup;
+  currentStep: number = 1;
+  user: User = {
+    id: '',
+    firstname: '',
+    lastname: '',
+    email: '',
+    phone: '',
+    profile: {
+      id: '',
+      categories: [],
+      zipcodeId: '',
+      address: '',
+      imagePersonal: '',
+      introduction: '',
 
-      this.listServices = this.category.getCategory();
+      isBusiness: false
     }
-  
-    nextStep() {
-      console.log(this.proOneForm.get('category')?.valid )
-      console.log(this.proOneForm.get('zipCode')?.valid )
-      console.log(this.proOneForm.get('phone')?.valid )
-      this.currentStep++;
-      /*if (this.currentStep === 1 && this.proOneForm.get('category')?.valid && this.proOneForm.get('zipCode')?.valid &&
-       this.proOneForm.get('phone')?.valid ) {
-        this.currentStep++;
-      } else if (this.currentStep === 2 &&  this.proOneForm.get('address')?.valid) {
-        this.currentStep++;
-      }*/
-    }
-  
-    previousStep() {
-      if (this.currentStep > 1) {
-        this.currentStep--;
-      }
-    }
-  
-    goToStep(step: number) {
-      if (step < this.currentStep || (step === 1 && this.proOneForm.get('category')?.valid  && this.proOneForm.get('zipCode')?.valid &&
-      this.proOneForm.get('phone')?.valid ) || 
-          (step === 2 &&  this.proOneForm.get('address')?.valid)) {
-        this.currentStep = step;
-      }
-    }
-  
-    onSubmit() {
-      if (this.proOneForm.valid) {
-        console.log('Form Submitted', this.proOneForm.value);
-      }
-    }
-    loadDynamicContent() {
-      let optionsHtml = '';
-      // Ejemplo de generación dinámica de opciones
-     
-      this.listServices.forEach(service => {
-        optionsHtml += `<option value="${service}">${service}</option>`;
-      });
-  
-      // Sanitizar el HTML generado dinámicamente para seguridad
-      const content = this.sanitizer.bypassSecurityTrustHtml(`
-        <p>This is dynamic content rendered inside the modal.</p>
-        <select class="form-control" (change)="onSelectChange($event)">
-          ${optionsHtml}
-        </select>
-      `);
-    }
-
-  openModal() {
-    //this.modal.title = 'Select an Option';
-    let optionsHtml = '';
-    this.listServices.forEach(service => {
-      optionsHtml += `<option value="${service.name}">${service.name}</option>`;
-    });
-    const content = `
-      <p>This is dynamic content rendered inside the modal.</p>
-        <select class="form-control" (change)="onSelectChange2($event)">
-          ${optionsHtml}
-        </select>`;
-   
-    this.modal.setContent(content);
-   
-    
-    
-    this.modal.open();
   }
-  
-  onSelectChange(event:any) {
-    console.log("desde el padre")
-    
-      console.log('Selected value:', (event.target as HTMLSelectElement).value);
+
+  constructor(
+    private fb: FormBuilder,
+
+    private sanitizer: DomSanitizer,
+    private renderer: Renderer2,
+    private el: ElementRef,
+    private categoryService: CategoryService,
+    private zipCodeService: ZipcodeService,
+    private userService: UserService
+  ) {
+    this.proPersonalForm = this.fb.group({
+      /*firstName: ['', Validators.required],
+      lastName: ['', Validators.required],
+      email: ['', Validators.required],*/
+
+      categories: [[], Validators.required],
+      zipcode: ['', Validators.required],
+      address: ['', Validators.required],
+      imagePersonal: ['', Validators.required],
+      introduction: ['']
+      //nameBusiness: ['', Validators.required],
+      //phone: ['', [Validators.required, Validators.pattern(/^[0-9]{10}$/)]],
+      //yearFounded: ['', Validators.required],
+      //numberEmployees: ['', Validators.required],
+
+
+    });
+  }
+
+  ngOnInit(): void {
+
+    this.categoryService.getAllCategories().subscribe({
+      next: (response) => {
+        this.listCategories = response.categories;
+
+      },
+      error: (error) => {
+        console.log(error);
+      }
+    });
+    this.zipCodeService.getAllZipcodes().subscribe({
+      next: (response) => {
+        this.listZipcode = response.zipcodes;
+
+      },
+      error: (error) => {
+        console.log(error);
+      }
+    });
+    this.userService.getMe().subscribe({
+      next: (response) => {
+      
+        if (this.user.profile != null) {
+          this.user.profile = response.user.profile!;
+
+          const categoryIds = response.user.profile?.categories?.map((category: any) => category.id) || [];
+
+          this.proPersonalForm.patchValue({
+            id: this.user.profile.id,
+            categories: categoryIds || [],
+            zipcode: this.user.profile.zipcodeId,
+            address: this.user.profile.address,
+            imagePersonal: this.user.profile.imagePersonal,
+            introduction: this.user.profile.introduction
+          });
+        }
+      },
+      error: (error) => {
+        console.log(error);
+      }
+    });
+  }
+
+  /*nextStep() {
+    const formData = this.proPersonalForm.value;
+    console.log(formData)
+    console.log(this.proPersonalForm.get('category')?.valid )
+    console.log(this.proPersonalForm.get('zipCode')?.valid )
+    console.log(this.proPersonalForm.get('phone')?.valid )
+    this.currentStep++;
+    /*if (this.currentStep === 1 && this.proPersonalForm.get('category')?.valid && this.proPersonalForm.get('zipCode')?.valid &&
+     this.proPersonalForm.get('phone')?.valid ) {
+      this.currentStep++;
+    } else if (this.currentStep === 2 &&  this.proPersonalForm.get('address')?.valid) {
+      this.currentStep++;
     }
-     //Perform any additional actions with the selected value
-  
+  }*/
+
+  previousStep() {
+    if (this.currentStep > 1) {
+      this.currentStep--;
+    }
+  }
+
+  goToStep(step: number) {
+    if (step < this.currentStep || (step === 1 && this.proPersonalForm.get('category')?.valid && this.proPersonalForm.get('zipCode')?.valid &&
+      this.proPersonalForm.get('phone')?.valid) ||
+      (step === 2 && this.proPersonalForm.get('address')?.valid)) {
+      this.currentStep = step;
+    }
+  }
+
+  onSubmit() {
+    this.isLoading = true;
+    const formData = this.proPersonalForm.value;
+    //this.currentStep++;
+    if (this.proPersonalForm.valid) {
+
+      const profile: Profile = {
+
+        categories: formData.categories || [],
+        zipcodeId: formData.zipcode || '',
+        address: formData.address || '',
+        imagePersonal: formData.imagePersonal || '',
+        introduction: formData.introduction || '',
+        isBusiness: false
+      };
+
+      if (!this.user.profile) {
+        
+        this.userService.becomeToPro(profile).subscribe({
+          next: (response) => {
+            this.alertMessage = 'alert-success'
+            this.backendMessage = response.message;
+            this.isLoading = false;
+            this.startAlertTimer();
+
+          },
+          error: (error) => {
+            console.log(error)
+            this.alertMessage = 'alert-danger'
+            this.backendMessage = error.error.message;
+            this.isLoading = false;
+            this.startAlertTimer();
+          }
+        });
+      }
+      else {
+
+        const user: User = {
+          id: '',
+          firstname: '',
+          lastname: '',
+          email: '',
+          phone: '',
+          profile: {
+            categories: formData.categories || [],
+            zipcodeId: formData.zipcode || '',
+            address: formData.address || '',
+            imagePersonal: formData.imagePersonal || '',
+            introduction: formData.introduction || '',
+            isBusiness: false
+          }
+        };
+
+        this.userService.putMe(user).subscribe({
+          next: (response) => {
+            
+            this.alertMessage = 'alert-success'
+            //this.backendMessage = response.message; 
+            this.isLoading = false; 
+            //this.startAlertTimer();
+
+          },
+          error: (error) => {
+            console.log('entre en el error')
+            console.log(error)
+            this.alertMessage = 'alert-danger'
+            this.backendMessage = error.error.message;
+            this.isLoading = false;
+            this.startAlertTimer();
+          }
+        });
+      }
+
+    }
+  }
+  startAlertTimer() {
+    if (this.alertTimeout) {
+      clearTimeout(this.alertTimeout);
+    }
+    this.alertTimeout = setTimeout(() => {
+      this.backendMessage = '';
+    }, 3000);
+  }
+
 }
+
+

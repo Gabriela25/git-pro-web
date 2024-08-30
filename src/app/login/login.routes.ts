@@ -7,11 +7,11 @@ export const  routes: Routes = [
 
     {
         path:'',
-        loadComponent:() => import('./sign-in.component'),
+        loadComponent:() => import('./login.component'),
     },
     {
         path:'register',
-        loadComponent:() => import('./register/register.component')
+        loadComponent:() => import('./sign-in/sign-in.component')
     },
     {
         path:'password-recovery',
@@ -21,7 +21,8 @@ export const  routes: Routes = [
     {
         path:'password',
         loadComponent:() => import('./password/password.component')
-    }
+    },
+    { path: 'verify-email', loadComponent:() => import('./verify-email/verify-email.component')}
 
 ]
 export default routes;

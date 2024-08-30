@@ -20,7 +20,15 @@ export class CategoriesComponent implements OnInit{
    constructor(
     private category: CategoryService,){
    }
-   ngOnInit(){
-    this.listCategories = this.category.getCategory();
-   }
+   ngOnInit(): void {
+    this.category.getAllCategories().subscribe({
+      next: (response) => {
+       this.listCategories = response.categories;
+      },
+      error: (error) => {  
+       
+      }
+    });
+    //this.listServices = this.category.getCategory();
+  }
 }

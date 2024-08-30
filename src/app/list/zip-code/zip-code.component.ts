@@ -29,7 +29,7 @@ export class ZipCodeComponent {
   ){
 
   }
-  ngOnInit(): void {
+  /*ngOnInit(): void {
     // Obtener el ID del servicio desde la URL
     this.route.params.subscribe(params => {
       console.log(params)
@@ -39,7 +39,7 @@ export class ZipCodeComponent {
        console.log(category)
       
     })
-  }
+  }*/
 
   
   onSubmit() {

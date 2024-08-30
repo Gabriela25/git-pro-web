@@ -1,13 +1,14 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { HeaderComponent } from '../shared/header/header.component';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { Router, RouterLink } from '@angular/router';
 import { User } from '../interface/user.interface';
 import { AuthService } from '../services/auth.service';
-
+import { Location } from '@angular/common';
+import { Auth } from '../interface/auth.interface';
 @Component({
-  selector: 'app-sign-in',
+  selector: 'app-login',
   standalone: true,
   imports: [
     ReactiveFormsModule,
@@ -16,8 +17,8 @@ import { AuthService } from '../services/auth.service';
     HeaderComponent,
     
   ],
-  templateUrl: './sign-in.component.html',
-  styleUrl: './sign-in.component.css'
+  templateUrl: './login.component.html',
+  styleUrl: './login.component.css'
 })
 export default class SingInComponent {
  
@@ -25,9 +26,12 @@ export default class SingInComponent {
   backendMessage = '';
   alertMessage = '';
   alertTimeout: any;
+  token: string= '';
+  
   constructor(
     public router: Router,
-    private authService:  AuthService
+    private authService:  AuthService,
+    private location: Location
   ){
     
   }
@@ -42,19 +46,30 @@ export default class SingInComponent {
       this.isLoading = true; 
       const formData = this.loginForm.value;
       console.log(formData)
-      const user: User = {
-       
-        email: formData.email || '',
-        
+      const auth: Auth = {
+        email: formData.email || '',   
         password: formData.password || '',
        
       };
-      this.authService.postLogin(user).subscribe({
+      this.authService.postLogin(auth).subscribe({
         next: (response) => {
-          this.alertMessage = 'alert-success'
-          this.backendMessage = response.message; 
+          /*this.alertMessage = 'alert-success'
+          this.backendMessage = response.message; */
+          console.log(response)
           this.isLoading = false; 
-          this.startAlertTimer();
+          this.token = response.token;
+          //this.authService.eventUser.emit({data:`${response.user.firstname} ${response.user.lastname}`});
+          this.authService.updateUserName({name:`${response.user.firstname} ${response.user.lastname}`,
+                                           email: `${response.user.email}`,
+          });
+        
+          console.log('esperando token')
+          console.log(this.token )
+          localStorage.setItem('token', this.token);
+          this.router.navigate(['/']);
+          
+          //this.startAlertTimer();
+          
         },
         error: (error) => {  
           this.alertMessage = 'alert-danger'
