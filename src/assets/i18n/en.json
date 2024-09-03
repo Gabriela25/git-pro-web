@@ -56,6 +56,7 @@
            
             "webSite": "Web site",
             "address": "Address",
+            "minimum10Characters": "Minimum 10 characters",
             "socialMediaLink":"Social media link",
             "businessFaqs":"Business FAQs",
             "yourIntroduction":"Your introduction",

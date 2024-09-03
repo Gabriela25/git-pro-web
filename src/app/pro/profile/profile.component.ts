@@ -88,11 +88,11 @@ export default class ProfileComponent implements OnInit {
       lastName: ['', Validators.required],
       email: ['', Validators.required],*/
 
-      categories: [[], Validators.required],
-      zipcode: ['', Validators.required],
-      address: ['', Validators.required],
-      imagePersonal: ['', Validators.required],
-      introduction: ['']
+      categories: new FormControl([], [Validators.required]),
+      zipcode: new FormControl('', [Validators.required]),
+      address:  new FormControl('', [Validators.required,Validators.minLength(10)]),
+      imagePersonal: new FormControl('', [Validators.required]),
+      introduction:  new FormControl([''])
       //nameBusiness: ['', Validators.required],
       //phone: ['', [Validators.required, Validators.pattern(/^[0-9]{10}$/)]],
       //yearFounded: ['', Validators.required],
@@ -229,17 +229,13 @@ export default class ProfileComponent implements OnInit {
         };
 
         this.userService.putMe(user).subscribe({
-          next: (response) => {
-            
+          next: (response) => {  
             this.alertMessage = 'alert-success'
-            //this.backendMessage = response.message; 
+            this.backendMessage = 'Profile updated success'; 
             this.isLoading = false; 
-            //this.startAlertTimer();
-
+            this.startAlertTimer();
           },
           error: (error) => {
-            console.log('entre en el error')
-            console.log(error)
             this.alertMessage = 'alert-danger'
             this.backendMessage = error.error.message;
             this.isLoading = false;

@@ -156,7 +156,11 @@
                                                 {{'pro.profile.isAddressRequired' | translate}}
                                             </span>
                                         }
-                                        
+                                        @else if(proPersonalForm.get('address')?.errors?.['minlength']){
+                                            <span>
+                                                {{'pro.profile.minimum10Characters' | translate}}
+                                            </span>
+                                        }
                                     </div>
                                     }
                                 </div>
@@ -190,6 +194,17 @@
                                 <button type="submit" class="btn btn-primary mt-3" [disabled]="!proPersonalForm.valid">Next</button>
                             </div>
                         </div>
+                        @if(isLoading){       
+                            <div class="d-flex justify-content-center mt-3">
+                                <div class="spinner-border" role="status"> 
+                                </div>
+                            </div>
+                        }
+                        @if(backendMessage){    
+                        <div  class="alert {{alertMessage}} mt-3">
+                            {{ backendMessage }}
+                          </div>
+                        } 
                     </form>
                     }
                     @if(currentStep === 2){
