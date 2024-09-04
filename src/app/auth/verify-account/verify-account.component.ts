@@ -27,7 +27,7 @@ export class VerifyAccountComponent implements OnInit {
 
     this.auth.getVerifyAccount().subscribe({
       next: (response) => {
-       //this.listCategories = response.categories;
+       
        console.log(response)
        this.messageAccount = 'Your account has been successfully verified';
       },

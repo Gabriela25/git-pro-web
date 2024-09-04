@@ -40,7 +40,8 @@
     "config":{
         "save":"Save",
         "cancel":"Cancel",
-        "add":"Add"
+        "add":"Add",
+        "send":"Send"
     },
     "pro":{
         "profile":{

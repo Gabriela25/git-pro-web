@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SingInComponent } from './login.component';
+import { TextDisplayComponent } from './text-display.component';
 
-describe('SingInComponent', () => {
-  let component: SingInComponent;
-  let fixture: ComponentFixture<SingInComponent>;
+describe('TextDisplayComponent', () => {
+  let component: TextDisplayComponent;
+  let fixture: ComponentFixture<TextDisplayComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [SingInComponent]
+      imports: [TextDisplayComponent]
     })
     .compileComponents();
     
-    fixture = TestBed.createComponent(SingInComponent);
+    fixture = TestBed.createComponent(TextDisplayComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

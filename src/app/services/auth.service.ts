@@ -25,8 +25,11 @@ export class AuthService {
     
     //private afAuth: AngularFireAuth  
   ) {
+    
     if (this.isBrowser()) {
       this.token = localStorage.getItem('token') || '';
+      console.log('verificando en el navegador:')
+      console.log(this.token)
       const storedUser = localStorage.getItem('user');
       if (storedUser) {
         this._userSubject.next(JSON.parse(storedUser));
@@ -63,7 +66,8 @@ export class AuthService {
     };
     return this._http.post(`${this.apiUrlBackend}/auth/login`, body, options);
   }
-
+   
+  
   getVerifyAccount(){
     
     const options = {
@@ -73,6 +77,26 @@ export class AuthService {
       }
     };
     return this._http.get(`${this.apiUrlBackend}/auth/verify`,  options);
+  }
+  resetPassword(body: any): Observable<any> {
+    const options = {
+      headers: {
+        'Content-Type': 'application/json',  
+      }
+    };
+    return this._http.post(`${this.apiUrlBackend}/auth/reset-password`, body, options);
+  }
+  postNewPassword(body: any): Observable<any> {
+    
+    const options = {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${this.token}`
+      }
+    };
+   
+
+    return this._http.post(`${this.apiUrlBackend}/auth/new-password`, body, options);
   }
   isAuthenticated() {
     if (typeof window !== 'undefined') {

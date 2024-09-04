@@ -8,7 +8,7 @@ import { AuthService } from '../services/auth.service';
 import { Location } from '@angular/common';
 import { Auth } from '../interface/auth.interface';
 @Component({
-  selector: 'app-login',
+  selector: 'app-auth',
   standalone: true,
   imports: [
     ReactiveFormsModule,
@@ -17,10 +17,10 @@ import { Auth } from '../interface/auth.interface';
     HeaderComponent,
     
   ],
-  templateUrl: './login.component.html',
-  styleUrl: './login.component.css'
+  templateUrl: './auth.component.html',
+  styleUrl: './auth.component.css'
 })
-export default class SingInComponent {
+export default class AuthComponent {
  
   isLoading = false;
   backendMessage = '';
@@ -45,7 +45,7 @@ export default class SingInComponent {
       // TODO: Use EventEmitter with form value
       this.isLoading = true; 
       const formData = this.loginForm.value;
-      console.log(formData)
+      
       const auth: Auth = {
         email: formData.email || '',   
         password: formData.password || '',
