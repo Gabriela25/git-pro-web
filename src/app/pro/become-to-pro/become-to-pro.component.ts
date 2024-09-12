@@ -29,7 +29,6 @@ import { UserService } from '../../services/user.service';
     HeaderComponent,
     SidebarComponent,
     AutocompleteComponent,
-    LicensesComponent,
     ModalComponent,
     NgxMaskDirective
   ],
