@@ -7,6 +7,7 @@ import { User } from '../interface/user.interface';
 import { AuthService } from '../services/auth.service';
 import { Location } from '@angular/common';
 import { Auth } from '../interface/auth.interface';
+import { UserService } from '../services/user.service';
 @Component({
   selector: 'app-auth',
   standalone: true,
@@ -31,7 +32,8 @@ export default class AuthComponent {
   constructor(
     public router: Router,
     private authService:  AuthService,
-    private location: Location
+    private location: Location,
+    private userService: UserService
   ){
     
   }
@@ -55,21 +57,25 @@ export default class AuthComponent {
         next: (response) => {
           /*this.alertMessage = 'alert-success'
           this.backendMessage = response.message; */
-          console.log(response)
+          
           this.isLoading = false; 
           this.token = response.token;
-          //this.authService.eventUser.emit({data:`${response.user.firstname} ${response.user.lastname}`});
-          this.authService.updateUserName({name:`${response.user.firstname} ${response.user.lastname}`,
-                                           email: `${response.user.email}`,
-          });
-        
-          console.log('esperando token')
-          console.log(this.token )
           localStorage.setItem('token', this.token);
-          this.router.navigate(['/']);
+          this.authService.updateUserName('name', `${response.user.firstname} ${response.user.lastname}`);
+          this.authService.updateUserName('email', `${response.user.email}`,);
+          this.userService.getMe().subscribe({
+            next: (response) => {
+              if (response.user.profile?.imagePersonal != null) {  
+                this.authService.updateUserName('imagePersonal', `${response.user.profile.imagePersonal}` );
+              }
+            },
+            error: (error) => {
+              console.log(error);
+            }
+        });
           
-          //this.startAlertTimer();
-          
+        this.router.navigate(['/']);
+
         },
         error: (error) => {  
           this.alertMessage = 'alert-danger'

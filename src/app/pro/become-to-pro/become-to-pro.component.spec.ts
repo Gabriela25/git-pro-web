@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ProfileComponent } from './profile.component';
+import BecomeToProComponent from './become-to-pro.component';
 
-describe('ProfileComponent', () => {
-  let component: ProfileComponent;
-  let fixture: ComponentFixture<ProfileComponent>;
+describe('BecomeToProComponent', () => {
+  let component: BecomeToProComponent;
+  let fixture: ComponentFixture<BecomeToProComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ProfileComponent]
+      imports: [BecomeToProComponent]
     })
     .compileComponents();
     
-    fixture = TestBed.createComponent(ProfileComponent);
+    fixture = TestBed.createComponent(BecomeToProComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

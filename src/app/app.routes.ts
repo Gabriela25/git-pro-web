@@ -3,7 +3,7 @@ import { HomeComponent } from './home/home.component';
 import { SidebarComponent } from './sidebar/sidebar.component';
 import { ProComponent } from './pro/pro.component';
 import { LeadsComponent } from './pro/leads/leads.component';
-import AddressComponent from './pro/profile/address/address.component';
+
 import { PhoneComponent } from './phone/phone.component';
 import { CategoriesComponent } from './pro/categories/categories.component';
 import { VerifyAccountComponent } from './auth/verify-account/verify-account.component';
@@ -29,8 +29,8 @@ export const routes: Routes = [
         loadChildren:()=>import('./customer/profile/profile.routes')
     },
     {
-        path:'pro/profile',
-        loadChildren:()=>import('./pro/profile/profile.routes')
+        path:'pro/become-to-pro',
+        loadChildren:()=>import('./pro/become-to-pro/become-to-pro.routes')
     },
     {
         path:'pro/categories',
@@ -44,10 +44,7 @@ export const routes: Routes = [
         path:'pro/leads',
         component:LeadsComponent
     },
-    {
-        path:'pro/direction',
-        component:AddressComponent
-    },
+    
     {
         path:'list',
         loadChildren:()=>import('./list/list.routes')

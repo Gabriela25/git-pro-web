@@ -25,7 +25,10 @@
         "maximum15Characters":"Maximum 15 characters",
         "atLeastOneUppercaseLetter":"At least one uppercase letter",
         "oneLowercaseLetterAndOneNumber":"One lowercase letter and one number",
-        "thePasswordsDoNotMatch":"The passwords do not match"
+        "thePasswordsDoNotMatch":"The passwords do not match",
+        "isNameBusinessRequired": "Business name is required",
+        "isYearFoundedRequired": "The year of foundation is required",
+        "isNumberOfemployeesRequired": "The number of employees is required"
         
     },
     "header":{
@@ -41,7 +44,8 @@
         "save":"Save",
         "cancel":"Cancel",
         "add":"Add",
-        "send":"Send"
+        "send":"Send",
+        "next":"Next"
     },
     "pro":{
         "profile":{

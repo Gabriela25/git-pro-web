@@ -14,7 +14,7 @@ export class GeocodingService {
 
   getAddressSev(latitud: number, longitud: number): Observable<any> {
     const url = `${this.apiUrl}&latlng=${latitud},${longitud}`;
-    console.log(url)
+
     
     return this.http.get<any>(url);
   }

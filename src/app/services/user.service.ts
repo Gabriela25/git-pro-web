@@ -22,17 +22,17 @@ export class UserService {
 
   ) {
     
-    if (this.isBrowser()) {
-      
+     console.log('en el contrusctor')
+       
       this.token = localStorage.getItem('token') || '';
-      console.log(this.token )
+     
       this.options = {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${this.token}`
         }
       };
-    }
+  
     
   }
   
@@ -41,12 +41,29 @@ export class UserService {
     return this._http.post(`${this.apiUrlBackend}/users/become-to-pro`, body, this.options);
   }
   getMe(): Observable<{user:User}>{
-    
+    //pendiente revision
+    this.token = localStorage.getItem('token') || '';
+     
+      this.options = {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${this.token}`
+        }
+      };
     return this._http.get<{user:User}>(`${this.apiUrlBackend}/users/me`, this.options);
   }
   putMe(body:User): Observable<{user:User}>{
-    console.log(body)
+   
     return this._http.put<{user:User}>(`${this.apiUrlBackend}/users/me`,body, this.options);
+  }
+  postUploads(fileData: FormData,  field: string): Observable<{user:User}>{
+    
+    const uploadOptions = {
+      headers: {
+        'Authorization': `Bearer ${this.token}`
+      }
+    };
+    return this._http.post<{user:User}>(`${this.apiUrlBackend}/pro/uploads/${field}`,fileData, uploadOptions);
   }
   isBrowser(): boolean {
     return typeof window !== 'undefined' && typeof localStorage !== 'undefined';

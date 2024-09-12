@@ -122,7 +122,7 @@ export default class SingInComponent  implements OnInit{
         /*this.alertMessage = 'alert-success'
         this.backendMessage = response.message; */
         this.isLoading = false; 
-        this.router.navigate(['/login/verify-email']);
+        this.router.navigate(['/auth/verify-email']);
         //this.startAlertTimer();
       },
       error: (error) => {

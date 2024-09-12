@@ -25,11 +25,12 @@ export class AuthService {
     
     //private afAuth: AngularFireAuth  
   ) {
-    
+    console.log('en la autenticacion' )
+    this.token = localStorage.getItem('token') || '';
+    console.log(this.token )
     if (this.isBrowser()) {
       this.token = localStorage.getItem('token') || '';
-      console.log('verificando en el navegador:')
-      console.log(this.token)
+      console.log(this.token )
       const storedUser = localStorage.getItem('user');
       if (storedUser) {
         this._userSubject.next(JSON.parse(storedUser));
@@ -113,9 +114,12 @@ export class AuthService {
       return true;
     }
   }
-  updateUserName(dataUser: any): void {
-    localStorage.setItem('user', JSON.stringify(dataUser));
-    this._userSubject.next(dataUser);
+  updateUserName(field: string, value: any): void {
+    
+    const currentUser = JSON.parse(localStorage.getItem('user') || '{}');
+    currentUser[field] = value;
+    localStorage.setItem('user', JSON.stringify(currentUser));
+    this._userSubject.next(currentUser);
   }
   isBrowser(): boolean {
     return typeof window !== 'undefined' && typeof localStorage !== 'undefined';

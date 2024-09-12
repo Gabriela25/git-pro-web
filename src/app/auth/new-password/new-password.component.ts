@@ -1,4 +1,4 @@
-import { Component, Inject, makeStateKey, PLATFORM_ID, TransferState } from '@angular/core';
+import { afterNextRender, afterRender, Component, Inject, makeStateKey, PLATFORM_ID, TransferState } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
@@ -35,27 +35,13 @@ export class NewPasswordComponent {
     
   }
   ngOnInit(): void {
-    const TOKEN_KEY = makeStateKey<string>('token');
-    console.log('adsasdas',isPlatformBrowser(this.platformId))
-    console.log(isPlatformBrowser(this.platformId))
-    if (isPlatformBrowser(this.platformId)) {
 
-      this.tokenPassword = this.transferState.get(TOKEN_KEY, null); 
-      
       if (this.tokenPassword) {
         this.tokenPassword = this.route.snapshot.paramMap.get('id');
         localStorage.setItem('token', this.tokenPassword || '');
-        console.log(console.log('Token en el cliente:'))
+
         
-      }
-      
-    } else {
-
-      this.tokenPassword = this.route.snapshot.paramMap.get('id');
-      this.transferState.set(TOKEN_KEY, this.tokenPassword || ''); 
-      console.log('Token en el servidor:', this.tokenPassword);
-
-    }
+      }     
   }
   newPasswordForm = new FormGroup({
     
@@ -93,7 +79,7 @@ export class NewPasswordComponent {
       this.isLoading = true; 
       const formData = this.newPasswordForm.value;
       if(this.newPasswordForm.valid){
-      console.log(formData)
+      
       const password: any = {
        
         password: formData.newPassword || '',

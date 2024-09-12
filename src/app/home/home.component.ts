@@ -6,6 +6,7 @@ import { MapsComponent } from '../shared/maps/maps.component';
 import { Router, RouterLink } from '@angular/router';
 import { CategoryService } from '../services/category.service';
 import { AuthService } from '../services/auth.service';
+import { ModalComponent } from '../shared/modal/modal.component';
 
 @Component({
   selector: 'app-home',
@@ -14,13 +15,14 @@ import { AuthService } from '../services/auth.service';
     HeaderComponent,
     SidebarComponent,
     MapsComponent,
-    
+    ModalComponent
   ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
 })
 export class HomeComponent {
-  @ViewChild(SidebarComponent) sidebar!: SidebarComponent;
+  //@ViewChild(SidebarComponent) sidebar!: SidebarComponent;
+  @ViewChild('modal') modal!: ModalComponent;
   nameUser:string = '';
   maps_key:string = environment.MAPS_KEY;
   listCategories: Array<any> =[]

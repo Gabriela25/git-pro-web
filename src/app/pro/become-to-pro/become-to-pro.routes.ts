@@ -7,7 +7,7 @@ export const  routes: Routes = [
 
     {
         path:'',
-        loadComponent:() => import('./profile.component'),
+        loadComponent:() => import('./become-to-pro.component'),
     },
     {
         path:'address',

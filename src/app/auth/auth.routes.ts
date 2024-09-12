@@ -20,10 +20,6 @@ export const  routes: Routes = [
         loadComponent:() => import('./password-recovery/password-recovery.component')
     },
     
-    {
-        path:'password',
-        loadComponent:() => import('./password/password.component')
-    },
     { path: 'verify-email', loadComponent:() => import('./verify-email/verify-email.component')},
     {
         path:'verify/:id',

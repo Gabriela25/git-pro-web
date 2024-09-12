@@ -1,42 +1,45 @@
 import { Component, EventEmitter, Input, Output, TemplateRef } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { TranslateModule } from '@ngx-translate/core';
-
+import { CommonModule } from '@angular/common';
+import { Location } from '@angular/common';
 @Component({
   selector: 'app-modal',
   standalone: true,
   imports: [
-    TranslateModule
+    TranslateModule,
+    CommonModule
   ],
   templateUrl: './modal.component.html',
   styleUrl: './modal.component.css'
 })
 export class ModalComponent {
-  @Input() modalId: string = 'myModal';
-  @Input() content: SafeHtml | null = null;
-  selectedValue: string = '';
+  @Input() title!: string;
+  @Input() contentTemplate!: TemplateRef<any>;
+  @Input() contentContext: any;
 
-  constructor(private sanitizer: DomSanitizer){
-    
-  }
-  isOpen = false;
+  @Output() confirmAction = new EventEmitter<void>();
+
+
+  isOpen : boolean = false;
+  @Input() isSelected : boolean = false;
+  constructor(
+    private sanitizer: DomSanitizer,
+    private location: Location
+  ) {}
+
   open() {
+   
     this.isOpen = true;
-  }
+  } 
 
   close() {
     this.isOpen = false;
-    console.log('entre')
+    this.location.back();
   }
-  setContent(html: string) {
-    this.content = this.sanitizer.bypassSecurityTrustHtml(html);
-    console.log(this.content)
-  }
- 
-  @Output() selectChangeOut = new EventEmitter<any>();
+  onConfirm() {
+    this.confirmAction.emit();
+    this.isOpen = false;
 
-  onSelectChange2(event: Event) {
-    console.log('llegue al evento en el hijo',event)
-    this.selectChangeOut.emit(event);
   }
 }

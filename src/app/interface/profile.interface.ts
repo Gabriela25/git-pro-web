@@ -5,7 +5,7 @@ export interface Profile {
     userId?: string;
     zipcodeId: string;
     address: string;
-    imagePersonal: string;
+    imagePersonal?: string;
     introduction: string;
     isBusiness: boolean;
     nameBusiness?: string | null;

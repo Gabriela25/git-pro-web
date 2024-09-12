@@ -28,7 +28,7 @@
 .menu > li > a {
     display: block;
     padding: 15px 20px;
-    /*color: white;*/
+    color: white;
     text-decoration: none;
 }
 
@@ -113,3 +113,20 @@
     border-color: #007bff;
   }
     
+  .icon-edit {
+    font-size: 14px;
+    position: absolute;
+    top: 2.5rem;
+    right: 2.7rem;
+    transform: translate(50%, -50%);
+  }  
+  
+  .file-input {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100px;
+    height: 100px;
+    opacity: 0;
+    cursor: pointer;
+  }
