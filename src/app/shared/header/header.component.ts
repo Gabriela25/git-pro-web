@@ -8,6 +8,7 @@ import { ModalComponent } from '../modal/modal.component';
 import { HttpClient } from '@angular/common/http';
 import { UserService } from '../../services/user.service';
 import { Modal } from 'bootstrap'; 
+import { User } from '../../interface/user.interface';
 @Component({
   selector: 'app-header',
   standalone: true,
@@ -33,6 +34,8 @@ export class HeaderComponent implements OnInit {
   alertTimeout: any;
   token: string= '';
   isOpen : boolean = false;
+  isOnline: boolean = true;
+  isPro: boolean = false;
   @ViewChild('modal') modal!: ModalComponent;
   @ViewChild('profilePicModal') profilePicModal!:ElementRef;
   @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
@@ -58,9 +61,44 @@ export class HeaderComponent implements OnInit {
         this.imagePersonal = data.imagePersonal
       }
       
-
+      this.isOnline =  data.available
+      this.isPro = data.isPro || false;
     });
    
+  }
+
+
+  toggleOnlineStatus(): void {
+    this.isOnline = !this.isOnline;  
+    console.log( this.isOnline)
+    const user: User = {
+      id: '',
+      firstname: '',
+      lastname: '',
+      email: '',
+      phone: '',
+      profile: {
+        categories: [],
+        zipcodeId: '',
+        address: '',
+        imagePersonal:  '',
+        introduction: '',
+        isBusiness:false,
+        available:this.isOnline
+      }
+    };
+    
+    this.userService.putMe(user).subscribe({
+      next: (response) => {
+        console.log(response)
+      
+      },
+      error: (error) => {
+        
+      }
+    });
+  
+
   }
   switchLanguage(languaje: string) {
     this.trans.use(languaje);

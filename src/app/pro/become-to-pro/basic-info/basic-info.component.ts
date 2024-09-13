@@ -43,7 +43,8 @@ export default class BasicInfoComponent implements OnInit {
       imagePersonal: '',
       introduction: '',
     
-      isBusiness:false
+      isBusiness:false,
+      available:true
     }
   }
   constructor(

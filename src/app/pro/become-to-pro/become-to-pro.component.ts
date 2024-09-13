@@ -17,6 +17,7 @@ import { Zipcode } from '../../interface/zipcode.interface';
 import { User } from '../../interface/user.interface';
 import { Profile } from '../../interface/profile.interface';
 import { UserService } from '../../services/user.service';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-become-to-pro',
@@ -88,7 +89,8 @@ export default class BecomeToProComponent implements OnInit {
 
     private categoryService: CategoryService,
     private zipCodeService: ZipcodeService,
-    private userService: UserService
+    private userService: UserService,
+    private authService: AuthService
   ) {
     this.proPersonalForm = this.fb.group({
       categories: new FormControl([], [Validators.required]),
@@ -257,9 +259,11 @@ export default class BecomeToProComponent implements OnInit {
 
         this.userService.becomeToPro(profile).subscribe({
           next: (response) => {
+
             this.alertMessage = 'alert-success'
             this.backendMessage = response.message;
             this.isLoading = false;
+            this.authService.updateUserName('available', `${response.user.profile.available}` );   
             this.startAlertTimer();
 
           },

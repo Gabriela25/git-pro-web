@@ -65,9 +65,14 @@ export default class AuthComponent {
           this.authService.updateUserName('email', `${response.user.email}`,);
           this.userService.getMe().subscribe({
             next: (response) => {
-              if (response.user.profile?.imagePersonal != null) {  
-                this.authService.updateUserName('imagePersonal', `${response.user.profile.imagePersonal}` );
+              if (response.user.profile?.id != null) {  
+                this.authService.updateUserName('isPro', true );
               }
+              if (response.user.profile?.imagePersonal != null) {  
+                this.authService.updateUserName('imagePersonal', response.user.profile.imagePersonal );
+              }
+              
+              this.authService.updateUserName('available', response.user.profile?.available );
             },
             error: (error) => {
               console.log(error);

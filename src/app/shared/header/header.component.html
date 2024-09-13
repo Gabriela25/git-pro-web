@@ -1,29 +1,42 @@
 <div class="container-fluid bg-secondary pt-1">
   <nav class="navbar navbar-expand-lg m-1">
     <div class="container-fluid div-header">
+      <!-- Logo -->
       <a class="navbar-brand" routerLink="/">
         <img src="assets/logo.jpg" width="50" height="50" class="d-inline-block align-top" alt="">
       </a>
+      <!-- Botón para colapsar menú en pantallas pequeñas -->
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
         aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
+      <!-- Menú principal -->
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+        <ul class="navbar-nav ms-auto mb-2 mb-lg-0 d-flex align-items-center">
+          @if(isAuthenticated){
+            @if(isPro){
+            <li class="nav-item" style="width: 1.3rem;">
+              <button type="button" (click)="toggleOnlineStatus()" [class.btn-success]="isOnline"
+                [class.btn-danger]="!isOnline"
+                class="btn btn-sm rounded-circle d-flex align-items-center justify-content-center p-2"
+                style="width: 25px; height: 25px;">
+
+              </button>
+
+            </li>
+            }
+          }
           <li class="nav-item">
             @if(isAuthenticated){
+
             <div class="dropdown text-end">
 
               <a href="#" class="d-block link-body-emphasis text-decoration-none dropdown-toggle"
                 data-bs-toggle="dropdown" aria-expanded="false">
-                @if(imagePersonal===''){
 
-                <img src="../../../assets/avatar_profile.png" alt="User Avatar" width="40" height="40"
-                  class="rounded-circle">
-                }
-                @else {
-                <img src="{{imagePersonal}}" alt="User Avatar" width="40" height="40" class="rounded-circle">
-                }
+
+                <img [src]="imagePersonal || '../../../assets/avatar_profile.png'" alt="User Avatar" width="40"
+                  height="40" class="rounded-circle">
 
               </a>
               <a href="#" data-bs-toggle="modal" data-bs-target="#profilePicModal">
@@ -74,8 +87,10 @@
                 <li><a class="dropdown-item" href="#"><i class="bi bi-envelope"></i> {{ emailUser }}</a></li>
                 <li><a class="dropdown-item" routerLink="/pro/profile/basic"><i class="bi bi-person"></i> Profile</a>
                 </li>
-                <li><a class="dropdown-item" routerLink="/pro/become-to-pro/"><i class="bi bi-briefcase"></i> Become to pro
+                <li><a class="dropdown-item" routerLink="/pro/become-to-pro/"><i class="bi bi-briefcase"></i> Become to
+                    pro
                   </a></li>
+
                 <li>
                   <hr class="dropdown-divider">
                 </li>
@@ -83,6 +98,7 @@
                     out</a></li>
               </ul>
             </div>
+
             } @else {
             <!-- Contenedor para centrar y ajustar los botones -->
             <div class="d-flex gap-2 justify-content-end">
