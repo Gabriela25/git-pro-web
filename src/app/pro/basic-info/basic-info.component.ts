@@ -1,11 +1,11 @@
 import { Component, numberAttribute, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { UserService } from '../../../services/user.service';
-import { User } from '../../../interface/user.interface';
+import { UserService } from '../../services/user.service';
+import { User } from '../../interface/user.interface';
 import { TranslateModule } from '@ngx-translate/core';
 import { RouterLink } from '@angular/router';
-import { HeaderComponent } from '../../../shared/header/header.component';
-import { SidebarComponent } from '../../../sidebar/sidebar.component';
+import { HeaderComponent } from '../../shared/header/header.component';
+import { SidebarComponent } from '../../sidebar/sidebar.component';
 
 @Component({
   selector: 'app-basic-info',

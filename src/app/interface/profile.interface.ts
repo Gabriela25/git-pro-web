@@ -7,7 +7,7 @@ export interface Profile {
     address: string;
     imagePersonal?: string;
     introduction: string;
-    isBusiness: boolean;
+    isBusiness?: boolean;
     nameBusiness?: string | null;
     yearFounded?: number | null;
     numberOfemployees?: number | null;

@@ -8,12 +8,12 @@ import { NewPasswordComponent } from "./new-password/new-password.component";
 export const  routes: Routes = [
 
     {
-        path:'',
-        loadComponent:() => import('./auth.component'),
+        path:'login',
+        loadComponent:() => import('./login/login.component'),
     },
     {
-        path:'sign-in',
-        loadComponent:() => import('./sign-in/sign-in.component')
+        path:'sign-up',
+        loadComponent:() => import('./sign-up/sign-up.component')
     },
     {
         path:'password-recovery',

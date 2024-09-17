@@ -15,7 +15,7 @@ import { AuthService } from '../../services/auth.service';
 import { User } from '../../interface/user.interface';
 
 @Component({
-  selector: 'app-sign-in',
+  selector: 'app-sign-up',
   standalone: true,
   imports: [
     ReactiveFormsModule,
@@ -27,10 +27,10 @@ import { User } from '../../interface/user.interface';
     NgxCaptchaModule,
     NgxMaskDirective
   ],
-  templateUrl: './sign-in.component.html',
-  styleUrl: './sign-in.component.css'
+  templateUrl: './sign-up.component.html',
+  styleUrl: './sign-up.component.css'
 })
-export default class SingInComponent  implements OnInit{
+export default class SignUpComponent  implements OnInit{
   isCustomer: boolean | null = true;
   user: SocialUser = new SocialUser();
   loggedIn: boolean = false;
@@ -53,7 +53,7 @@ export default class SingInComponent  implements OnInit{
     this.isBrowser = this.platformService.isBrowser() 
     console.log(this.platformService.isBrowser() )
   }
-  registerForm = new FormGroup({
+  signUp = new FormGroup({
       firstName: new FormControl('', [Validators.required]),
       lastName: new FormControl('', [Validators.required]),
       phone: new FormControl('', [Validators.required,Validators.min(10)]),
@@ -82,7 +82,7 @@ export default class SingInComponent  implements OnInit{
         this.dataUser(user);
       }
     });*/
-    /*this.registerForm.controls['recaptcha'].valueChanges.subscribe(value => {
+    /*this.signUp.controls['recaptcha'].valueChanges.subscribe(value => {
       this.recaptchaToken = value;
     });*/
   }
@@ -108,7 +108,7 @@ export default class SingInComponent  implements OnInit{
   onSubmit() {
     // TODO: Use EventEmitter with form value
     this.isLoading = true; 
-    const formData = this.registerForm.value;
+    const formData = this.signUp.value;
     const user: User = {
       firstname:formData.firstName || '',
       lastname: formData.lastName || '',
@@ -133,9 +133,9 @@ export default class SingInComponent  implements OnInit{
         this.startAlertTimer();
       }
     });
-    /*if(this.registerForm.value.recaptcha){
+    /*if(this.signUp.value.recaptcha){
       const data ={
-        token : this.registerForm.value.recaptcha
+        token : this.signUp.value.recaptcha
       }
       this._recaptcha.getRecaptcha(data).subscribe((resp)=>{
         if(resp.message){
@@ -144,7 +144,7 @@ export default class SingInComponent  implements OnInit{
         }
       })
     }*/
-    //this.recaptcha.getRecaptcha(this.registerForm.value)
+    //this.recaptcha.getRecaptcha(this.signUp.value)
   }
   startAlertTimer() {
     if (this.alertTimeout) {

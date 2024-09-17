@@ -22,7 +22,7 @@
                         <div class="fade-in">
                             <div class="row mb-3">
                                 <div class="col-12 col-md-6">
-                                    <label for="firstName" class="form-label fw-bold">{{'pro.profile.firstName' |
+                                    <label for="firstName" class="form-label fw-bold">{{'profile..firstName' |
                                         translate}}</label>
                                     <input type="text" class="form-control" placeholder="" id="firstName"
                                         formControlName="firstname" value="{{user.firstname}}"/>
@@ -32,14 +32,14 @@
                                     <div class="alert alert-danger mt-2 mt-2">
                                         @if(basicInfoForm.get('firstname')?.errors?.['required']){
                                         <span>
-                                            {{'login.isFirstNameRequired' | translate}}
+                                            {{'auth.isFirstNameRequired' | translate}}
                                         </span>
                                         }
                                     </div>
                                     }
                                 </div>
                                 <div class="col-12 col-md-6">
-                                    <label for="lastName" class="form-label fw-bold">{{'pro.profile.lastName' |
+                                    <label for="lastName" class="form-label fw-bold">{{'profile..lastName' |
                                         translate}}</label>
                                     <input type="text" class="form-control" placeholder="" id="lastName"
                                         formControlName="lastname" />
@@ -48,7 +48,7 @@
                                     <div class="alert alert-danger mt-2">
                                         @if(basicInfoForm.get('lastname')?.errors?.['required']){
                                         <span>
-                                            {{'login.isLastNameRequired' | translate}}
+                                            {{'auth.isLastNameRequired' | translate}}
                                         </span>
                                         }
                                     </div>
@@ -57,7 +57,7 @@
                             </div>
                             <div class="form-group">
                                 <div class="mb-3">
-                                    <label for="phone" class="form-label fw-bold">{{'pro.profile.phone' |
+                                    <label for="phone" class="form-label fw-bold">{{'profile..phone' |
                                         translate}}</label>
                                     <input type="tel" class="form-control" id="phone" formControlName="phone" 
                                         mask="(000) 0000000" />
@@ -67,12 +67,12 @@
                                         <div class="alert alert-danger mt-2 mt-2">
                                             @if(basicInfoForm.get('phone')?.errors?.['required']){
                                             <span>
-                                                {{'login.isPhoneRequired' | translate}}
+                                                {{'auth.isPhoneRequired' | translate}}
                                             </span>
                                             }
                                             @else if(basicInfoForm.get('phone')?.errors?.['pattern']){
                                                 <span>
-                                                    {{'login.isPhoneMaximum10' | translate}}
+                                                    {{'auth.isPhoneMaximum10' | translate}}
                                                 </span>
                                                 }
                                         </div>
@@ -81,7 +81,7 @@
                             </div>
                             <div class="form-group">
                                 <div class="mb-3">
-                                    <label for="email" class="form-label fw-bold">{{'pro.profile.email' |
+                                    <label for="email" class="form-label fw-bold">{{'profile..email' |
                                         translate}}</label>
                                     <input type="email" class="form-control" id="email" formControlName="email"/>
                                     @if(basicInfoForm.get('email')?.invalid &&
@@ -90,7 +90,7 @@
                                         <div class="alert alert-danger mt-2 mt-2">
                                             @if(basicInfoForm.get('email')?.errors?.['required']){
                                             <span>
-                                                {{'login.isEmailRequired' | translate}}
+                                                {{'auth.isEmailRequired' | translate}}
                                             </span>
                                             }
                                         </div>

@@ -1,9 +1,19 @@
 
 {
-    "login":{
+    "general":{
+        "save":"Save",
+        "cancel":"Cancel",
+        "add":"Add",
+        "send":"Send",
+        "next":"Next"
+    },
+    "header":{
+        "profile":"Profile",
+        "logOut": "Log out"
+    },
+    "auth":{
         "login": "Login",
-        "logIn": "Log in",
-        "sign-in": "Sign in",
+        "signUp": "Sign up",
         "firstName":"First name",
         "phone":"Phone",
         "lastName": "Last name",
@@ -31,53 +41,37 @@
         "isNumberOfemployeesRequired": "The number of employees is required"
         
     },
-    "header":{
-        "profile":"Profile",
-        "logOut": "Log out"
-    },
+    
     "profile":{
+        "firstName":"First name",
+        "lastName": "Last name",
+        "email": "Email address",
         "phone":"Phone",
-        "password": "Password"
-       
-    },
-    "config":{
-        "save":"Save",
-        "cancel":"Cancel",
-        "add":"Add",
-        "send":"Send",
-        "next":"Next"
-    },
-    "pro":{
-        "profile":{
-            "firstName":"First name",
-            "lastName": "Last name",
-            "email": "Email address",
-            "phone":"Phone",
-            "password": "Password",
-            "categories":"Categories",
-            "zipCode":"ZIP Code",
-            "imgProfile":"Image profile",
-            "nameBusiness":"Name business",
-           
-            "webSite": "Web site",
-            "address": "Address",
-            "minimum10Characters": "Minimum 10 characters",
-            "socialMediaLink":"Social media link",
-            "businessFaqs":"Business FAQs",
-            "yourIntroduction":"Your introduction",
-            "credentials":"Credentials",
-            "backgroundCheck":"Background check",
-            "professionalLicenses":"Professional licenses",
-            "yearFounded": "Year founded",
-            "numberEmployees":"Number of employees",
-            
-            "isCategoryIdsRequired":"Category is required",
-           
-            "isZipcodeRequired":"Zip code is required",
-            "isAddressRequired":"Address is required",
-            "isImagePersonalRequired":"Image is required"
-        }
+        "password": "Password",
+        "categories":"Categories",
+        "zipCode":"ZIP Code",
+        "imgProfile":"Image profile",
+        "nameBusiness":"Name business",
+        
+        "webSite": "Web site",
+        "address": "Address",
+        "minimum10Characters": "Minimum 10 characters",
+        "socialMediaLink":"Social media link",
+        "businessFaqs":"Business FAQs",
+        "yourIntroduction":"Your introduction",
+        "credentials":"Credentials",
+        "backgroundCheck":"Background check",
+        "professionalLicenses":"Professional licenses",
+        "yearFounded": "Year founded",
+        "numberEmployees":"Number of employees",
+        
+        "isCategoryIdsRequired":"Category is required",
+        
+        "isZipcodeRequired":"Zip code is required",
+        "isAddressRequired":"Address is required",
+        "isImagePersonalRequired":"Image is required"
     }
+    
     
     
 }

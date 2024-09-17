@@ -6,7 +6,6 @@ import { TranslateModule } from '@ngx-translate/core';
 import { SidebarComponent } from '../../sidebar/sidebar.component';
 import { ComunicationService } from '../../services/comunication.service';
 import { AutocompleteComponent } from '../../shared/autocomplete/autocomplete.component';
-import { LicensesComponent } from './licenses/licenses.component';
 import { CategoryService } from '../../services/category.service';
 import { ModalComponent } from '../../shared/modal/modal.component';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';

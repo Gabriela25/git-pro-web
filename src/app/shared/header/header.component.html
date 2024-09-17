@@ -61,9 +61,9 @@
                       </div>
                     </div>
                     <div class="modal-footer">
-                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{'config.cancel'|
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{'general.cancel'|
                         translate}}</button>
-                      <button type="button" class="btn btn-primary" (click)="saveProfilePic()">{{'config.save'|
+                      <button type="button" class="btn btn-primary" (click)="saveProfilePic()">{{'general.save'|
                         translate}}</button>
                     </div>
                     <div>
@@ -85,7 +85,7 @@
               <ul class="dropdown-menu text-small">
                 <li><a class="dropdown-item" href="#"><i class="bi bi-person-circle"></i> {{ nameUser }}</a></li>
                 <li><a class="dropdown-item" href="#"><i class="bi bi-envelope"></i> {{ emailUser }}</a></li>
-                <li><a class="dropdown-item" routerLink="/pro/profile/basic"><i class="bi bi-person"></i> Profile</a>
+                <li><a class="dropdown-item" routerLink="/pro/basic"><i class="bi bi-person"></i> Profile</a>
                 </li>
                 <li><a class="dropdown-item" routerLink="/pro/become-to-pro/"><i class="bi bi-briefcase"></i> Become to
                     pro
@@ -102,9 +102,9 @@
             } @else {
             <!-- Contenedor para centrar y ajustar los botones -->
             <div class="d-flex gap-2 justify-content-end">
-              <button type="button" class="btn btn-primary" routerLink="/auth/sign-in"
+              <button type="button" class="btn btn-primary" routerLink="/auth/sign-up"
                 [queryParams]="{ isCustomer: false }">Sign&nbsp;in</button>
-              <button type="button" class="btn btn-primary" routerLink="/auth">Login</button>
+              <button type="button" class="btn btn-primary" routerLink="/auth/login">Login</button>
             </div>
             }
           </li>

@@ -5,18 +5,18 @@
         <div class="col-8 col-md-8 p-5 col-login  text-light-emphasis bg-white rounded">
             <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" autocomplete="off">
                 <div class="mb-3" >
-                    <label for="email" class="form-label fw-bold">{{'login.email' | translate}}</label>
+                    <label for="email" class="form-label fw-bold">{{'auth.email' | translate}}</label>
                     <input type="email" class="form-control" id="email" placeholder="Email"  type="email"  formControlName="email"/>
                     @if(loginForm.get('email')?.invalid &&  (loginForm.get('email')?.dirty || loginForm.get('email')?.touched )){
                     <div class="alert alert-danger mt-2">
                     @if(loginForm.get('email')?.errors?.['required']){
                         <span>
-                        {{'login.isEmailRequired' | translate}}
+                        {{'auth.isEmailRequired' | translate}}
                         </span>
                     }
                     @if(loginForm.get('email')?.errors?.['email']){
                         <span>
-                        {{'login.isEmailValid' | translate}}
+                        {{'auth.isEmailValid' | translate}}
                         </span>
                     }
                 </div>
@@ -24,18 +24,18 @@
                 
                 </div>
                 <div class="mb-3">
-                    <label for="password" class="form-label fw-bold">{{'login.password' | translate}}</label>
+                    <label for="password" class="form-label fw-bold">{{'auth.password' | translate}}</label>
                     <input type="password" class="form-control" id="password" placeholder=""  type="password" formControlName="password"/>
                     @if(loginForm.get('password')?.invalid && (loginForm.get('password')?.dirty || loginForm.get('password')?.touched )){
                         <div class="alert alert-danger mt-2">
                         @if(loginForm.get('password')?.errors?.['required']){
                             <span>
-                                {{'login.isPasswordRequired' | translate}}
+                                {{'auth.isPasswordRequired' | translate}}
                             </span>
                         }
                         @else if(loginForm.get('password')?.errors?.['minlength']){
                             <span>
-                                {{'login.minimum6Characters' | translate}}
+                                {{'auth.minimum6Characters' | translate}}
                             </span>
                         }
                     </div>
@@ -43,13 +43,13 @@
                 </div> 
                 
                 <div class="mb-3 d-flex justify-content-end">
-                    <a  routerLink="/auth/password-recovery" class="link-underline-opacity-0 link-secondary">{{'login.forgotpassword' | translate}}</a>
+                    <a  routerLink="/auth/password-recovery" class="link-underline-opacity-0 link-secondary">{{'auth.forgotpassword' | translate}}</a>
                 </div>
                 <div class="d-grid">
-                    <button class="btn btn-primary"  type="submit" [disabled]="!loginForm.valid || isLoading">{{'login.login' | translate}}</button>
+                    <button class="btn btn-primary"  type="submit" [disabled]="!loginForm.valid || isLoading">{{'auth.login' | translate}}</button>
                 </div>
                 <div class="mt-3 d-flex justify-content-center">
-                    <a routerLink="/auth/sign-in" [queryParams]="{ isCustomer: true }" aria-current="page" class="link-underline-opacity-0 link-secondary">{{'login.sign-in' | translate}}</a>
+                    <a routerLink="/auth/sign-in" [queryParams]="{ isCustomer: true }" aria-current="page" class="link-underline-opacity-0 link-secondary">{{'auth.signUp' | translate}}</a>
                 </div>
             </form>
             @if(isLoading){       

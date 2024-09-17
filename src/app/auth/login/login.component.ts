@@ -1,15 +1,15 @@
 import { Component, Input } from '@angular/core';
-import { HeaderComponent } from '../shared/header/header.component';
+import { HeaderComponent } from '../../shared/header/header.component';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { Router, RouterLink } from '@angular/router';
-import { User } from '../interface/user.interface';
-import { AuthService } from '../services/auth.service';
+import { User } from '../../interface/user.interface';
+import { AuthService } from '../../services/auth.service';
 import { Location } from '@angular/common';
-import { Auth } from '../interface/auth.interface';
-import { UserService } from '../services/user.service';
+import { Login } from '../../interface/login.interface';
+import { UserService } from '../../services/user.service';
 @Component({
-  selector: 'app-auth',
+  selector: 'app-login',
   standalone: true,
   imports: [
     ReactiveFormsModule,
@@ -18,10 +18,10 @@ import { UserService } from '../services/user.service';
     HeaderComponent,
     
   ],
-  templateUrl: './auth.component.html',
-  styleUrl: './auth.component.css'
+  templateUrl: './login.component.html',
+  styleUrl: './login.component.css'
 })
-export default class AuthComponent {
+export default class LoginComponent {
  
   isLoading = false;
   backendMessage = '';
@@ -48,7 +48,7 @@ export default class AuthComponent {
       this.isLoading = true; 
       const formData = this.loginForm.value;
       
-      const auth: Auth = {
+      const auth: Login = {
         email: formData.email || '',   
         password: formData.password || '',
        

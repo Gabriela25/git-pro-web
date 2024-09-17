@@ -1,3 +1,4 @@
+
 // auth.service.ts
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, Output, EventEmitter } from '@angular/core';
@@ -7,7 +8,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { environment } from '../../environments/environment.development';
 import {User} from'../interface/user.interface';
 import { authStatus } from '../enum/auth.enum';
-import { Auth } from '../interface/auth.interface';
+import { Login } from '../interface/login.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -59,7 +60,7 @@ export class AuthService {
     };
     return this._http.post(`${this.apiUrlBackend}/auth/register`, body, options);
   }
-  postLogin(body: Auth): Observable<any> {
+  postLogin(body: Login): Observable<any> {
     const options = {
       headers: {
         'Content-Type': 'application/json',

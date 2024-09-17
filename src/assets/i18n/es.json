@@ -1,7 +1,21 @@
+
+
 {
-  "login":{
+
+
+  "general":{
+      "save":"Guardar",
+      "cancel":"Cancelar",
+      "add":"Agregar"
+  },
+  "header":{
+    "profile":"Perfil",
+    "logOut": "Cerrar sesión"
+  },
+  
+  "auth":{
     "login": "Iniciar sesión",
-    "sign-in": "Registro",
+    "signUp": "Registro",
     "firstName":"Nombre",
     "lastName": "Apellido",
     "phone":"Telefóno",
@@ -25,46 +39,33 @@
     
     
   },
-  "header":{
-    "profile":"Perfil",
-    "logOut": "Cerrar sesión"
-  },
-  "profile":{
-    "phone":"Teléfono",
-    "password":"Contraseña"
+  
 
-  },
-  "config":{
-      "save":"Guardar",
-      "cancel":"Cancelar",
-      "add":"Agregar"
-  },
-  "pro":{
-      "profile":{
-          "firstName":"Nombre",
-          "lastName": "Apellido",
-          "email": "Correo electrónico",
-          "phone":"Telefóno",
-          "categories":"Categorías",
-          "zipCode":"Código postal",
-          "imgProfile":"Imagen de perfil",
-          "nameBusiness":"Nombre del negocio",
+  "profile":{
+      "firstName":"Nombre",
+      "lastName": "Apellido",
+      "email": "Correo electrónico",
+      "phone":"Telefóno",
+      "categories":"Categorías",
+      "zipCode":"Código postal",
+      "imgProfile":"Imagen de perfil",
+      "nameBusiness":"Nombre del negocio",
+  
+      "password": "Password",
+      "webSite": "Sitio Web",
+      "address": "Dirección",
       
-          "password": "Password",
-          "webSite": "Sitio Web",
-          "address": "Dirección",
-          
-          "numberOfEmployees":"Número de empleados",
-          "socialMediaLink":"Redes sociales",
-          "businessFaqs":"Preguntas frecuentes de negocios",
-          "yourIntroduction":"Tu introducción",
-          "credentials":"Cartas credenciales",
-          "backgroundCheck":"Verificación de antecedentes",
-          "professionalLicenses":"Licencia profesionales",
-          "yearFounded": "Año de fundada",
-          "numberEmployees":"Número de empleados"
-    
-      }
+      "numberOfEmployees":"Número de empleados",
+      "socialMediaLink":"Redes sociales",
+      "businessFaqs":"Preguntas frecuentes de negocios",
+      "yourIntroduction":"Tu introducción",
+      "credentials":"Cartas credenciales",
+      "backgroundCheck":"Verificación de antecedentes",
+      "professionalLicenses":"Licencia profesionales",
+      "yearFounded": "Año de fundada",
+      "numberEmployees":"Número de empleados"
+
   }
+  
  
 }
