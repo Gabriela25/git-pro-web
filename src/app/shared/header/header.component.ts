@@ -49,7 +49,6 @@ export class HeaderComponent implements OnInit {
     this.trans.addLangs(['es', 'en']);
     this.isAuthenticated = this.authService.isAuthenticated()
 
-
   }
   ngOnInit() {
 

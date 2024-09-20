@@ -39,7 +39,7 @@ export class DescriptionComponent {
   @Output() isDescriptionOut = new EventEmitter<any>();
 
   onValueDescription(value: boolean) {
-    console.log('llegue al evento en el hijo',value)
+    
     this.isDescriptionOut.emit(value);
   }
 }

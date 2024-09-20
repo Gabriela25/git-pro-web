@@ -9,7 +9,9 @@
     },
     "header":{
         "profile":"Profile",
-        "logOut": "Log out"
+        "logOut": "Log out",
+        "becomeToPro": "Become to pro",
+        "getLeads":"Get Leads"
     },
     "auth":{
         "login": "Login",
@@ -70,8 +72,16 @@
         "isZipcodeRequired":"Zip code is required",
         "isAddressRequired":"Address is required",
         "isImagePersonalRequired":"Image is required"
-    }
-    
+    },
+  
+  "payment":{
+    "plans":"Payment plans",
+    "reference":"Reference",
+    "amount":"Amount",
+    "isPlanRequired":"Payment plan is required",
+    "isReferenceRequired":"Reference is required",
+    "isAmountRequired":"The amount is required"
+  }
     
     
 }

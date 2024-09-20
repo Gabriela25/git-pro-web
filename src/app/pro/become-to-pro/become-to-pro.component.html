@@ -45,7 +45,7 @@
                         <div class="fade-in">
                             <div class="form-group">
                                 <div class="mb-3">
-                                    <label for="category" class="form-label fw-bold">{{'profile..categories' |
+                                    <label for="category" class="form-label fw-bold">{{'profile.categories' |
                                         translate}}</label>
                                     <select class="form-select" multiple aria-label="multiple select example"
                                         id="category"  formControlName="categories">
@@ -58,7 +58,7 @@
                                         <div class="alert alert-danger mt-2">
                                         @if(proPersonalForm.get('categories')?.errors?.['required']){
                                             <span>
-                                                {{'profile..isCategoryIdsRequired' | translate}}
+                                                {{'profile.isCategoryIdsRequired' | translate}}
                                             </span>
                                         }         
                                     </div>
@@ -67,7 +67,7 @@
                             </div>
                             <div class="form-group">
                                 <div class="mb-3">
-                                    <label for="zipcode" class="form-label fw-bold">{{'profile..zipCode' |
+                                    <label for="zipcode" class="form-label fw-bold">{{'profile.zipCode' |
                                         translate}}</label>
                                     <select class="form-select" aria-label="select" id="zipcode" formControlName="zipcode">
                                         <option >Seleccione</option>
@@ -79,7 +79,7 @@
                                         <div class="alert alert-danger mt-2">
                                         @if(proPersonalForm.get('zipcode')?.errors?.['required']){
                                             <span>
-                                                {{'profile..isZipcodeRequired' | translate}}
+                                                {{'profile.isZipcodeRequired' | translate}}
                                             </span>
                                         }                                  
                                     </div>
@@ -88,26 +88,26 @@
                             </div>
                             <!--div class="form-group">
                                 <div class="mb-3">
-                                    <label for="imagePersonal" class="form-label fw-bold">{{'profile..imgProfile' |
+                                    <label for="imagePersonal" class="form-label fw-bold">{{'profile.imgProfile' |
                                         translate}}</label>
                                     <input type="file" class="form-control" id="imagePersonal" />
                                 </div>
                             </div-->
                             <div class="form-group">
                                 <div class="mb-3">
-                                    <label for="address" class="form-label fw-bold">{{'profile..address' |
+                                    <label for="address" class="form-label fw-bold">{{'profile.address' |
                                         translate}}</label>
                                     <input type="text" class="form-control" id="address" formControlName="address"/>
                                     @if(proPersonalForm.get('address')?.invalid && (proPersonalForm.get('address')?.dirty || proPersonalForm.get('address')?.touched )){
                                         <div class="alert alert-danger mt-2">
                                         @if(proPersonalForm.get('address')?.errors?.['required']){
                                             <span>
-                                                {{'profile..isAddressRequired' | translate}}
+                                                {{'profile.isAddressRequired' | translate}}
                                             </span>
                                         }
                                         @else if(proPersonalForm.get('address')?.errors?.['minlength']){
                                             <span>
-                                                {{'profile..minimum10Characters' | translate}}
+                                                {{'profile.minimum10Characters' | translate}}
                                             </span>
                                         }
                                     </div>
@@ -158,14 +158,14 @@
                           </div>
                         <div class="form-group">
                             <div class="mb-3">
-                                <label for="nameBusiness" class="form-label fw-bold">{{'profile..nameBusiness' |
+                                <label for="nameBusiness" class="form-label fw-bold">{{'profile.nameBusiness' |
                                     translate}}</label>
                                 <input type="text" class="form-control" id="nameBusiness" formControlName="nameBusiness"/>
                                 @if(proPersonalForm.get('nameBusiness')?.invalid && (proPersonalForm.get('nameBusiness')?.dirty || proPersonalForm.get('nameBusiness')?.touched )){
                                     <div class="alert alert-danger mt-2">
                                     @if(proPersonalForm.get('nameBusiness')?.errors?.['required']){
                                         <span>
-                                            {{'profile..isNameBusinessRequired' | translate}}
+                                            {{'profile.isNameBusinessRequired' | translate}}
                                         </span>
                                     }
                                     
@@ -176,14 +176,14 @@
                         </div>
                         <div class="form-group">
                             <div class="mb-3">
-                                <label for="yearFounded" class="form-label fw-bold">{{'profile..yearFounded' |
+                                <label for="yearFounded" class="form-label fw-bold">{{'profile.yearFounded' |
                                     translate}}</label>
                                 <input type="number" class="form-control" id="yearFounded" formControlName="yearFounded"/>
                                 @if(proPersonalForm.get('yearFounded')?.invalid && (proPersonalForm.get('yearFounded')?.dirty || proPersonalForm.get('yearFounded')?.touched )){
                                     <div class="alert alert-danger mt-2">
                                     @if(proPersonalForm.get('yearFounded')?.errors?.['required']){
                                         <span>
-                                            {{'profile..isYearFoundedRequired' | translate}}
+                                            {{'profile.isYearFoundedRequired' | translate}}
                                         </span>
                                     }
                                     
@@ -193,14 +193,14 @@
                         </div>
                         <div class="form-group">
                             <div class="mb-3">
-                                <label for="numberOfemployees" class="form-label fw-bold">{{'profile..numberEmployees'
+                                <label for="numberOfemployees" class="form-label fw-bold">{{'profile.numberEmployees'
                                     | translate}}</label>
                                 <input type="number" class="form-control" id="numberOfemployees" formControlName="numberOfemployees"/>
                                 @if(proPersonalForm.get('numberOfemployees')?.invalid && (proPersonalForm.get('numberOfemployees')?.dirty || proPersonalForm.get('numberOfemployees')?.touched )){
                                     <div class="alert alert-danger mt-2">
                                     @if(proPersonalForm.get('numberOfemployees')?.errors?.['required']){
                                         <span>
-                                            {{'profile..isNumberOfemployeesRequired' | translate}}
+                                            {{'profile.isNumberOfemployeesRequired' | translate}}
                                         </span>
                                     }
                                     

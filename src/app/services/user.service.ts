@@ -22,7 +22,7 @@ export class UserService {
 
   ) {
     
-     console.log('en el contrusctor')
+     
        
       this.token = localStorage.getItem('token') || '';
      

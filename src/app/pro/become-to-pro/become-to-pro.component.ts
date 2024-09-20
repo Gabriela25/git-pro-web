@@ -45,9 +45,9 @@ export default class BecomeToProComponent implements OnInit {
   licenses: boolean = false;
   selectedFile: File | null = null;
 
-  listCategories: Array<Category> = []
-  listServicesPro: Array<any> = []
-  listZipcode: Array<Zipcode> = []
+  listCategories: Array<Category> = [];
+  listServicesPro: Array<any> = [];
+  listZipcode: Array<Zipcode> = [];
   isLoading = false;
   backendMessage = '';
   alertMessage = '';

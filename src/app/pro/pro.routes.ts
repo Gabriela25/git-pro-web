@@ -13,6 +13,10 @@ export const  routes: Routes = [
     {
         path:'basic',
         loadComponent:() => import('./basic-info/basic-info.component'),
+    },
+    {
+        path:'get-leads',
+        loadComponent:() => import('./get-leads/get-leads.component'),
     }
 ]
 export default routes;

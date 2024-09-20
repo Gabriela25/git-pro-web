@@ -10,7 +10,9 @@
   },
   "header":{
     "profile":"Perfil",
-    "logOut": "Cerrar sesión"
+    "logOut": "Cerrar sesión",
+    "becomeToPro": "Conviértete en profesional",
+    "getLeads":"Obtener clientes"
   },
   
   "auth":{
@@ -65,7 +67,15 @@
       "yearFounded": "Año de fundada",
       "numberEmployees":"Número de empleados"
 
-  }
+  },
   
+  "payment":{
+    "plans":"Planes de pago",
+    "reference":"Referencia",
+    "amount":"Cantidad",
+    "isPlanRequired":"El plan de pago es requerido",
+    "isReferenceRequired":"La referencia es requerida",
+    "isAmountRequired":"La cantidad es requerida"
+  }
  
 }

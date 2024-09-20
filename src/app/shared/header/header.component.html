@@ -39,9 +39,11 @@
                   height="40" class="rounded-circle">
 
               </a>
+              @if(isPro){
               <a href="#" data-bs-toggle="modal" data-bs-target="#profilePicModal">
                 <i class="bi bi-pen icon-edit" style="font-size: 14px;"></i>
               </a>
+              }
               <div class="modal fade" id="profilePicModal" #profilePicModal tabindex="-1"
                 aria-labelledby="profilePicModalLabel" aria-hidden="true">
                 <div class="modal-dialog">
@@ -85,17 +87,19 @@
               <ul class="dropdown-menu text-small">
                 <li><a class="dropdown-item" href="#"><i class="bi bi-person-circle"></i> {{ nameUser }}</a></li>
                 <li><a class="dropdown-item" href="#"><i class="bi bi-envelope"></i> {{ emailUser }}</a></li>
-                <li><a class="dropdown-item" routerLink="/pro/basic"><i class="bi bi-person"></i> Profile</a>
+                <li><a class="dropdown-item" routerLink="/pro/basic"><i class="bi bi-person"></i> {{'header.profile'|translate}}</a>
                 </li>
-                <li><a class="dropdown-item" routerLink="/pro/become-to-pro/"><i class="bi bi-briefcase"></i> Become to
-                    pro
+                <li><a class="dropdown-item" routerLink="/pro/become-to-pro/"><i class="bi bi-briefcase"></i> {{'header.becomeToPro'|translate}}
                   </a></li>
-
+                  @if(isPro){
+                    <li><a class="dropdown-item" routerLink="/pro/get-leads/"><i class="bi bi-currency-dollar"></i> {{'header.getLeads'|translate}}
+                    </a></li>
+                  }
                 <li>
                   <hr class="dropdown-divider">
                 </li>
-                <li><a class="dropdown-item" href="#" (click)="signOut()"><i class="bi bi-box-arrow-right"></i> Sign
-                    out</a></li>
+                <li><a class="dropdown-item" href="#" (click)="signOut()"><i class="bi bi-box-arrow-right"></i> {{'header.logOut'|translate}}
+                </a></li>
               </ul>
             </div>
 
@@ -103,8 +107,8 @@
             <!-- Contenedor para centrar y ajustar los botones -->
             <div class="d-flex gap-2 justify-content-end">
               <button type="button" class="btn btn-primary" routerLink="/auth/sign-up"
-                [queryParams]="{ isCustomer: false }">Sign&nbsp;in</button>
-              <button type="button" class="btn btn-primary" routerLink="/auth/login">Login</button>
+                [queryParams]="{ isCustomer: false }">Sign&nbsp;up</button>
+              <button type="button" class="btn btn-primary" routerLink="/auth/login">{{'auth.login' | translate}}</button>
             </div>
             }
           </li>

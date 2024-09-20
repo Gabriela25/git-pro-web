@@ -6,7 +6,7 @@ import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { getAuth, RecaptchaVerifier } from 'firebase/auth';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { environment } from '../../environments/environment.development';
-import {User} from'../interface/user.interface';
+import { User } from '../interface/user.interface';
 import { authStatus } from '../enum/auth.enum';
 import { Login } from '../interface/login.interface';
 
@@ -20,18 +20,17 @@ export class AuthService {
   //@Output() eventUser: EventEmitter<any> = new EventEmitter();
   private _userSubject = new BehaviorSubject<object>({});
   user$ = this._userSubject.asObservable();
-  authStatus:authStatus= authStatus.checking;
-  token: string =''; 
+  authStatus: authStatus = authStatus.checking;
+  token: string = '';
   constructor(
-    
-    //private afAuth: AngularFireAuth  
+
   ) {
-    console.log('en la autenticacion' )
+
     this.token = localStorage.getItem('token') || '';
-    console.log(this.token )
+
     if (this.isBrowser()) {
       this.token = localStorage.getItem('token') || '';
-      console.log(this.token )
+
       const storedUser = localStorage.getItem('user');
       if (storedUser) {
         this._userSubject.next(JSON.parse(storedUser));
@@ -39,7 +38,7 @@ export class AuthService {
     }
     this.isAuthenticated();
   }
- 
+
 
   /*public initializeRecaptcha(containerId: string): void {
     const auth = getAuth();
@@ -68,55 +67,56 @@ export class AuthService {
     };
     return this._http.post(`${this.apiUrlBackend}/auth/login`, body, options);
   }
-   
-  
-  getVerifyAccount(){
-    
+
+
+  getVerifyAccount() {
+
     const options = {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${this.token}`
       }
     };
-    return this._http.get(`${this.apiUrlBackend}/auth/verify`,  options);
+    return this._http.get(`${this.apiUrlBackend}/auth/verify`, options);
   }
   resetPassword(body: any): Observable<any> {
     const options = {
       headers: {
-        'Content-Type': 'application/json',  
+        'Content-Type': 'application/json',
       }
     };
     return this._http.post(`${this.apiUrlBackend}/auth/reset-password`, body, options);
   }
   postNewPassword(body: any): Observable<any> {
-    
+
     const options = {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${this.token}`
       }
     };
-   
+
 
     return this._http.post(`${this.apiUrlBackend}/auth/new-password`, body, options);
   }
   isAuthenticated() {
     if (typeof window !== 'undefined') {
-      
-      this.token = localStorage.getItem('token') || ''; 
-      
+
+      this.token = localStorage.getItem('token') || '';
+
+   
     }
-    if (this.token == null || this.token ==='') {
+    if (this.token == null || this.token === '') {
       this.authStatus = authStatus.notAuthenticated;
-     
-     return false; 
-    }else{
+
+      return false;
+    } else {
       this.authStatus = authStatus.authenticated;
       return true;
     }
   }
   updateUserName(field: string, value: any): void {
-    
+
     const currentUser = JSON.parse(localStorage.getItem('user') || '{}');
     currentUser[field] = value;
     localStorage.setItem('user', JSON.stringify(currentUser));

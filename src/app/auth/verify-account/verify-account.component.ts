@@ -29,14 +29,18 @@ export class VerifyAccountComponent implements OnInit {
         next: (response) => {
           this.messageAccount = 'Your account has been successfully verified';
           
-          console.log(response)
-          localStorage.setItem('token', '');
+          
+         
+          
+         
         },
         error: (error) => {
           this.messageAccount= "There was an error verifying the account";
           
         }
+       
       });
+      localStorage.removeItem('token')
     }
     
   }
