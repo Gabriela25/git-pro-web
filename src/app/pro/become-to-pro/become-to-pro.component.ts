@@ -61,9 +61,11 @@ export default class BecomeToProComponent implements OnInit {
   onSelect: boolean = false;
   profileForm!: FormGroup;
   previewImg: string | ArrayBuffer | null = null;
+  imagePersonal: string = '';
   imageBusiness: string = '';
   isUserProPersonal: boolean = false;
-  @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
+  @ViewChild('fileInputPersonal') fileInputPersonal!: ElementRef<HTMLInputElement>;
+  @ViewChild('fileInputBusiness') fileInputBusiness!: ElementRef<HTMLInputElement>;
   user: User = {
     id: '',
     firstname: '',
@@ -95,7 +97,7 @@ export default class BecomeToProComponent implements OnInit {
       categories: new FormControl([], [Validators.required]),
       zipcode: new FormControl('', [Validators.required]),
       address: new FormControl('', [Validators.required, Validators.minLength(10)]),
-      //imagePersonal: new FormControl('', [Validators.required]),
+      imagePersonal: new FormControl(''),
       introduction: new FormControl([''])
     });
     this.proBusinessForm = this.fb.group({
@@ -135,13 +137,14 @@ export default class BecomeToProComponent implements OnInit {
           this.user.profile = response.user.profile!;
 
           const categoryIds = response.user.profile?.categories?.map((category: any) => category.id) || [];
-
+      
+          this.imagePersonal = this.user.profile.imagePersonal || '';
           this.proPersonalForm.patchValue({
+            
             id: this.user.profile.id,
             categories: categoryIds || [],
             zipcode: this.user.profile.zipcodeId,
             address: this.user.profile.address,
-            //imagePersonal: this.user.profile.imagePersonal,
             introduction: this.user.profile.introduction
           });
           if (this.user.profile.isBusiness) {
@@ -150,18 +153,13 @@ export default class BecomeToProComponent implements OnInit {
             this.showOptsPro = false
             this.imageBusiness = this.user.profile.imageBusiness || '';
             this.proBusinessForm.patchValue({
-
               nameBusiness: this.user.profile.nameBusiness,
               yearFounded: this.user.profile.yearFounded,
-              numberOfemployees: this.user.profile.numberOfemployees,
-              //imagePersonal: this.user.profile.imagePersonal,
-              //introduction: this.user.profile.introduction
+              numberOfemployees: this.user.profile.numberOfemployees
+              
             });
           }
         } else {
-
-          //If it is the first time you create the profile
-          //We hide the business form so that it can be selected by the user
           this.isUserProPersonal = true;
           this.openModalOnPageLoad();
 
@@ -215,10 +213,12 @@ export default class BecomeToProComponent implements OnInit {
       reader.readAsDataURL(file);
     }
   }
-  triggerFileInput(): void {
-    this.fileInput.nativeElement.click();
+  triggerFileInputP(): void {
+    this.fileInputPersonal.nativeElement.click();
   }
-
+  triggerFileInputB(): void {
+    this.fileInputBusiness.nativeElement.click();
+  }
   previousStep() {
     if (this.currentStep > 1) {
       this.currentStep--;
@@ -249,7 +249,7 @@ export default class BecomeToProComponent implements OnInit {
         categories: formData.categories || [],
         zipcodeId: formData.zipcode || '',
         address: formData.address || '',
-        //imagePersonal: formData.imagePersonal || '',
+        imagePersonal: formData.imagePersonal || '',
         introduction: formData.introduction || '',
         isBusiness: false
       };

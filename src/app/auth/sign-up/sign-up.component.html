@@ -1,11 +1,17 @@
 
-<div class="container p-5">
+<div class="container-degradado p-5">
     <div class="row">
-        <div class="col-4"></div>
-        <div class="col-8 col-md-8 p-5 col-login  text-light-emphasis bg-white rounded">
+        <div class="col-lg-1 d-none d-lg-block">    
+        </div>
+        <div class="col-lg-3">
+            <a routerLink="/">
+                <img src="./../../../assets/logo.png" width="300" alt="Logo" class="d-none d-lg-block">
+            </a>
+        </div>
+        <div class="col-12 col-lg-6 p-5   text-light-emphasis bg-white rounded container-box">
             <form [formGroup]="signUp" (ngSubmit)="onSubmit()" autocomplete="off" method="post">
                 <div class="row mb-3">
-                    <div class="col-12 col-md-6">
+                    <div class="col-12 col-lg-6">
                         <label for="firstName" class="form-label fw-bold">{{'auth.firstName' | translate}}</label>
                         <input type="text" class="form-control" placeholder="" id="firstName"
                             formControlName="firstName" />
@@ -19,7 +25,7 @@
                         </div>
                         }
                     </div>
-                    <div class="col-12 col-md-6">
+                    <div class="col-12 col-lg-6">
                         <label for="lastName" class="form-label fw-bold">{{'auth.lastName' | translate}}</label>
                         <input type="text" class="form-control" placeholder="" id="lastName" 
                             formControlName="lastName" />
@@ -131,6 +137,9 @@
                 <div class="d-grid mt-3">
                     <button class="btn btn-primary" type="submit" [disabled]="!signUp.valid || isLoading">{{'auth.signUp'
                         | translate}}</button>
+                     <div class="mt-3 d-flex justify-content-center">
+                        <a routerLink="/auth/login"  aria-current="page" class="link-underline-opacity-0 link-secondary">{{'auth.login' | translate}}</a>
+                    </div>
                 </div>
                 @if(isCustomer){
                     <div class="mt-3 d-flex justify-content-center">
@@ -159,6 +168,8 @@
         </div>
        
        
-        <div class="col"></div>
+        <div class="col-lg-1 d-none d-lg-block">
+          
+        </div>
     </div>
 </div>

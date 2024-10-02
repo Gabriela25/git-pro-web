@@ -41,35 +41,21 @@
         </div>
 
         <div class="col-md-10 p-2 col-10" style="position: absolute;top:380px;left:50%; transform: translateX(-50%);">
+          <div class="container">
+            <div class="row pt-5 d-flex justify-content-center">
+              @for (item of listCategories; track item) {
+              <div class="col-md-3 text-center bg-white p-3 rounded shadow m-2 container-center-img">
+                <a (click)="navigateToServices(item)"  >
+                  <img [src]="item.image" alt="" width="120" height="120">
+                  <div class="text-center"><span><b>{{ item.name }}</b></span></div>
+                </a>
+              </div>
+            }
+            </div>
+          
+          </div>
             
             
-            <div class="row pt-5 d-flex justify-content-center">
-                @for (item of listCategories; track item) {
-                   
-                        <div class="col-md-2 text-center bg-white p-3 rounded shadow m-2 container-center-img">
-                            <a (click)="navigateToServices(item)"><img src="{{item.image}}" alt="" width="120" height="120">
-                                <div class="text-center"><span><b>{{item.name}}</b></span></div>
-                            </a>
-                        </div>
-                    
-                
-
-                }
-            </div>
-            <div class="row pt-5 d-flex justify-content-center">
-                @for (item of listCategories; track item) {
-                    @if(item.id>3){
-                        <div class="col-md-2 text-center bg-white p-3 rounded shadow m-2 container-center-img">
-                            <a (click)="navigateToServices(item)"><img src="{{item.image}}" alt="" width="120" height="120">
-                                <div class="text-center"><span><b>{{item.name}}</b></span></div>
-                            </a>
-                        </div>
-                    }
-                
-
-                }
-            </div>
-        </div>
             <div class="col-md-1">
 
             </div>

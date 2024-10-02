@@ -12,15 +12,15 @@ import { ModalComponent } from '../shared/modal/modal.component';
   selector: 'app-home',
   standalone: true,
   imports: [
+    RouterLink,
     HeaderComponent,
-    SidebarComponent,
-    MapsComponent,
-    ModalComponent
+    ModalComponent,
+
   ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
 })
-export class HomeComponent {
+export default class HomeComponent {
   //@ViewChild(SidebarComponent) sidebar!: SidebarComponent;
   @ViewChild('modal') modal!: ModalComponent;
   nameUser:string = '';
@@ -52,7 +52,8 @@ export class HomeComponent {
   //this.listServices = this.category.getCategory();
 }
   navigateToServices(item: any) {
-    //this.category.changeCategory(item)
-    //this.router.navigate(['/list']);
+   // this.category.changeCategory(item)
+    console.log(item)
+    this.router.navigate(['/service-request/zip-code'], { queryParams: { id: item.id, name: item.name } });
   }
 }

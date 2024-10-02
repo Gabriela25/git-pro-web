@@ -1,119 +1,50 @@
-<div class="container-fluid bg-secondary pt-1">
-  <nav class="navbar navbar-expand-lg m-1">
-    <div class="container-fluid div-header">
-      <!-- Logo -->
-      <a class="navbar-brand" routerLink="/">
-        <img src="assets/logo.jpg" width="50" height="50" class="d-inline-block align-top" alt="">
-      </a>
-      <!-- Botón para colapsar menú en pantallas pequeñas -->
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
-        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <!-- Menú principal -->
-      <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav ms-auto mb-2 mb-lg-0 d-flex align-items-center">
-          @if(isAuthenticated){
-            @if(isPro){
-            <li class="nav-item" style="width: 1.3rem;">
-              <button type="button" (click)="toggleOnlineStatus()" [class.btn-success]="isOnline"
-                [class.btn-danger]="!isOnline"
-                class="btn btn-sm rounded-circle d-flex align-items-center justify-content-center p-2"
-                style="width: 25px; height: 25px;">
+<nav class="navbar navbar-expand-lg navbar-light bg-primary">
+  <div class="container-fluid">
+    <a class="navbar-brand" routerLink="/">
+      <img src="assets/logo.png" width="75" height="75" class="d-inline-block align-top" alt="Fixi">
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
 
-              </button>
-
-            </li>
-            }
+      <div class="d-flex align-items-center ms-auto">
+        @if(isAuthenticated){
+          @if(isPro){
+            <button type="button" (click)="toggleOnlineStatus()" [class.btn-success]="isOnline"
+              [class.btn-danger]="!isOnline"
+              class="btn btn-sm rounded-circle d-flex align-items-center justify-content-center p-2 me-2"
+              style="width: 25px; height: 25px;">
+            </button>
           }
-          <li class="nav-item">
-            @if(isAuthenticated){
-
-            <div class="dropdown text-end">
-
-              <a href="#" class="d-block link-body-emphasis text-decoration-none dropdown-toggle"
-                data-bs-toggle="dropdown" aria-expanded="false">
-
-
-                <img [src]="imagePersonal || '../../../assets/avatar_profile.png'" alt="User Avatar" width="40"
-                  height="40" class="rounded-circle">
-
-              </a>
+           
+          <!-- Menú desplegable usando la imagen del avatar -->
+          <div class="dropdown">
+            <img [src]="imagePersonal || '../../../assets/avatar_profile.png'" alt="User Avatar" width="40" height="40"
+              class="rounded-circle me-2 cursor-pointer" data-bs-toggle="dropdown" aria-expanded="false" style="cursor: pointer;">
+            <ul class="dropdown-menu text-small">
+              <li><a class="dropdown-item" href="#"><i class="bi bi-person-circle"></i> {{ nameUser }}</a></li>
+              <li><a class="dropdown-item" href="#"><i class="bi bi-envelope"></i> {{ emailUser }}</a></li>
+              <li><a class="dropdown-item" routerLink="/pro/basic"><i class="bi bi-person"></i> {{'header.profile'|translate}}</a></li>
+              <li><a class="dropdown-item" routerLink="/pro/become-to-pro/"><i class="bi bi-briefcase"></i> {{'header.becomeToPro'|translate}}</a></li>
               @if(isPro){
-              <a href="#" data-bs-toggle="modal" data-bs-target="#profilePicModal">
-                <i class="bi bi-pen icon-edit" style="font-size: 14px;"></i>
-              </a>
+                <li><a class="dropdown-item" routerLink="/pro/get-leads/"><i class="bi bi-currency-dollar"></i> {{'header.getLeads'|translate}}</a></li>
               }
-              <div class="modal fade" id="profilePicModal" #profilePicModal tabindex="-1"
-                aria-labelledby="profilePicModalLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                  <div class="modal-content">
-                    <div class="modal-header">
-                      <h5 class="modal-title" id="profilePicModalLabel">Profile picture</h5>
-                      <button type="button" class="btn-close" data-bs-dismiss="modal" #closebutton
-                        aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                      <div class="text-center position-relative">
+              <li>
+                <hr class="dropdown-divider">
+              </li>
+              <li><a class="dropdown-item" href="#" (click)="signOut()"><i class="bi bi-box-arrow-right"></i> {{'header.logOut'|translate}}</a></li>
+            </ul>
+          </div>
+        }
 
-                        <img [src]="previewImg || imagePersonal || 'assets/avatar_profile.png'" alt="Vista Previa"
-                          class="rounded-circle mb-3" width="100" height="100" (click)="triggerFileInput()">
-                        <input type="file" #fileInput (change)="onFileSelected($event)" accept="image/*"
-                          style="display: none;">
-                      </div>
-                    </div>
-                    <div class="modal-footer">
-                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{'general.cancel'|
-                        translate}}</button>
-                      <button type="button" class="btn btn-primary" (click)="saveProfilePic()">{{'general.save'|
-                        translate}}</button>
-                    </div>
-                    <div>
-                      @if(isLoading){
-                      <div class="d-flex justify-content-center mt-3">
-                        <div class="spinner-border" role="status">
-                        </div>
-                      </div>
-                      }
-                      @if(backendMessage){
-                      <div class="alert {{alertMessage}} mt-3" style="text-align: center;">
-                        {{ backendMessage }}
-                      </div>
-                      }
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <ul class="dropdown-menu text-small">
-                <li><a class="dropdown-item" href="#"><i class="bi bi-person-circle"></i> {{ nameUser }}</a></li>
-                <li><a class="dropdown-item" href="#"><i class="bi bi-envelope"></i> {{ emailUser }}</a></li>
-                <li><a class="dropdown-item" routerLink="/pro/basic"><i class="bi bi-person"></i> {{'header.profile'|translate}}</a>
-                </li>
-                <li><a class="dropdown-item" routerLink="/pro/become-to-pro/"><i class="bi bi-briefcase"></i> {{'header.becomeToPro'|translate}}
-                  </a></li>
-                  @if(isPro){
-                    <li><a class="dropdown-item" routerLink="/pro/get-leads/"><i class="bi bi-currency-dollar"></i> {{'header.getLeads'|translate}}
-                    </a></li>
-                  }
-                <li>
-                  <hr class="dropdown-divider">
-                </li>
-                <li><a class="dropdown-item" href="#" (click)="signOut()"><i class="bi bi-box-arrow-right"></i> {{'header.logOut'|translate}}
-                </a></li>
-              </ul>
-            </div>
-
-            } @else {
-            <!-- Contenedor para centrar y ajustar los botones -->
-            <div class="d-flex gap-2 justify-content-end">
-              <button type="button" class="btn btn-primary" routerLink="/auth/sign-up"
-                [queryParams]="{ isCustomer: false }">Sign&nbsp;up</button>
-              <button type="button" class="btn btn-primary" routerLink="/auth/login">{{'auth.login' | translate}}</button>
-            </div>
-            }
-          </li>
-        </ul>
+        @if(!isAuthenticated){
+          <div class="d-flex">
+            <button type="button" class="btn btn-secondary me-2" style="color:#fff" routerLink="/auth/sign-up" [queryParams]="{ isCustomer: false }">Sign&nbsp;up</button>
+            <button type="button" class="btn btn-secondary" routerLink="/auth/login" style="color:#fff">{{'auth.login' | translate}}</button>
+          </div>
+        }
       </div>
     </div>
-  </nav>
-</div>
+  </div>
+</nav>

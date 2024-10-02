@@ -6,3 +6,17 @@ $primary :$purple;
 $secondary:$teal;
 // Importa Bootstrap después de sobrescribir los colores
 @import "bootstrap/scss/bootstrap";
+.container-degradado {
+    background: 
+        linear-gradient(to right,#7e01e0, #3cd7ac); /* Degradado de negro a blanco */
+    min-height: 100vh; /* Asegura que el contenedor tenga al menos la altura de la pantalla */
+}
+.container-box{
+    
+    border-radius: 8px;
+    box-shadow: 0 10px 16px 10px rgba(0, 0, 0, 0.1);
+    margin: 20px auto;
+    overflow: hidden;
+    text-align: center;
+    
+}

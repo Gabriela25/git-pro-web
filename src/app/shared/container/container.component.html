@@ -1,0 +1,11 @@
+<div class="container-box  justify-content-center align-items-center p-5" style="width: 500px;">
+    <div class="mt-5">
+        <div>
+            <label [for]="idElement" class="mt-2 mb-2 fs-2">{{label}}</label>
+            <input type="text" class="p-2" [id]="idElement"/>
+        </div>
+        <div class="d-grid gap-2">
+           <button type="button" class="btn btn-primary mt-3" [routerLink]="routerLink">{{'general.next'|translate}}</button> 
+        </div>
+    </div>
+</div>

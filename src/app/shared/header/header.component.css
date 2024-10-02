@@ -1,9 +1,11 @@
 .dropdown-menu {
     position: absolute;
     right: 0;  
-    transform: translateX(-120px);
-    width: 250px;
+    transform: translateX(-250px);
+    width: 300px;
   }
+  
+  
 .navbar {
     --bs-navbar-toggler-padding-x: 0.50rem;
    
@@ -133,4 +135,19 @@
   .position-absolute {
     width: 10px;
     height: 10px;
+  }
+  @media (max-width: 990px) {
+   
+    .dropdown-menu {
+      position: absolute;
+      top: 0; 
+      left: 3rem; 
+      width: 300px; 
+      transform: none;
+    }
+  
+
+    
+  
+    
   }
