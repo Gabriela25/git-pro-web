@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { PhoneComponent } from './phone.component';
+import ZipCodeComponent  from './zip-code.component';
 
-describe('PhoneComponent', () => {
-  let component: PhoneComponent;
-  let fixture: ComponentFixture<PhoneComponent>;
+describe('ZipCodeComponent', () => {
+  let component: ZipCodeComponent;
+  let fixture: ComponentFixture<ZipCodeComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [PhoneComponent]
+      imports: [ZipCodeComponent]
     })
     .compileComponents();
     
-    fixture = TestBed.createComponent(PhoneComponent);
+    fixture = TestBed.createComponent(ZipCodeComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -1,13 +1,19 @@
 <app-header/>
-<div class="d-flex justify-content-center p-3">
-    <h1><strong>Please provide a description of the request</strong></h1>
+<div class="p-3">
+    <div class="d-flex justify-content-center"> 
+        <h1><strong>{{categoryName}}</strong></h1>
+    </div>
+   <div class="d-flex justify-content-center">
+        <h1><strong>Please provide a description of the request</strong></h1>
+   </div>
+    
 </div>
-
-<div class="container-box  justify-content-center align-items-center p-3" style="width: 500px;">
+<form [formGroup]="descriptionForm" (ngSubmit)="onSubmit()" autocomplete="off">
+<div class="container-box  justify-content-center align-items-center p-5" style="width: 500px;">
     <div class="">
         <div>
             <label [for]="idElement" class="mt-2 mb-2 fs-2">{{label}}</label>
-            <textarea  id="" rows="4" style="width: 400px;"></textarea>
+            <textarea  id="" rows="4" style="width: 400px;" formControlName="description"></textarea>
         </div>
         
         <div class="form-group">
@@ -21,14 +27,15 @@
                             style="right: -20px; bottom: 5px; font-size: 18px; cursor: pointer;"
                             (click)="triggerFileInput()"></i>
                     </div>
-                    <input type="file" class="form-control" id="imageBusiness" #fileInput
-                        formControlName="imageBusiness" (change)="onFileSelected($event)"
+                    <input type="file" class="form-control" id="" #fileInput
+                         (change)="onFileSelected($event)"
                         style="display: none;">
                 </div>
             </div>
         </div>
         <div class="d-grid gap-2">
-           <button type="button" class="btn btn-primary mt-3" >{{'general.send'| translate}}</button> 
+           <button type="submit" class="btn btn-primary mt-3" [disabled]="!descriptionForm.valid">{{'general.send'| translate}} </button> 
         </div>
     </div>
 </div>
+</form>

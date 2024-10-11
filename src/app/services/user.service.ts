@@ -53,7 +53,7 @@ export class UserService {
     return this._http.get<{user:User}>(`${this.apiUrlBackend}/users/me`, this.options);
   }
   putMe(body:User): Observable<{user:User}>{
-   
+    console.log(body)
     return this._http.put<{user:User}>(`${this.apiUrlBackend}/users/me`,body, this.options);
   }
   postUploads(fileData: FormData,  field: string): Observable<{user:User}>{

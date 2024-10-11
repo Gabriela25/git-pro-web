@@ -21,8 +21,8 @@ export const routes: Routes = [
         loadChildren:()=>import('./pro/pro.routes')
     },
     {
-        path:'service-request',
-        loadChildren:()=>import('./service-request/service-request.routes')
+        path:'orders',
+        loadChildren:()=>import('./orders/orders.routes')
     },
     {
         path:'sidebar',

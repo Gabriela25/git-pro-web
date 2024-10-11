@@ -23,7 +23,7 @@
         <div class="col-lg-4 col-img">
         </div>
         <div class="col-lg-8 p-5">
-            <div class="card">
+            <div class="card container-box">
                 <div class="card-header">
                     <ul class="nav nav-tabs card-header-tabs">
                         <li class="nav-item">
@@ -41,7 +41,7 @@
                 <div class="card-body">
 
                     @if(currentStep === 1){
-                    <form [formGroup]="proPersonalForm" (ngSubmit)="onSubmit()" autocomplete="off">
+                    <form [formGroup]="proPersonalForm" (ngSubmit)="onSubmit(false)" autocomplete="off">
                         <div class="fade-in">
                             <div class="form-group">
                                 <div class="form-group text-center position-relative">
@@ -172,7 +172,7 @@
                     </form>
                     }
                     @if(!isUserProPersonal && currentStep ==2 ){
-                    <form [formGroup]="proBusinessForm" (ngSubmit)="onSubmitBusiness()" autocomplete="off">
+                    <form [formGroup]="proBusinessForm" (ngSubmit)="onSubmit(true)" autocomplete="off">
                         <div class="fade-in">
                             <div class="form-group">
                                 <div class="form-group text-center position-relative">

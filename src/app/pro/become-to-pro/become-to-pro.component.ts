@@ -17,6 +17,7 @@ import { User } from '../../interface/user.interface';
 import { Profile } from '../../interface/profile.interface';
 import { UserService } from '../../services/user.service';
 import { AuthService } from '../../services/auth.service';
+import { UploadsService } from '../../services/uploads.service';
 
 @Component({
   selector: 'app-become-to-pro',
@@ -86,89 +87,97 @@ export default class BecomeToProComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-
-
     private categoryService: CategoryService,
     private zipCodeService: ZipcodeService,
     private userService: UserService,
-    private authService: AuthService
+    private authService: AuthService,
+    private uploadsService: UploadsService
   ) {
-    this.proPersonalForm = this.fb.group({
+    this.proPersonalForm = this.initializeProPersonalForm();
+    this.proBusinessForm = this.initializeProBusinessForm();
+   
+  }
+
+  ngOnInit(): void {
+    this.loadInitialData();
+    this.checkUserProfile();
+    
+  }
+  initializeProPersonalForm(): FormGroup {
+    return this.fb.group({
       categories: new FormControl([], [Validators.required]),
       zipcode: new FormControl('', [Validators.required]),
       address: new FormControl('', [Validators.required, Validators.minLength(10)]),
       imagePersonal: new FormControl(''),
-      introduction: new FormControl([''])
+      introduction: new FormControl('')
     });
-    this.proBusinessForm = this.fb.group({
+  }
+
+  initializeProBusinessForm(): FormGroup {
+    return this.fb.group({
       nameBusiness: new FormControl('', [Validators.required]),
       yearFounded: new FormControl('', [Validators.required, Validators.pattern(/^[0-9]*$/)]),
       numberOfemployees: new FormControl('', [Validators.required, Validators.pattern(/^[0-9]*$/)]),
       imageBusiness: new FormControl('')
     });
   }
-
-  ngOnInit(): void {
-
+  loadInitialData() {
     this.categoryService.getAllCategories().subscribe({
-      next: (response) => {
-        this.listCategories = response.categories;
-
-      },
-      error: (error) => {
-        console.log(error);
-      }
+      next: (response) => this.listCategories = response.categories,
+      error: (error) => console.error(error)
     });
     this.zipCodeService.getAllZipcodes().subscribe({
-      next: (response) => {
-        this.listZipcode = response.zipcodes;
-
-      },
-      error: (error) => {
-        console.log(error);
-      }
+      next: (response) => this.listZipcode = response.zipcodes,
+      error: (error) => console.error(error)
     });
+    
+  }
+  initializeUser(): User {
+    return {
+      id: '',
+      firstname: '',
+      lastname: '',
+      email: '',
+      phone: '',
+      profile: {
+        id: '',
+        categories: [],
+        zipcodeId: '',
+        address: '',
+        imagePersonal: '',
+        introduction: '',
+        isBusiness: false
+      }
+    };
+  }
+  checkUserProfile() {
     this.userService.getMe().subscribe({
-      next: (response) => {
-
-        if (response.user.profile != null) {
-          //The user is already a professional
-          this.isUserProPersonal = true;
-          this.user.profile = response.user.profile!;
-
-          const categoryIds = response.user.profile?.categories?.map((category: any) => category.id) || [];
-      
-          this.imagePersonal = this.user.profile.imagePersonal || '';
-          this.proPersonalForm.patchValue({
-            
-            id: this.user.profile.id,
-            categories: categoryIds || [],
-            zipcode: this.user.profile.zipcodeId,
-            address: this.user.profile.address,
-            introduction: this.user.profile.introduction
-          });
-          if (this.user.profile.isBusiness) {
-            //the professional is business
-            this.isUserProPersonal = false;
-            this.showOptsPro = false
-            this.imageBusiness = this.user.profile.imageBusiness || '';
-            this.proBusinessForm.patchValue({
-              nameBusiness: this.user.profile.nameBusiness,
-              yearFounded: this.user.profile.yearFounded,
-              numberOfemployees: this.user.profile.numberOfemployees
-              
-            });
-          }
-        } else {
-          this.isUserProPersonal = true;
-          this.openModalOnPageLoad();
-
-        }
-      },
-      error: (error) => {
-        console.log(error);
-      }
+      next: (response) => this.populateUserProfile(response.user),
+      error: (error) => console.error(error)
     });
+  }
+  populateUserProfile(user: User) {
+    if (user.profile) {
+      this.isUserProPersonal = !user.profile.isBusiness;
+      this.user = user;
+      this.imagePersonal = user.profile.imagePersonal || '';
+      this.imageBusiness = user.profile.imageBusiness || '';
+      this.proPersonalForm.patchValue({
+        categories: user.profile.categories.map((category: any) => category.id),
+        zipcode: user.profile.zipcodeId,
+        address: user.profile.address,
+        introduction: user.profile.introduction
+      });
+      if (user.profile.isBusiness) {
+        this.proBusinessForm.patchValue({
+          nameBusiness: user.profile.nameBusiness,
+          yearFounded: user.profile.yearFounded,
+          numberOfemployees: user.profile.numberOfemployees
+        });
+      }
+    } else {
+      this.openModalOnPageLoad();
+    }
   }
   openModalOnPageLoad() {
     if (this.modal) {
@@ -237,7 +246,8 @@ export default class BecomeToProComponent implements OnInit {
       this.currentStep++;
     }
   }
-  onSubmit() {
+  
+  /*onSubmit() {
    
 
 
@@ -264,6 +274,33 @@ export default class BecomeToProComponent implements OnInit {
             this.isLoading = false;
             this.authService.updateUserName('available', `${response.user.profile.available}` );   
             this.startAlertTimer();
+            if (this.selectedFile) {
+              this.isLoading = true;
+              const formData = new FormData();
+              formData.append('model', 'profile');
+              formData.append('idModel','');
+              formData.append('field', 'imageBusiness');
+              formData.append('file', this.selectedFile);
+  
+           
+  
+              this.uploadsService.postUploads(formData).subscribe({
+                next: (response) => {
+                  console.log(response)
+  
+                },
+                error: (error) => {
+                  this.alertMessage = 'alert-danger'
+                  this.backendMessage = error.error.message;
+                  this.isLoading = false;
+                  this.startAlertTimer();
+                }
+              });
+  
+  
+            } /*else {
+              alert('Por favor selecciona una imagen.');
+            }
 
           },
           error: (error) => {
@@ -312,8 +349,119 @@ export default class BecomeToProComponent implements OnInit {
 
 
     }
-  }
-  onSubmitBusiness() {
+  }*/
+    onSubmit(isBusiness: boolean) {
+      if (isBusiness) {
+        this.submitProfile(this.proBusinessForm, isBusiness);
+      } else {
+        
+        this.submitProfile(this.proPersonalForm, isBusiness);
+      }
+    }
+  
+    submitProfile(formGroup: FormGroup, isBusiness: boolean) {
+      
+      if (formGroup.valid) {
+        this.isLoading = true;
+        const formData = formGroup.value;
+        const profile: Profile = {
+          categories: formData.categories || [],
+          zipcodeId: formData.zipcode || '',
+          address: formData.address || '',
+          imagePersonal: formData.imagePersonal || '',
+          introduction: formData.introduction || '',
+          isBusiness
+        };
+  
+        if (!this.user.profile || !this.user.profile.id) {
+
+          
+          this.userService.becomeToPro(profile).subscribe({
+            next: (response) => {
+              this.handleSuccessfulSubmission(response);
+              if (this.selectedFile) {
+                this.uploadImage(this.selectedFile, isBusiness);
+              }
+            },
+            error: (error) => this.handleError(error)
+          });
+        }
+        else{
+          if(!isBusiness){
+            this.userService.putMe({ ...this.user, profile }).subscribe({
+              next: (response) => {
+                this.handleSuccessfulSubmission(response);
+                if (this.selectedFile) {
+                  this.uploadImage(this.selectedFile, isBusiness);
+                }
+              },
+              error: (error) => this.handleError(error)
+            });
+          }
+          else{
+            const profile: Profile = {
+              categories: this.proPersonalForm.value.categories || [],
+              zipcodeId: this.proPersonalForm.value.zipcodeId || '',
+              address:this.proPersonalForm.value.address|| '',
+              imagePersonal: this.proPersonalForm.value.imagePersonal || '',
+              introduction:this.proPersonalForm.value.introduction || '',
+              isBusiness: true,
+              nameBusiness: formData.nameBusiness || '',
+              yearFounded: formData.yearFounded || '',
+              numberOfemployees: formData.numberOfemployees || '',
+              imageBusiness: formData.imageBusiness || '',
+    
+            };
+              this.userService.putMe({ ...this.user, profile }).subscribe({
+              next: (response) => {
+                this.handleSuccessfulSubmission(response);
+                if (this.selectedFile) {
+                  this.uploadImage(this.selectedFile, isBusiness);
+                }
+              },
+              error: (error) => this.handleError(error)
+            });
+          }
+         
+         
+        }
+      }
+    }
+    handleSuccessfulSubmission(response: any) {
+      this.alertMessage = 'alert-success';
+      this.backendMessage = response.message || 'Profile updated successfully';
+      this.isLoading = false;
+      this.startAlertTimer();
+    }
+  
+    handleError(error: any) {
+      this.alertMessage = 'alert-danger';
+      this.backendMessage = error.error.message || 'An error occurred';
+      this.isLoading = false;
+      this.startAlertTimer();
+    }
+    uploadImage(file: File, isBusiness: boolean) {
+      const formData = new FormData();
+      formData.append('model', 'profile');
+      formData.append('idModel', '');
+      formData.append('field', isBusiness ? 'imageBusiness' : 'imagePersonal');
+      formData.append('file', file);
+      
+      this.uploadsService.postUploads(formData).subscribe({
+        next: (response) => console.log('Image uploaded successfully', response),
+        error: (error) => this.handleError(error)
+      });
+    }
+  
+    startAlertTimer() {
+      if (this.alertTimeout) {
+        clearTimeout(this.alertTimeout);
+      }
+      this.alertTimeout = setTimeout(() => {
+        this.backendMessage = '';
+      }, 3000);
+    }
+  /*onSubmitBusiness() {
     
     if (this.proBusinessForm.valid) {
       this.isLoading = true;
@@ -353,11 +501,14 @@ export default class BecomeToProComponent implements OnInit {
           if (this.selectedFile) {
             this.isLoading = true;
             const formData = new FormData();
+            formData.append('model', 'profile');
+            formData.append('idModel','');
+            formData.append('field', 'imageBusiness');
             formData.append('file', this.selectedFile);
 
          
 
-            this.userService.postUploads(formData, 'business').subscribe({
+            this.uploadsService.postUploads(formData).subscribe({
               next: (response) => {
                 console.log(response)
 
@@ -373,7 +524,7 @@ export default class BecomeToProComponent implements OnInit {
 
           } /*else {
             alert('Por favor selecciona una imagen.');
-          }*/
+          }
         },
         error: (error) => {
           this.alertMessage = 'alert-danger'
@@ -384,21 +535,13 @@ export default class BecomeToProComponent implements OnInit {
       });
 
     }
-  }
+  }*/
 
 
 
 
 
-  startAlertTimer() {
-    if (this.alertTimeout) {
-      clearTimeout(this.alertTimeout);
-    }
-    this.alertTimeout = setTimeout(() => {
-      this.backendMessage = '';
-    }, 3000);
-  }
-
+  
 }
 
 

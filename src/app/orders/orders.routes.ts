@@ -1,9 +1,6 @@
 import { Routes } from "@angular/router";
 
 
-
-
-
 export const  routes: Routes = [
 
     {
@@ -15,9 +12,13 @@ export const  routes: Routes = [
         loadComponent:() => import('./phone/phone.component'),
     },
     {
-        path:'descripcion-service',
-        loadComponent:() => import('./service-description/service-description.component'),
+        path:'description',
+        loadComponent:() => import('./order-description/order-description.component'),
     },
+    {
+        path:'multi',
+        loadComponent:() => import('./multi-form/multi-form.component'),
+    }
     
 ]
 export default routes;

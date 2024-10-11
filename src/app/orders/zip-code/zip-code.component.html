@@ -1,0 +1,23 @@
+<app-header/>
+<div class="d-flex justify-content-center p-5">
+    <h1><strong>The best professionals in {{categoryName}}</strong></h1>
+</div>
+
+<div class="container-box p-5" style="width: 500px;">
+    <div class="mt-5">
+        <div>
+            <label for="zipcode" class="form-label fs-2">{{'profile.zipCode' |
+                translate}}</label>
+            <select class="form-select" aria-label="select" id="zipcode"
+                formControlName="zipcode">
+                <option>Seleccione</option>
+                @for (item of listZipcode; track item) {
+                <option [value]="item.id">{{item.name}}</option>
+                }
+            </select>
+        </div>
+        <div class="d-grid gap-2">
+            <button type="submit" class="btn btn-primary mt-3" (click)="onSubmit()">{{'general.next'|translate}}</button> 
+        </div>
+    </div>
+</div>

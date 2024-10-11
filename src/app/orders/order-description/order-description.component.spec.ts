@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ZipCodeComponent } from './zip-code.component';
+import  OrderDescriptionComponent  from './order-description.component';
 
-describe('ZipCodeComponent', () => {
-  let component: ZipCodeComponent;
-  let fixture: ComponentFixture<ZipCodeComponent>;
+describe('OrderDescriptionComponent', () => {
+  let component: OrderDescriptionComponent;
+  let fixture: ComponentFixture<OrderDescriptionComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ZipCodeComponent]
+      imports: [OrderDescriptionComponent]
     })
     .compileComponents();
     
-    fixture = TestBed.createComponent(ZipCodeComponent);
+    fixture = TestBed.createComponent(OrderDescriptionComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

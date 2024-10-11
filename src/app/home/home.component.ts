@@ -7,6 +7,7 @@ import { Router, RouterLink } from '@angular/router';
 import { CategoryService } from '../services/category.service';
 import { AuthService } from '../services/auth.service';
 import { ModalComponent } from '../shared/modal/modal.component';
+import { OrderService } from '../services/order.service';
 
 @Component({
   selector: 'app-home',
@@ -33,7 +34,8 @@ export default class HomeComponent {
  constructor(
     private router: Router,
     private category: CategoryService,
-    private auth : AuthService
+    private auth : AuthService,
+    private orderService: OrderService
   ){
 
   
@@ -52,8 +54,9 @@ export default class HomeComponent {
   //this.listServices = this.category.getCategory();
 }
   navigateToServices(item: any) {
-   // this.category.changeCategory(item)
-    console.log(item)
-    this.router.navigate(['/service-request/zip-code'], { queryParams: { id: item.id, name: item.name } });
+ 
+    this.router.navigate(['/orders/multi']);
+    this.orderService.updateDataOrder('categoryId',item.id);
+    this.orderService.updateDataOrder('categoryName',item.name );
   }
 }
