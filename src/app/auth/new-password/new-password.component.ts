@@ -5,6 +5,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { ActivatedRoute } from '@angular/router';
 import { HeaderComponent } from '../../shared/header/header.component';
 import { isPlatformBrowser } from '@angular/common';
+import { errorMonitor } from 'events';
 
 
 @Component({
@@ -25,31 +26,32 @@ export class NewPasswordComponent {
   alertMessage = '';
   alertTimeout: any;
   tokenPassword: string | null = '';
-  
+
   constructor(
-    private route: ActivatedRoute, 
-    private authService:  AuthService,
+    private route: ActivatedRoute,
+    private authService: AuthService,
     @Inject(PLATFORM_ID) private platformId: Object,
     private transferState: TransferState
-  ){
-    
+  ) {
+
   }
   ngOnInit(): void {
 
-      if (this.tokenPassword) {
-        this.tokenPassword = this.route.snapshot.paramMap.get('id');
-        localStorage.setItem('token', this.tokenPassword || '');
+    if (this.tokenPassword) {
+      this.tokenPassword = this.route.snapshot.paramMap.get('id');
+      localStorage.setItem('token', this.tokenPassword || '');
 
-        
-      }     
+
+    }
   }
   newPasswordForm = new FormGroup({
-    
+
     newPassword: new FormControl(
-      '', [Validators.required,Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{6,15}$/)],
+      '', [Validators.required, Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{6,15}$/)],
     ),
-    confirmNewPassword: new FormControl('', [Validators.required,Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{6,15}$/)])
-  }, { validators: this.passwordMatchValidator 
+    confirmNewPassword: new FormControl('', [Validators.required, Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{6,15}$/)])
+  }, {
+    validators: this.passwordMatchValidator
 
   });
   passwordMatchValidator(control: AbstractControl): { [key: string]: boolean } | null {
@@ -58,61 +60,57 @@ export class NewPasswordComponent {
 
     const confirmPassword = formGroup.get('confirmNewPassword')!.value;
     const controlConfirmPassword = formGroup.get('confirmNewPassword');
-    
-    if(password === confirmPassword ){
- 
+
+    if (password === confirmPassword) {
+
       controlConfirmPassword?.setErrors(null)
       return null;
-    }else{
-     
-     
-      controlConfirmPassword?.setErrors( { mismatch: true })
+    } else {
+
+
+      controlConfirmPassword?.setErrors({ mismatch: true })
       return { mismatch: true }
     }
-    
+
   }
 
-  
- 
   onSubmit() {
-      // TODO: Use EventEmitter with form value
-      this.isLoading = true; 
-      const formData = this.newPasswordForm.value;
-      if(this.newPasswordForm.valid){
-      
+    // TODO: Use EventEmitter with form value
+    this.isLoading = true;
+    const formData = this.newPasswordForm.value;
+    if (this.newPasswordForm.valid) {
       const password: any = {
-       
         password: formData.newPassword || '',
-       
       };
       this.authService.postNewPassword(password).subscribe({
-        next: (response) => {
-          this.alertMessage = 'alert-success'
-          this.backendMessage = response.message; 
-          console.log(response)
-          this.isLoading = false; 
-          this.startAlertTimer();
-          
-        },
-        error: (error) => {  
-          this.alertMessage = 'alert-danger'
-          this.backendMessage = error.error.message; 
-          this.isLoading = false; 
-          this.startAlertTimer();
-        }
+        next: (response) => this.handleSuccessfulSubmission(response),
+        error: (error) => this.handleError(error)
       });
     }
-    
-    }
-    startAlertTimer() {
-      if (this.alertTimeout) {
-        clearTimeout(this.alertTimeout); 
-      }
-      this.alertTimeout = setTimeout(() => {
-        this.backendMessage = '';
-      }, 3000); 
-    }
+
   }
+  handleSuccessfulSubmission(response: any) {
+    this.alertMessage = 'alert-success';
+    this.backendMessage = response.message || 'New password successfully';
+    this.isLoading = false;
+    this.startAlertTimer();
+  }
+
+  handleError(error: any) {
+    this.alertMessage = 'alert-danger';
+    this.backendMessage = error.error.message || 'An error occurred';
+    this.isLoading = false;
+    this.startAlertTimer();
+  }
+  startAlertTimer() {
+    if (this.alertTimeout) {
+      clearTimeout(this.alertTimeout);
+    }
+    this.alertTimeout = setTimeout(() => {
+      this.backendMessage = '';
+    }, 3000);
+  }
+}
 
 
 

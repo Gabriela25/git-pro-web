@@ -47,7 +47,7 @@
                                 <div class="form-group text-center position-relative">
                                     <div class="mb-3">
                                         <div class="position-relative d-inline-block">
-                                            <img [src]="previewImg || imagePersonal || 'assets/avatar_profile.png'"
+                                            <img [src]="previewImgPersonal || imagePersonal || 'assets/avatar_profile.png'"
                                                 alt="Vista Previa" alt="Vista Previa" class="rounded-circle mb-3"
                                                 width="100" height="100" (click)="triggerFileInputP()">
                                             <i class="bi bi-pen position-absolute"
@@ -55,11 +55,12 @@
                                                 (click)="triggerFileInputP()"></i>
                                         </div>
                                         <input type="file" class="form-control" id="imagePersonal" #fileInputPersonal
-                                            formControlName="imagePersonal" (change)="onFileSelected($event)"
+                                             (change)="onFileSelected($event)"
                                             style="display: none;">
                                     </div>
                                 </div>
                             </div>
+
                             <div class="form-group">
                                 <div class="mb-3">
                                     <label for="category" class="form-label fw-bold">{{'profile.categories' |
@@ -178,7 +179,7 @@
                                 <div class="form-group text-center position-relative">
                                     <div class="mb-3">
                                         <div class="position-relative d-inline-block">
-                                            <img [src]="previewImg || imageBusiness || 'assets/avatar_profile.png'"
+                                            <img [src]="previewImgBusiness || imageBusiness || 'assets/avatar_profile.png'"
                                                 alt="Vista Previa" alt="Vista Previa" class="rounded-circle mb-3"
                                                 width="100" height="100" (click)="triggerFileInputB()">
                                             <i class="bi bi-pen position-absolute"
@@ -186,7 +187,7 @@
                                                 (click)="triggerFileInputB()"></i>
                                         </div>
                                         <input type="file" class="form-control" id="imageBusiness" #fileInputBusiness
-                                            formControlName="imageBusiness" (change)="onFileSelected($event)"
+                                            (change)="onFileSelected($event)"
                                             style="display: none;">
                                     </div>
                                 </div>

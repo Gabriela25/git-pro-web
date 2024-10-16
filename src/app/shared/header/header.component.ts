@@ -7,7 +7,7 @@ import { authStatus } from '../../enum/auth.enum';
 import { ModalComponent } from '../modal/modal.component';
 import { HttpClient } from '@angular/common/http';
 import { UserService } from '../../services/user.service';
-import { Modal } from 'bootstrap'; 
+import { Modal } from 'bootstrap';
 import { User } from '../../interface/user.interface';
 @Component({
   selector: 'app-header',
@@ -32,12 +32,12 @@ export class HeaderComponent implements OnInit {
   backendMessage = '';
   alertMessage = '';
   alertTimeout: any;
-  token: string= '';
-  isOpen : boolean = false;
+  token: string = '';
+  isOpen: boolean = false;
   isOnline: boolean = true;
   isPro: boolean = false;
   @ViewChild('modal') modal!: ModalComponent;
-  @ViewChild('profilePicModal') profilePicModal!:ElementRef;
+  @ViewChild('profilePicModal') profilePicModal!: ElementRef;
   @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
   @ViewChild('closebutton') closeButton!: ElementRef;
   constructor(
@@ -48,28 +48,28 @@ export class HeaderComponent implements OnInit {
   ) {
     this.trans.addLangs(['es', 'en']);
     this.isAuthenticated = this.authService.isAuthenticated()
-
+    console.log(this.isAuthenticated)
   }
   ngOnInit() {
 
     this.authService.user$.subscribe((data: any) => {
-
-      this.nameUser = data.name;
-      this.emailUser = data.email;
-      if( data.imagePersonal){
-        this.imagePersonal = data.imagePersonal
+      if (data) {
+        this.nameUser = data.user.name;
+        this.emailUser = data.user.email;
+        if (data.imagePersonal) {
+          this.imagePersonal = data.user.imagePersonal
+        }
+        this.isOnline = data.user.available
+        this.isPro = data.user.isPro || false;
       }
-      
-      this.isOnline =  data.available
-      this.isPro = data.isPro || false;
     });
-   
   }
 
 
+
   toggleOnlineStatus(): void {
-    this.isOnline = !this.isOnline;  
-    console.log( this.isOnline)
+    this.isOnline = !this.isOnline;
+    console.log(this.isOnline)
     const user: User = {
       id: '',
       firstname: '',
@@ -80,23 +80,23 @@ export class HeaderComponent implements OnInit {
         categories: [],
         zipcodeId: '',
         address: '',
-        imagePersonal:  '',
+        imagePersonal: '',
         introduction: '',
-        isBusiness:false,
-        available:this.isOnline
+        isBusiness: false,
+        available: this.isOnline
       }
     };
-    
+
     this.userService.putMe(user).subscribe({
       next: (response) => {
         console.log(response)
-      
+
       },
       error: (error) => {
-        
+
       }
     });
-  
+
 
   }
   switchLanguage(languaje: string) {
@@ -132,27 +132,27 @@ export class HeaderComponent implements OnInit {
   }
 
   saveProfilePic(): void {
-   
+
     if (this.selectedFile) {
       this.isLoading = true;
       const formData = new FormData();
       formData.append('file', this.selectedFile);
-      
+
       const files: any = {
         'file': this.selectedFile
       }
       this.userService.postUploads(formData, 'personal').subscribe({
         next: (response) => {
-         
-          if (response.user.profile?.imagePersonal != null) { 
-            this.authService.updateUserName('imagePersonal', `${response.user.profile.imagePersonal}` ); 
+
+          if (response.user.profile?.imagePersonal != null) {
+            this.authService.updateUser('imagePersonal', `${response.user.profile.imagePersonal}`);
           }
           this.alertMessage = 'alert-success'
-          this.backendMessage = 'Profile updated success'; 
-          this.isLoading = false; 
+          this.backendMessage = 'Profile updated success';
+          this.isLoading = false;
           this.close()
           this.startAlertTimer();
-          
+
         },
         error: (error) => {
           this.alertMessage = 'alert-danger'
@@ -161,23 +161,23 @@ export class HeaderComponent implements OnInit {
           this.startAlertTimer();
         }
       });
-      
+
 
     } else {
       alert('Por favor selecciona una imagen.');
     }
   }
   close() {
-  
+
     this.closeButton.nativeElement.click();
   }
   startAlertTimer() {
     if (this.alertTimeout) {
-      clearTimeout(this.alertTimeout); 
+      clearTimeout(this.alertTimeout);
     }
     this.alertTimeout = setTimeout(() => {
       this.backendMessage = '';
-    }, 3000); 
+    }, 3000);
   }
- 
+
 }

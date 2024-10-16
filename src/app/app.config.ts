@@ -14,6 +14,7 @@ import { provideAuth, getAuth } from '@angular/fire/auth';
 import { provideFirestore, getFirestore } from '@angular/fire/firestore';
 import { provideStorage, getStorage } from '@angular/fire/storage';
 import { NgxMaskDirective, provideEnvironmentNgxMask } from 'ngx-mask';
+import { AppModule } from './app.module';
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
 }
@@ -34,9 +35,6 @@ export const appConfig: ApplicationConfig = {
             deps: [HttpClient]
         }
     }),
-
-     
-
     ),
     {
       provide: 'SocialAuthServiceConfig',
@@ -62,7 +60,7 @@ export const appConfig: ApplicationConfig = {
     provideFirestore(() => getFirestore()),
     provideStorage(() => getStorage()),
     provideEnvironmentNgxMask(),
-    
+    importProvidersFrom(AppModule)
   ]
 };
 

@@ -38,22 +38,27 @@ export default class SignUpComponent  implements OnInit{
   backendMessage = '';
   alertMessage = '';
   alertTimeout: any;
-  //recaptchaToken: string|null='';
-  //siteKey: string = '6Lem3hsqAAAAAAsAG7jDfkCvssYtibGVCiSzTo5P'; 
+
   isBrowser: boolean= true;
+  signUpForm!: FormGroup;
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    //private socialService: SocialAuthService,
-    //private _recaptcha: RecaptchaService,
+  
     private platformService: PlatformService,
 
     private authService:  AuthService
       ){
-    this.isBrowser = this.platformService.isBrowser() 
-    console.log(this.platformService.isBrowser() )
+      this.initializeSignUpForm();
   }
-  signUp = new FormGroup({
+  ngOnInit(): void {
+    this.route.queryParamMap.subscribe((paramMap) => {
+      const paramValue = paramMap.get('isCustomer');
+      this.isCustomer = paramValue === 'true' ? true : paramValue === 'false' ? false : null;
+    });
+  }
+  initializeSignUpForm(){
+    this.signUpForm = new FormGroup({
       firstName: new FormControl('', [Validators.required]),
       lastName: new FormControl('', [Validators.required]),
       phone: new FormControl('', [Validators.required,Validators.min(10)]),
@@ -65,27 +70,10 @@ export default class SignUpComponent  implements OnInit{
       ),
       confirmPassword: new FormControl('', [Validators.required,Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{6,15}$/)])
     }, { validators: this.passwordMatchValidator });
-  
-  ngOnInit(): void {
-    
-    this.route.queryParamMap.subscribe((paramMap) => {
-     
-      const paramValue = paramMap.get('isCustomer');
-      this.isCustomer = paramValue === 'true' ? true : paramValue === 'false' ? false : null;
-      
-    });
-    /*this.socialService.authState.subscribe((user) => {
-      
-      this.user = user ? user : new SocialUser();
-      this.loggedIn = (user != null);
-      if (this.loggedIn) {
-        this.dataUser(user);
-      }
-    });*/
-    /*this.signUp.controls['recaptcha'].valueChanges.subscribe(value => {
-      this.recaptchaToken = value;
-    });*/
   }
+
+  
+ 
   passwordMatchValidator(control: AbstractControl): { [key: string]: boolean } | null {
     const formGroup = control as FormGroup;
     const password = formGroup.get('password')!.value;
@@ -98,8 +86,6 @@ export default class SignUpComponent  implements OnInit{
       controlConfirmPassword?.setErrors(null)
       return null;
     }else{
-     
-     
       controlConfirmPassword?.setErrors( { mismatch: true })
       return { mismatch: true }
     }
@@ -108,7 +94,7 @@ export default class SignUpComponent  implements OnInit{
   onSubmit() {
     // TODO: Use EventEmitter with form value
     this.isLoading = true; 
-    const formData = this.signUp.value;
+    const formData = this.signUpForm.value;
     const user: User = {
       firstname:formData.firstName || '',
       lastname: formData.lastName || '',
@@ -118,33 +104,21 @@ export default class SignUpComponent  implements OnInit{
       enabled: false
     };
     this.authService.postRegister(user).subscribe({
-      next: (response) => {
-        /*this.alertMessage = 'alert-success'
-        this.backendMessage = response.message; */
-        this.isLoading = false; 
-        this.router.navigate(['/auth/verify-email']);
-        //this.startAlertTimer();
-      },
-      error: (error) => {
-        console.log(error)
-        this.alertMessage = 'alert-danger'
-        this.backendMessage = error.error.message; 
-        this.isLoading = false; 
-        this.startAlertTimer();
-      }
+      next: (response) => this.handleSuccessfulSubmission(response),
+      error: (error) =>this.handleError(error)
     });
-    /*if(this.signUp.value.recaptcha){
-      const data ={
-        token : this.signUp.value.recaptcha
-      }
-      this._recaptcha.getRecaptcha(data).subscribe((resp)=>{
-        if(resp.message){
-          console.log('procesamos el formulario') 
-          //this.authService.postRegister()
-        }
-      })
-    }*/
-    //this.recaptcha.getRecaptcha(this.signUp.value)
+    
+  }
+  handleSuccessfulSubmission(response: any) {
+   
+    this.isLoading = false; 
+    this.router.navigate(['/auth/verify-email']);
+  }
+  handleError(error: any) {
+    this.alertMessage = 'alert-danger';
+    this.backendMessage = error.error.message || 'An error occurred';
+    this.isLoading = false;
+    this.startAlertTimer();
   }
   startAlertTimer() {
     if (this.alertTimeout) {
@@ -154,24 +128,8 @@ export default class SignUpComponent  implements OnInit{
       this.backendMessage = '';
     }, 3000); 
   }
- 
-  onCaptchaResolved(recaptchaToken: any) {
-   
-    console.log(recaptchaToken)
-    //this.http.post('/verify-recaptcha', { recaptchaToken }).subscribe(response => {
-      //console.log('Backend response:', response);
-   // });
-  }
-
-  signInWithGoogle(): void {
-   // this.socialService.signIn(GoogleLoginProvider.PROVIDER_ID);
-  }
-
-  dataUser(user: SocialUser) {
-    console.log(user)
-    
-  }
   signOut(){
-    //this.socialService.signOut();
+
   }
+  
 }

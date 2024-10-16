@@ -27,10 +27,11 @@
                                 <div class="mb-3">
                                     <label for="serviceId" class="form-label fw-bold">{{'payment.plans'|
                                         translate}}</label>
-                                    <select class="form-select" aria-label="select" id="serviceId"
+                                    <select class="form-select" aria-label="select" id="serviceId" (change)="onService()"
                                         formControlName="serviceId">
+                                        <option [ngValue]="null">Select</option>
                                         @for (item of listServices; track item) {
-                                        <option [value]="item.id">{{item.name}} - {{item.price}}</option>
+                                        <option [ngValue]="item">{{item.name}} - {{item.price}}</option>
                                         }
 
                                     </select>
@@ -50,7 +51,7 @@
 
                                 <div class="mb-3">
 
-                                    <div class="accordion" id="accordionPanelsStayOpenExample">
+                                    <div class="accordion" id="accordionPayment">
                                         @for (item of paymentMethod; track item) {
                                         <div class="accordion-item">
                                             <h2 class="accordion-header" id="heading{{item.key}}">
@@ -63,7 +64,7 @@
                                                     {{item.value}}
                                                 </button>
                                             </h2>
-                                            <div id="collapse{{item.key}}"
+                                            <div id="collapse{{item.key}}" data-bs-parent="#accordionPayment"
                                                 class="accordion-collapse collapse {{item.key === 'cash' ? 'show' : ''}}">
                                                 <div class="accordion-body">
                                                     @if(item.key === 'cash'){
@@ -74,6 +75,9 @@
                                                                 translate}}</label>
                                                             <input type="text" class="form-control" placeholder=""
                                                                 id="reference" formControlName="reference" />
+                                                            <div id="referencetHelp" class="form-text">
+                                                                Enter your payment reference number
+                                                                </div>    
                                                             @if(paymentForm.get('reference')?.invalid &&
                                                             (paymentForm.get('reference')?.dirty ||
                                                             paymentForm.get('reference')?.touched
@@ -92,7 +96,10 @@
                                                                 class="form-label fw-bold">{{'payment.amount' |
                                                                 translate}}</label>
                                                             <input type="text" class="form-control" placeholder=""
-                                                                id="amount" formControlName="amount" />
+                                                                id="amount" formControlName="amount" (input)="calculateWeek()"/>
+                                                            <div id="amountHelp" class="form-text">
+                                                                Enter multiples of {{price}} US$ to cover your leads.
+                                                             </div>
                                                             @if(paymentForm.get('amount')?.invalid &&
                                                             (paymentForm.get('amount')?.dirty
                                                             || paymentForm.get('amount')?.touched )){
@@ -106,6 +113,14 @@
                                                             }
                                                         </div>
                                                     </div>
+                                                    <div class="mb-3">
+                                                        <label for="week" class="form-label fw-bold">Weeks completed</label>
+                                                        <input type="text" class="form-control" id="week" readonly [value]="weeks">
+                                                    </div>
+                                                    <div *ngIf="remainingAmount > 0" class="alert alert-info mt-3">
+                                                        The difference in <strong>{{ formattedAmount }}</strong> will be accumulated until another week is completed, for plan {{nameService}}.
+                                                      </div>
+                                                   
                                                     }
                                                     @else {<strong>Atención: </strong> Próximamente podrás hacer estos
                                                     pagos}
@@ -151,6 +166,7 @@
                                       <tr>
                                         <th scope="col">#</th>
                                         <th scope="col">Amount</th>
+                                        <th scope="col">Surplus</th>
                                         <th scope="col">Status</th>
                                         <th scope="col">Activation date </th>
                                         <th scope="col">Expiration date</th>
@@ -161,6 +177,12 @@
                                       <tr>
                                         <th scope="row">{{i+1}}</th>
                                         <td>{{ item.amount | currency:'USD':'symbol':'1.2-2' }}</td>
+                                        @if( item.surplus! > 0){
+                                            <td>{{ item.surplus| currency:'USD':'symbol':'1.2-2' }}</td>
+                                        }
+                                        @else{
+                                            <td></td>    
+                                        }
                                         <td>{{item.status}}</td>
                                         <td>{{ item.activationDate | date: 'dd/MM/yyyy hh:mm a' }}</td>
                                         <td>{{ item.expirationDate | date: 'dd/MM/yyyy hh:mm a' }}</td>

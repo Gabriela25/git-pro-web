@@ -17,31 +17,29 @@ export class VerifyAccountComponent implements OnInit {
   messageAccount: string = '';
   constructor(
     private route: ActivatedRoute,
-    private auth: AuthService) { }
+    private auth: AuthService) {
+     
+  }
 
   ngOnInit(): void {
+    this.initializeVeryAccount();   
+  }
+  initializeVeryAccount(){
     this.tokenAccount = this.route.snapshot.paramMap.get('id');
-    
+   
     if (this.tokenAccount) {
       localStorage.setItem('token', this.tokenAccount);
-
+      console.log( 'token antes: ',localStorage.getItem('token'))
       this.auth.getVerifyAccount().subscribe({
-        next: (response) => {
-          this.messageAccount = 'Your account has been successfully verified';
-          
-          
-         
-          
-         
-        },
+        next: (response) => this.messageAccount = 'Your account has been successfully verified',
+           
         error: (error) => {
-          this.messageAccount= "There was an error verifying the account";
-          
+          console.log(error)
+          this.messageAccount= "There was an error verifying the account"
         }
-       
       });
-      localStorage.removeItem('token')
+      
     }
-    
+    //localStorage.removeItem('token')
   }
 }

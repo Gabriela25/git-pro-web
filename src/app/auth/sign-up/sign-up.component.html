@@ -1,7 +1,6 @@
-
 <div class="container-degradado p-5">
     <div class="row">
-        <div class="col-lg-1 d-none d-lg-block">    
+        <div class="col-lg-1 d-none d-lg-block">
         </div>
         <div class="col-lg-3">
             <a routerLink="/">
@@ -9,15 +8,16 @@
             </a>
         </div>
         <div class="col-12 col-lg-6 p-5   text-light-emphasis bg-white rounded container-box">
-            <form [formGroup]="signUp" (ngSubmit)="onSubmit()" autocomplete="off" method="post">
+            <form [formGroup]="signUpForm" (ngSubmit)="onSubmit()" autocomplete="off" method="post">
                 <div class="row mb-3">
                     <div class="col-12 col-lg-6">
                         <label for="firstName" class="form-label fw-bold">{{'auth.firstName' | translate}}</label>
                         <input type="text" class="form-control" placeholder="" id="firstName"
                             formControlName="firstName" />
-                        @if(signUp.get('firstName')?.invalid && (signUp.get('firstName')?.dirty || signUp.get('firstName')?.touched )){
+                        @if(signUpForm.get('firstName')?.invalid && (signUpForm.get('firstName')?.dirty ||
+                        signUpForm.get('firstName')?.touched )){
                         <div class="alert alert-danger mt-2 mt-2">
-                            @if(signUp.get('firstName')?.errors?.['required']){
+                            @if(signUpForm.get('firstName')?.errors?.['required']){
                             <span>
                                 {{'auth.isFirstNameRequired' | translate}}
                             </span>
@@ -27,11 +27,12 @@
                     </div>
                     <div class="col-12 col-lg-6">
                         <label for="lastName" class="form-label fw-bold">{{'auth.lastName' | translate}}</label>
-                        <input type="text" class="form-control" placeholder="" id="lastName" 
+                        <input type="text" class="form-control" placeholder="" id="lastName"
                             formControlName="lastName" />
-                        @if(signUp.get('lastName')?.invalid && (signUp.get('lastName')?.dirty || signUp.get('lastName')?.touched )){
+                        @if(signUpForm.get('lastName')?.invalid && (signUpForm.get('lastName')?.dirty ||
+                        signUpForm.get('lastName')?.touched )){
                         <div class="alert alert-danger mt-2">
-                            @if(signUp.get('lastName')?.errors?.['required']){
+                            @if(signUpForm.get('lastName')?.errors?.['required']){
                             <span>
                                 {{'auth.isLastNameRequired' | translate}}
                             </span>
@@ -45,22 +46,22 @@
                 </div>
                 <div class="mb-3">
                     <label for="phone" class="form-label fw-bold">{{'auth.phone' | translate}}</label>
-                    <input type="tel" class="form-control" id="phone" placeholder="(123) 4567890"  mask="(000) 000-0000"  formControlName="phone"
-                       />
-                    
+                    <input type="tel" class="form-control" id="phone" placeholder="(123) 4567890" mask="(000) 000-0000"
+                        formControlName="phone" />
+
                 </div>
                 <div class="mb-3">
                     <label for="email" class="form-label fw-bold">{{'auth.email' | translate}}</label>
-                    <input type="email" class="form-control" id="email" placeholder="Email" 
-                        formControlName="email" />
-                    @if(signUp.get('email')?.invalid && (signUp.get('email')?.dirty || signUp.get('email')?.touched )){
+                    <input type="email" class="form-control" id="email" placeholder="Email" formControlName="email" />
+                    @if(signUpForm.get('email')?.invalid && (signUpForm.get('email')?.dirty ||
+                    signUpForm.get('email')?.touched )){
                     <div class="alert alert-danger mt-2">
-                        @if(signUp.get('email')?.errors?.['required']){
+                        @if(signUpForm.get('email')?.errors?.['required']){
                         <span>
                             {{'auth.isEmailRequired' | translate}}
                         </span>
                         }
-                        @if(signUp.get('email')?.errors?.['email']){
+                        @if(signUpForm.get('email')?.errors?.['email']){
                         <span>
                             {{'auth.isEmailValid' | translate}}
                         </span>
@@ -71,105 +72,107 @@
                 </div>
                 <div class="mb-3">
                     <label for="password" class="form-label fw-bold">{{'auth.password' | translate}}</label>
-                    <input type="password" class="form-control" id="password" placeholder="" type="password" minlength="6"
-                        formControlName="password" />
-                    @if(signUp.get('password')?.invalid && (signUp.get('password')?.dirty ||
-                    signUp.get('password')?.touched )){
+                    <input type="password" class="form-control" id="password" placeholder="" type="password"
+                        minlength="6" formControlName="password" />
+                    @if(signUpForm.get('password')?.invalid && (signUpForm.get('password')?.dirty ||
+                    signUpForm.get('password')?.touched )){
                     <div class="alert alert-danger mt-2">
-                        @if(signUp.get('password')?.errors?.['required']){
+                        @if(signUpForm.get('password')?.errors?.['required']){
                         <span>
                             {{'auth.isPasswordRequired' | translate}}
                         </span>
                         }
-                        @if(signUp.get('password')?.errors?.['pattern']){
-                            <ul>
-                                <li>{{'auth.minimum6Characters' | translate}}</li>
-                                <li>{{'auth.maximum15Characters' | translate}}</li>
-                                <li>{{'auth.atLeastOneUppercaseLetter' | translate}}</li>
-                                <li>{{'auth.oneLowercaseLetterAndOneNumber' | translate}}</li>
-                            </ul>
-                            }
+                        @if(signUpForm.get('password')?.errors?.['pattern']){
+                        <ul>
+                            <li>{{'auth.minimum6Characters' | translate}}</li>
+                            <li>{{'auth.maximum15Characters' | translate}}</li>
+                            <li>{{'auth.atLeastOneUppercaseLetter' | translate}}</li>
+                            <li>{{'auth.oneLowercaseLetterAndOneNumber' | translate}}</li>
+                        </ul>
+                        }
                     </div>
                     }
                 </div>
                 <div class="mb-3">
-                    <label for="confirmPassword" class="form-label fw-bold">{{'auth.confirmPassword' | translate}}</label>
-                    <input type="password" class="form-control" id="confirmPassword" placeholder="" type="password" minlength="6"
-                        formControlName="confirmPassword" />
-                    @if(signUp.get('confirmPassword')?.invalid && (signUp.get('confirmPassword')?.dirty ||
-                    signUp.get('confirmPassword')?.touched )){
+                    <label for="confirmPassword" class="form-label fw-bold">{{'auth.confirmPassword' |
+                        translate}}</label>
+                    <input type="password" class="form-control" id="confirmPassword" placeholder="" type="password"
+                        minlength="6" formControlName="confirmPassword" />
+                    @if(signUpForm.get('confirmPassword')?.invalid && (signUpForm.get('confirmPassword')?.dirty ||
+                    signUpForm.get('confirmPassword')?.touched )){
                     <div class="alert alert-danger mt-2">
-                        @if(signUp.get('confirmPassword')?.errors?.['required']){
+                        @if(signUpForm.get('confirmPassword')?.errors?.['required']){
                         <span>
                             {{'auth.isPasswordRequired' | translate}}
                         </span>
-                        
-                        }
-                        @if(signUp.get('password')?.errors?.['pattern']){
-                            <ul>
 
-                                <li>{{'auth.minimum6Characters' | translate}}</li>
-                                <li>{{'auth.maximum15Characters' | translate}}</li>
-                                <li>{{'auth.atLeastOneUppercaseLetter' | translate}}</li>
-                                <li>{{'auth.oneLowercaseLetterAndOneNumber' | translate}}</li>
-                            </ul>
-                            } 
-                        @if(signUp.get('confirmPassword')?.errors?.['mismatch']){
-                            <span>
-                                {{'auth.thePasswordsDoNotMatch' | translate}}
-                            </span>
-                            }
+                        }
+                        @if(signUpForm.get('password')?.errors?.['pattern']){
+                        <ul>
+
+                            <li>{{'auth.minimum6Characters' | translate}}</li>
+                            <li>{{'auth.maximum15Characters' | translate}}</li>
+                            <li>{{'auth.atLeastOneUppercaseLetter' | translate}}</li>
+                            <li>{{'auth.oneLowercaseLetterAndOneNumber' | translate}}</li>
+                        </ul>
+                        }
+                        @if(signUpForm.get('confirmPassword')?.errors?.['mismatch']){
+                        <span>
+                            {{'auth.thePasswordsDoNotMatch' | translate}}
+                        </span>
+                        }
                     </div>
                     }
                 </div>
 
                 <div class="mb-3">
-                    
+
                     <div class="form-check">
                         <input class="form-check-input" type="checkbox" value="" id="isTerm" formControlName="isTerm">
                         <label class="form-check-label" for="isTerm">
-                            <a href="http://" class="link-underline-opacity-0 link-secondary">I accept terms and conditions</a>
+                            <a href="http://" class="link-underline-opacity-0 link-secondary">I accept terms and
+                                conditions</a>
                         </label>
-                      </div>
+                    </div>
                 </div>
 
-                
+
                 <div class="d-grid mt-3">
-                    <button class="btn btn-primary" type="submit" [disabled]="!signUp.valid || isLoading">{{'auth.signUp'
+                    <button class="btn btn-primary" type="submit"
+                        [disabled]="!signUpForm.valid || isLoading">{{'auth.signUp'
                         | translate}}</button>
-                     <div class="mt-3 d-flex justify-content-center">
-                        <a routerLink="/auth/login"  aria-current="page" class="link-underline-opacity-0 link-secondary">{{'auth.login' | translate}}</a>
+                    <div class="mt-3 d-flex justify-content-center">
+                        <a routerLink="/auth/login" aria-current="page"
+                            class="link-underline-opacity-0 link-secondary">{{'auth.login' | translate}}</a>
                     </div>
                 </div>
                 @if(isCustomer){
-                    <div class="mt-3 d-flex justify-content-center">
-                        <a routerLink="/auth" aria-current="page" class="link-underline-opacity-0 link-secondary">{{'auth.login' |
-                            translate}}</a>
-                    </div>
+                <div class="mt-3 d-flex justify-content-center">
+                    <a routerLink="/auth" aria-current="page"
+                        class="link-underline-opacity-0 link-secondary">{{'auth.login' |
+                        translate}}</a>
+                </div>
                 }
             </form>
-            @if(isLoading){       
-                <div class="d-flex justify-content-center mt-3">
-                    <div class="spinner-border" role="status"> 
-                    </div>
+            @if(isLoading){
+            <div class="d-flex justify-content-center mt-3">
+                <div class="spinner-border" role="status">
                 </div>
+            </div>
             }
-            @if(backendMessage){    
-            <div  class="alert {{alertMessage}} mt-3">
+            @if(backendMessage){
+            <div class="alert {{alertMessage}} mt-3">
                 {{ backendMessage }}
-              </div>
+            </div>
             }
             @if(loggedIn){
-                <div class="mt-3 text-center">
-                    <button  class="btn btn-primary"(click)="signOut()">Cerrar sesión</button>
-                </div>
+            <div class="mt-3 text-center">
+                <button class="btn btn-primary" (click)="signOut()">Cerrar sesión</button>
+            </div>
             }
 
         </div>
-       
-       
         <div class="col-lg-1 d-none d-lg-block">
-          
         </div>
     </div>
 </div>

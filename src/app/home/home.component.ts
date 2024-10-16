@@ -8,6 +8,7 @@ import { CategoryService } from '../services/category.service';
 import { AuthService } from '../services/auth.service';
 import { ModalComponent } from '../shared/modal/modal.component';
 import { OrderService } from '../services/order.service';
+import { SocketComponent } from '../shared/socket/socket.component';
 
 @Component({
   selector: 'app-home',
@@ -16,7 +17,7 @@ import { OrderService } from '../services/order.service';
     RouterLink,
     HeaderComponent,
     ModalComponent,
-
+    SocketComponent
   ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'

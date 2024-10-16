@@ -38,8 +38,6 @@ export default class MultiFormComponent {
   selectedFile: File | null = null;
   previewImg: string | ArrayBuffer | null = null;
   selectedOption: any;
- 
-  
   isLoading = false;
   backendMessage = '';
   alertMessage = '';

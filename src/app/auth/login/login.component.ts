@@ -44,63 +44,65 @@ export default class LoginComponent {
   
  
   onSubmit() {
-      // TODO: Use EventEmitter with form value
-      this.isLoading = true; 
-      const formData = this.loginForm.value;
+    this.isLoading = true; 
+    const formData = this.loginForm.value;
+  
+    const auth: Login = {
+      email: formData.email || '',   
+      password: formData.password || '',
+    };
+  
+    this.authService.postLogin(auth).subscribe({
+      next: (response) => {
+        this.isLoading = false; 
+        this.token = response.token;
+        localStorage.setItem('token', this.token);
+        
+        
+    
+        const userData = {
+          name: `${response.user.firstname} ${response.user.lastname}`,
+          email: response.user.email,
+          imagePersonal: response.user.profile?.imagePersonal || null,
+          isPro: !!response.user.profile?.id, 
+          available: response.user.profile?.available || false
+        };
+  
       
-      const auth: Login = {
-        email: formData.email || '',   
-        password: formData.password || '',
-       
-      };
-      this.authService.postLogin(auth).subscribe({
-        next: (response) => {
-          /*this.alertMessage = 'alert-success'
-          this.backendMessage = response.message; */
-          
-          this.isLoading = false; 
-          this.token = response.token;
-          localStorage.setItem('token', this.token);
-          this.authService.updateUserName('name', `${response.user.firstname} ${response.user.lastname}`);
-          this.authService.updateUserName('email', `${response.user.email}`,);
-          this.userService.getMe().subscribe({
-            next: (response) => {
-              if (response.user.profile?.id != null) {  
-                this.authService.updateUserName('isPro', true );
-              }
-              if (response.user.profile?.imagePersonal != null) {  
-                this.authService.updateUserName('imagePersonal', response.user.profile.imagePersonal );
-              }
-              
-              this.authService.updateUserName('available', response.user.profile?.available );
-            },
-            error: (error) => {
-              console.log(error);
+        this.userService.getMe().subscribe({
+          next: (userResponse) => {
+            const profile = userResponse.user.profile;
+            
+            if (profile?.id != null) {  
+              userData.isPro = true; 
             }
+            if (profile?.imagePersonal) { 
+              userData.imagePersonal = profile.imagePersonal;
+              console.log(userData.imagePersonal);
+            }
+            userData.available = profile?.available || false;
+  
+            
+            localStorage.setItem('user', JSON.stringify(userData)); 
+            
+            
+            this.authService.updateUser('user', userData);
+          },
+          error: (error) => console.log(error)
         });
-          
+  
+       
         this.router.navigate(['/']);
-
-        },
-        error: (error) => {  
-          this.alertMessage = 'alert-danger'
-          this.backendMessage = error.error.message; 
-          this.isLoading = false; 
-          this.startAlertTimer();
-        }
-      });
-      /*if(this.registerForm.value.recaptcha){
-        const data ={
-          token : this.registerForm.value.recaptcha
-        }
-        this._recaptcha.getRecaptcha(data).subscribe((resp)=>{
-          if(resp.message){
-            console.log('procesamos el formulario') 
-            //this.authService.postRegister()
-          }
-        })
-      }*/
-      //this.recaptcha.getRecaptcha(this.registerForm.value)
+      },
+      error: (error) => this.handleError(error)
+    });
+  }
+  
+    handleError(error: any) {
+      this.alertMessage = 'alert-danger';
+      this.backendMessage = error.error.message || 'An error occurred';
+      this.isLoading = false;
+      this.startAlertTimer();
     }
     startAlertTimer() {
       if (this.alertTimeout) {
@@ -111,4 +113,3 @@ export default class LoginComponent {
       }, 3000); 
     }
   }
-

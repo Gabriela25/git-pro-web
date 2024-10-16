@@ -46,36 +46,37 @@ export default class PasswordRecoveryComponent {
 
       this.authService.resetPassword(email).subscribe({
         next: (response) => {
-          /*this.alertMessage = 'alert-success'
-          this.backendMessage = response.message; */
-          console.log(response)
-          this.isLoading = false; 
-          
-          //this.router.navigate(['/']);
-          
-          this.startAlertTimer();
           if(this.recoveryPasswordForm.valid){
-            this.message = `<h1>Check your email</h1>
-            <p>  Thanks. If there's an account associated with this email address, we'll send the password reset instructions.</p>`
+            this.handleSuccessfulSubmission(response)
           }
         },
-        error: (error) => {  
-          this.alertMessage = 'alert-danger'  
-          this.backendMessage = error.error.message; 
-          this.isLoading = false; 
-          this.startAlertTimer();
-        }
+        error: (error) =>this.handleError(error)
       });
       
       
   }
-    startAlertTimer() {
-      if (this.alertTimeout) {
-        clearTimeout(this.alertTimeout); 
-      }
-      this.alertTimeout = setTimeout(() => {
-        this.backendMessage = '';
-      }, 3000); 
-    }
+  handleSuccessfulSubmission(response: any) {
+    this.isLoading = false; 
+    this.alertMessage = 'alert-success';
+    this.message = `<h1>Check your email</h1>
+    <p>  Thanks. If there's an account associated with this email address, we'll send the password reset instructions.</p>`
   }
+   
+  
+
+  handleError(error: any) {
+    this.alertMessage = 'alert-danger';
+    this.backendMessage = error.error.message || 'An error occurred';
+    this.isLoading = false;
+    this.startAlertTimer();
+  }
+  startAlertTimer() {
+    if (this.alertTimeout) {
+      clearTimeout(this.alertTimeout); 
+    }
+    this.alertTimeout = setTimeout(() => {
+      this.backendMessage = '';
+    }, 3000); 
+  }
+}
 

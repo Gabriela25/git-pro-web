@@ -1,0 +1,7 @@
+<div>
+    <textarea id="mensajes" rows="4" style="width: 300px;" [value]="messages.join('\n')" readonly></textarea>
+    <br>
+    <input type="text" [(ngModel)]="myMessage" placeholder="Type your message">
+    <br>
+    <button (click)="sendMessage()">Send</button>
+  </div>

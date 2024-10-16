@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import GetLeadsComponent from './get-leads.component';
+import { SocketComponent } from './socket.component';
 
-describe('GetLeadsComponent', () => {
-  let component: GetLeadsComponent;
-  let fixture: ComponentFixture<GetLeadsComponent>;
+describe('SocketComponent', () => {
+  let component: SocketComponent;
+  let fixture: ComponentFixture<SocketComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [GetLeadsComponent]
+      imports: [SocketComponent]
     })
     .compileComponents();
     
-    fixture = TestBed.createComponent(GetLeadsComponent);
+    fixture = TestBed.createComponent(SocketComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

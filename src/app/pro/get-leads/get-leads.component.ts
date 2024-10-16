@@ -36,7 +36,11 @@ export default class GetLeadsComponent {
   currentStep: number = 1;
   listServices:Array<Service>= [];
   listPayment: Array<Payment> = [];
-
+  weeks: number =0;
+  remainingAmount: number = 0;
+  formattedAmount: string = '';
+  price :number= 0;
+  nameService: string = '';
   paymentMethod: Array<{ key: string, value: string }> = [
     { key: 'cash', value: 'Cash' },
     { key: 'card', value: 'Credit or Debit Card' },
@@ -51,42 +55,34 @@ export default class GetLeadsComponent {
 
   ) {
     this.paymentForm = this.fb.group({
-      serviceId: new FormControl([], [Validators.required]),
+      serviceId: new FormControl(null, [Validators.required]),
       reference: new FormControl('', [Validators.required]),
       amount: new FormControl('', [Validators.required]),
-     
     });
-    
   }
 
   ngOnInit(): void {
-
+    this.loadInitialData()
+  }
+  loadInitialData() {
     this.serviceService.getAllServices().subscribe({
-      next: (response) => {
-       this.listServices = response.services;
-  
-      },
-      error: (error) => {
-        console.log(error);
-      }
+      next: (response) => this.listServices = response.services,
+      error: (error) => console.error(error)
     });
     this.paymentService.getMePayment().subscribe({
       next: (response) => {
-       this.listPayment = response.payments;
-       console.log(response )
+        this.listPayment = response.payments.sort((a, b) => {
+          return new Date(b.activationDate ?? 0).getTime() - new Date(a.activationDate ?? 0).getTime();
+        });
+       
       },
       error: (error) => {
         console.log(error);
       }
     });
-    
+
   }
   
-  transformDate() {
-    const date = new Date('2024-09-21T11:00:00.000Z');
-    const formattedDate = this.datePipe.transform(date, 'dd/MM/yyyy hh:mm a');
-    console.log(formattedDate); // Muestra la fecha transformada
-  }
   previousStep() {
     if (this.currentStep > 1) {
       this.currentStep--;
@@ -94,49 +90,64 @@ export default class GetLeadsComponent {
   }
 
   goToStep(step: number) {
-    this.currentStep= step;
-    
+    this.currentStep= step;  
   }
-  
   onSubmit() {
     this.isLoading = true;
     if(this.paymentForm.valid){
-      
       const paymentMethod = 'cash';
       const status = 'pending';
       const formData = this.paymentForm.value;
       const payment: Payment = {
-
         serviceId: formData.serviceId ||'',
         amount: formData.amount ,
         paymentMethod: paymentMethod,
         status: status,
         reference: formData.reference || '',
-        
       };
       this.paymentService.postPayment(payment).subscribe({
         next: (response) => {
-          
-          const message = response.message;
-          this.alertMessage = 'alert-success'
-          this.backendMessage = message;
-          this.isLoading = false;
+          this.handleSuccessfulSubmission(response);
           this.listPayment.push(response.payment);
-          this.startAlertTimer();
-
         },
-        error: (error) => {
-          console.log(error)
-          this.alertMessage = 'alert-danger'
-          this.backendMessage = error.error.message;
-          this.isLoading = false;
-          this.startAlertTimer();
-        }
+        error: (error) => this.handleError(error)
       });
     }
   }
   
-  
+  calculateWeek(){
+
+  if( this.paymentForm.value.serviceId!= null){
+    this.price = this.paymentForm.value.serviceId.price;
+    this.nameService = this.paymentForm.value.serviceId.name;
+    const amount = this.paymentForm.value.amount;
+    if (amount) {
+        this.weeks = Math.floor(amount / this.price); 
+        this.remainingAmount = amount % this.price; 
+        this.formattedAmount = new Intl.NumberFormat('en-EN', { 
+          style: 'currency', 
+          currency: 'USD' 
+        }).format(this.remainingAmount);
+      }
+    }
+  }
+  onService(){
+    
+    this.calculateWeek()
+  }
+  handleSuccessfulSubmission(response: any) {
+    this.alertMessage = 'alert-success';
+    this.backendMessage = response.message || 'Profile updated successfully';
+    this.isLoading = false;
+    this.startAlertTimer();
+  }
+
+  handleError(error: any) {
+    this.alertMessage = 'alert-danger';
+    this.backendMessage = error.error.message || 'An error occurred';
+    this.isLoading = false;
+    this.startAlertTimer();
+  }
   startAlertTimer() {
     if (this.alertTimeout) {
       clearTimeout(this.alertTimeout);
