@@ -19,14 +19,14 @@ export class UploadsService {
   }
 
  
-  postUploads(body: FormData): Observable<{message:string}>{
+  postUploads(body: FormData): Observable<{uploads:any}>{
     
     const uploadOptions = {
       headers: {
         'Authorization': `Bearer ${this.token}`
       }
     };
-    return this._http.post<{message:string}>(`${this.apiUrlBackend}/pro/uploads/`,body, uploadOptions);
+    return this._http.post<{uploads:any}>(`${this.apiUrlBackend}/pro/uploads/`,body, uploadOptions);
   }
   
 }

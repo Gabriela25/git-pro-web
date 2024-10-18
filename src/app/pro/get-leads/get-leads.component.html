@@ -109,6 +109,21 @@
                                                                     {{'payment.isAmountRequired' | translate}}
                                                                 </span>
                                                                 }
+                                                                @if(paymentForm.get('amount')?.errors?.['notANumber']){
+                                                                <span>
+                                                                    
+                                                                    {{'payment.notANumber' | translate }} 
+                                                                    
+                                                                </span>
+                                                                }
+                                                                @if(paymentForm.get('amount')?.errors?.['amountInvalid']){
+                                                                    <span>
+                                                                       
+                                                                        {{'payment.amountInvalid' | translate }} {{ price }} US$. 
+                                                                       
+                                                                    </span>
+                                                                    }
+                                                               
                                                             </div>
                                                             }
                                                         </div>

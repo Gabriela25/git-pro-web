@@ -51,16 +51,15 @@ export class HeaderComponent implements OnInit {
     console.log(this.isAuthenticated)
   }
   ngOnInit() {
-
     this.authService.user$.subscribe((data: any) => {
       if (data) {
-        this.nameUser = data.user.name;
-        this.emailUser = data.user.email;
+        this.nameUser = data.name;
+        this.emailUser = data.email; 
         if (data.imagePersonal) {
-          this.imagePersonal = data.user.imagePersonal
+          this.imagePersonal = data.imagePersonal; 
         }
-        this.isOnline = data.user.available
-        this.isPro = data.user.isPro || false;
+        this.isOnline = data.available; 
+        this.isPro = data.isPro || false; 
       }
     });
   }
@@ -113,60 +112,9 @@ export class HeaderComponent implements OnInit {
     this.authService.authStatus = authStatus.notAuthenticated;
   }
 
-  onFileSelected(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    if (input.files && input.files[0]) {
-      const file = input.files[0];
-      this.selectedFile = file;
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        if (e.target?.result) {
-          this.previewImg = e.target.result;
-        }
-      };
-      reader.readAsDataURL(file);
-    }
-  }
-  triggerFileInput(): void {
-    this.fileInput.nativeElement.click();
-  }
+  
 
-  saveProfilePic(): void {
-
-    if (this.selectedFile) {
-      this.isLoading = true;
-      const formData = new FormData();
-      formData.append('file', this.selectedFile);
-
-      const files: any = {
-        'file': this.selectedFile
-      }
-      this.userService.postUploads(formData, 'personal').subscribe({
-        next: (response) => {
-
-          if (response.user.profile?.imagePersonal != null) {
-            this.authService.updateUser('imagePersonal', `${response.user.profile.imagePersonal}`);
-          }
-          this.alertMessage = 'alert-success'
-          this.backendMessage = 'Profile updated success';
-          this.isLoading = false;
-          this.close()
-          this.startAlertTimer();
-
-        },
-        error: (error) => {
-          this.alertMessage = 'alert-danger'
-          this.backendMessage = error.error.message;
-          this.isLoading = false;
-          this.startAlertTimer();
-        }
-      });
-
-
-    } else {
-      alert('Por favor selecciona una imagen.');
-    }
-  }
+  
   close() {
 
     this.closeButton.nativeElement.click();

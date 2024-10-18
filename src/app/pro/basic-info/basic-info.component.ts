@@ -6,6 +6,8 @@ import { TranslateModule } from '@ngx-translate/core';
 import { RouterLink } from '@angular/router';
 import { HeaderComponent } from '../../shared/header/header.component';
 import { SidebarComponent } from '../../sidebar/sidebar.component';
+import { NgxMaskDirective } from 'ngx-mask';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-basic-info',
@@ -14,6 +16,7 @@ import { SidebarComponent } from '../../sidebar/sidebar.component';
     ReactiveFormsModule,
     TranslateModule,
     RouterLink,
+    NgxMaskDirective,
     HeaderComponent,
     SidebarComponent,
   ],
@@ -49,7 +52,8 @@ export default class BasicInfoComponent implements OnInit {
   }
   constructor(
     private fb: FormBuilder,
-    private userService: UserService
+    private userService: UserService,
+    private authService: AuthService
   ) {
     this.initializebasicInfoForm();
     
@@ -70,16 +74,19 @@ export default class BasicInfoComponent implements OnInit {
   }
   checkUser() {
     this.userService.getMe().subscribe({
-      next: (response) => this.populateUser(response.user),
+      next: (response) => {
+        console.log(response)
+        this.populateUser(response.user)
+      },
       error: (error) => console.error(error)
     });
   }
   populateUser(user: User){
       this.basicInfoForm.patchValue({
-        firstname: this.user.firstname,
-        lastname: this.user.lastname,
-        phone: this.user.phone,
-        email: this.user.email,
+        firstname: user.firstname,
+        lastname: user.lastname,
+        phone: user.phone,
+        email: user.email,
     });
   }
  
@@ -104,7 +111,12 @@ export default class BasicInfoComponent implements OnInit {
         }
       };
       this.userService.putMe(user).subscribe({
-        next: (response) => this.handleSuccessfulSubmission(response),
+        next: (response) =>{
+          this.handleSuccessfulSubmission(response)
+          
+          this.authService.updateUser('name', `${response.user.firstname}  ${response.user.lastname}` );
+          this.authService.updateUser('email', `${response.user.email} ` );
+        },
         error: (error) => this.handleError(error)
       });
     }

@@ -124,9 +124,16 @@ export class AuthService {
   }
 
   updateUser(field: string, value: any): void {
-
     const currentUser = JSON.parse(localStorage.getItem('user') || '{}');
-    currentUser[field] = value;
+  
+    if (field === 'user') {
+    
+      Object.assign(currentUser, value); 
+    } else {
+    
+      currentUser[field] = value;
+    }
+  
     localStorage.setItem('user', JSON.stringify(currentUser));
     this._userSubject.next(currentUser);
   }

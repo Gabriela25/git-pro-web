@@ -75,7 +75,9 @@
     "amount":"Cantidad",
     "isPlanRequired":"El plan de pago es requerido",
     "isReferenceRequired":"La referencia es requerida",
-    "isAmountRequired":"La cantidad es requerida"
+    "isAmountRequired":"La cantidad es requerida",
+    "amountInvalid":"La cantidad debe ser mayor que",
+    "notANumber":"El campo debe ser numerico"
   }
  
 }

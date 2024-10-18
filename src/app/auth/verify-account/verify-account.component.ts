@@ -40,6 +40,6 @@ export class VerifyAccountComponent implements OnInit {
       });
       
     }
-    //localStorage.removeItem('token')
+    localStorage.removeItem('token')
   }
 }

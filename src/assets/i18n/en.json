@@ -80,7 +80,9 @@
     "amount":"Amount",
     "isPlanRequired":"Payment plan is required",
     "isReferenceRequired":"Reference is required",
-    "isAmountRequired":"The amount is required"
+    "isAmountRequired":"The amount is required",
+    "amountInvalid":"The amount must be greater than",
+    "notANumber":"The field must be numeric"
   }
     
     

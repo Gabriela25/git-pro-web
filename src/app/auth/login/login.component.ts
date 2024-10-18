@@ -57,9 +57,7 @@ export default class LoginComponent {
         this.isLoading = false; 
         this.token = response.token;
         localStorage.setItem('token', this.token);
-        
-        
-    
+  
         const userData = {
           name: `${response.user.firstname} ${response.user.lastname}`,
           email: response.user.email,
@@ -67,36 +65,34 @@ export default class LoginComponent {
           isPro: !!response.user.profile?.id, 
           available: response.user.profile?.available || false
         };
-  
-      
+        console.log(userData)
         this.userService.getMe().subscribe({
           next: (userResponse) => {
             const profile = userResponse.user.profile;
-            
+  
             if (profile?.id != null) {  
               userData.isPro = true; 
             }
             if (profile?.imagePersonal) { 
               userData.imagePersonal = profile.imagePersonal;
-              console.log(userData.imagePersonal);
             }
             userData.available = profile?.available || false;
   
+           
+            localStorage.setItem('user', JSON.stringify(userData));
             
-            localStorage.setItem('user', JSON.stringify(userData)); 
-            
-            
+      
             this.authService.updateUser('user', userData);
           },
           error: (error) => console.log(error)
         });
   
-       
         this.router.navigate(['/']);
       },
       error: (error) => this.handleError(error)
     });
   }
+  
   
     handleError(error: any) {
       this.alertMessage = 'alert-danger';

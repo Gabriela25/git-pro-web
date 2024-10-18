@@ -23,8 +23,8 @@
             <img [src]="imagePersonal || '../../../assets/avatar_profile.png'" alt="User Avatar" width="40" height="40"
               class="rounded-circle me-2 cursor-pointer" data-bs-toggle="dropdown" aria-expanded="false" style="cursor: pointer;">
             <ul class="dropdown-menu text-small">
-              <li><a class="dropdown-item" href="#"><i class="bi bi-person-circle"></i> {{ nameUser }}</a></li>
-              <li><a class="dropdown-item" href="#"><i class="bi bi-envelope"></i> {{ emailUser }}</a></li>
+              <li><a class="dropdown-item"><i class="bi bi-person-circle"></i> {{ nameUser }}</a></li>
+              <li><a class="dropdown-item"><i class="bi bi-envelope"></i> {{ emailUser }}</a></li>
               <li><a class="dropdown-item" routerLink="/pro/basic"><i class="bi bi-person"></i> {{'header.profile'|translate}}</a></li>
               <li><a class="dropdown-item" routerLink="/pro/become-to-pro/"><i class="bi bi-briefcase"></i> {{'header.becomeToPro'|translate}}</a></li>
               @if(isPro){

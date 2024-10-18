@@ -60,7 +60,7 @@
                                     <label for="phone" class="form-label fw-bold">{{'profile.phone' |
                                         translate}}</label>
                                     <input type="tel" class="form-control" id="phone" formControlName="phone" 
-                                        mask="(000) 0000000" />
+                                    placeholder="(123) 4567890" mask="(000) 000-0000" />
                                         @if(basicInfoForm.get('phone')?.invalid &&
                                         (basicInfoForm.get('phone')?.dirty || basicInfoForm.get('phone')?.touched
                                         )){

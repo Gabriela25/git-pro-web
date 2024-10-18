@@ -95,7 +95,8 @@ export default class BecomeToProComponent implements OnInit {
     private categoryService: CategoryService,
     private zipCodeService: ZipcodeService,
     private userService: UserService,
-    private uploadsService: UploadsService
+    private uploadsService: UploadsService,
+    private authService: AuthService
   ) {
     this.proPersonalForm = this.initializeProPersonalForm();
     this.proBusinessForm = this.initializeProBusinessForm();
@@ -245,11 +246,11 @@ export default class BecomeToProComponent implements OnInit {
   }
 
   goToStep(step: number) {
-    if (step < this.currentStep || (step === 1 && this.proPersonalForm.get('category')?.valid && this.proPersonalForm.get('zipCode')?.valid &&
-      this.proPersonalForm.get('phone')?.valid) ||
-      (step === 2 && this.proPersonalForm.get('address')?.valid)) {
-      this.currentStep = step;
-    }
+      if(step == 2 && this.proPersonalForm.valid) this.currentStep = step;
+      if(step == 1) this.currentStep = step;
+        
+ 
+
   }
   goStep() {
     if (this.currentStep == 1) {
@@ -275,7 +276,8 @@ export default class BecomeToProComponent implements OnInit {
         address: formData.address || '',
         imagePersonal: formData.imagePersonal || '',
         introduction: formData.introduction || '',
-        isBusiness
+        isBusiness: false,
+        available: true
       };
 
       if (!this.user.profile || !this.user.profile.id) {
@@ -284,6 +286,8 @@ export default class BecomeToProComponent implements OnInit {
         this.userService.becomeToPro(profile).subscribe({
           next: (response) => {
             this.handleSuccessfulSubmission(response);
+            this.authService.updateUser('available', response.user.profile?.available);
+            this.authService.updateUser('isPro', true);
             if (this.selectedFile) {
               this.uploadImage(this.selectedFile, isBusiness);
             }
@@ -295,6 +299,9 @@ export default class BecomeToProComponent implements OnInit {
         if (!isBusiness) {
           this.userService.putMe({ ...this.user, profile }).subscribe({
             next: (response) => {
+              
+              this.authService.updateUser('available', response.user.profile?.available);
+        
               this.handleSuccessfulSubmission(response);
               if (this.selectedFile) {
                 this.uploadImage(this.selectedFile, isBusiness);
@@ -306,7 +313,7 @@ export default class BecomeToProComponent implements OnInit {
         else {
           const profile: Profile = {
             categories: this.proPersonalForm.value.categories || [],
-            zipcodeId: this.proPersonalForm.value.zipcodeId || '',
+            zipcodeId: this.proPersonalForm.value.zipcode || '',
             address: this.proPersonalForm.value.address || '',
             imagePersonal: this.proPersonalForm.value.imagePersonal || '',
             introduction: this.proPersonalForm.value.introduction || '',
@@ -315,11 +322,13 @@ export default class BecomeToProComponent implements OnInit {
             yearFounded: formData.yearFounded || '',
             numberOfemployees: formData.numberOfemployees || '',
             imageBusiness: formData.imageBusiness || '',
-
+            available: true
           };
+         
           this.userService.putMe({ ...this.user, profile }).subscribe({
             next: (response) => {
               this.handleSuccessfulSubmission(response);
+              
               if (this.selectedFile) {
                 this.uploadImage(this.selectedFile, isBusiness);
               }
@@ -351,7 +360,12 @@ export default class BecomeToProComponent implements OnInit {
     formData.append('file', file);
 
     this.uploadsService.postUploads(formData).subscribe({
-      next: (response) => console.log('Image uploaded successfully', response),
+      next: (response) =>{
+      
+        if(response.uploads.urlImage){
+          this.authService.updateUser('imagePersonal', response.uploads.urlImage );
+        }
+      },
       error: (error) => this.handleError(error)
     });
   }
