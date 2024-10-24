@@ -8,6 +8,7 @@ import { HeaderComponent } from '../../shared/header/header.component';
 import { SidebarComponent } from '../../sidebar/sidebar.component';
 import { NgxMaskDirective } from 'ngx-mask';
 import { AuthService } from '../../services/auth.service';
+import { SocketComponent } from "../../shared/socket/socket.component";
 
 @Component({
   selector: 'app-basic-info',
@@ -19,7 +20,8 @@ import { AuthService } from '../../services/auth.service';
     NgxMaskDirective,
     HeaderComponent,
     SidebarComponent,
-  ],
+    SocketComponent
+],
   templateUrl: './basic-info.component.html',
   styleUrl: './basic-info.component.css'
 })

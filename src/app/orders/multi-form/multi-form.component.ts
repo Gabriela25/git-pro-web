@@ -142,7 +142,7 @@ export default class MultiFormComponent {
       };
       this.orderService.postOrder(order).subscribe({
         next: (response) => {
-          console.log(response)
+          
           this.alertMessage = 'alert-success'
           this.backendMessage = 'Order created success';
 
@@ -173,9 +173,8 @@ export default class MultiFormComponent {
           }
          
           this.startAlertTimer(() => {
-            this.orderForm.reset();
-            this.currentStep = 0
-            //this.router.navigate(['/']);
+         
+            
           });
         },
         error: (error) => {
@@ -193,8 +192,13 @@ export default class MultiFormComponent {
       clearTimeout(this.alertTimeout);
     }
     this.alertTimeout = setTimeout(() => {
+      this.orderForm.reset();
+      this.currentStep = 0
+      this.phone = '';
+      this.description= '';
+      this.zipcodeName = '';
       this.backendMessage = '';
-  
+      this.router.navigate(['/']);
       
       if (redirectCallback) {
         redirectCallback();

@@ -105,25 +105,14 @@
                                                             || paymentForm.get('amount')?.touched )){
                                                             <div class="alert alert-danger mt-2">
                                                                 @if(paymentForm.get('amount')?.errors?.['required']){
-                                                                <span>
-                                                                    {{'payment.isAmountRequired' | translate}}
-                                                                </span>
+                                                                    <span>{{'payment.isAmountRequired' | translate}}</span>
                                                                 }
                                                                 @if(paymentForm.get('amount')?.errors?.['notANumber']){
-                                                                <span>
-                                                                    
-                                                                    {{'payment.notANumber' | translate }} 
-                                                                    
-                                                                </span>
+                                                                    <span>{{'payment.notANumber' | translate }}</span>
                                                                 }
                                                                 @if(paymentForm.get('amount')?.errors?.['amountInvalid']){
-                                                                    <span>
-                                                                       
-                                                                        {{'payment.amountInvalid' | translate }} {{ price }} US$. 
-                                                                       
-                                                                    </span>
-                                                                    }
-                                                               
+                                                                    <span>{{'payment.amountInvalid' | translate }} {{ price }} US$.</span>
+                                                                }
                                                             </div>
                                                             }
                                                         </div>

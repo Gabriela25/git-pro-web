@@ -258,10 +258,12 @@ export default class BecomeToProComponent implements OnInit {
     }
   }
   onSubmit(isBusiness: boolean) {
+    console.log('en el boton')
     if (isBusiness) {
+      console.log('esperando empresa', isBusiness)
       this.submitProfile(this.proBusinessForm, isBusiness);
     } else {
-
+      console.log('esperando personal', isBusiness)
       this.submitProfile(this.proPersonalForm, isBusiness);
     }
   }
@@ -282,11 +284,13 @@ export default class BecomeToProComponent implements OnInit {
 
       if (!this.user.profile || !this.user.profile.id) {
 
-
+        console.log(1)
         this.userService.becomeToPro(profile).subscribe({
           next: (response) => {
+            this.user.profile = response.profile
+            
             this.handleSuccessfulSubmission(response);
-            this.authService.updateUser('available', response.user.profile?.available);
+            this.authService.updateUser('available', true);
             this.authService.updateUser('isPro', true);
             if (this.selectedFile) {
               this.uploadImage(this.selectedFile, isBusiness);
@@ -297,6 +301,7 @@ export default class BecomeToProComponent implements OnInit {
       }
       else {
         if (!isBusiness) {
+          console.log(2)
           this.userService.putMe({ ...this.user, profile }).subscribe({
             next: (response) => {
               
@@ -311,6 +316,7 @@ export default class BecomeToProComponent implements OnInit {
           });
         }
         else {
+          console.log(3)
           const profile: Profile = {
             categories: this.proPersonalForm.value.categories || [],
             zipcodeId: this.proPersonalForm.value.zipcode || '',
@@ -324,7 +330,7 @@ export default class BecomeToProComponent implements OnInit {
             imageBusiness: formData.imageBusiness || '',
             available: true
           };
-         
+          console.log(profile)
           this.userService.putMe({ ...this.user, profile }).subscribe({
             next: (response) => {
               this.handleSuccessfulSubmission(response);

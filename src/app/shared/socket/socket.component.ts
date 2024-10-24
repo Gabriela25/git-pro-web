@@ -20,6 +20,7 @@ export class SocketComponent {
 
   ngOnInit() {
     this.socketService.getMessage().subscribe((msg) => {
+      console.log('este es el mensaje: ', msg)
       this.messages.push(msg);
     });
   }

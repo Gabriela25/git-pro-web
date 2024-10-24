@@ -110,8 +110,8 @@ export default class GetLeadsComponent {
       };
       this.paymentService.postPayment(payment).subscribe({
         next: (response) => {
+          console.log(response)
           this.handleSuccessfulSubmission(response);
-          //this.listPayment.push(response.payment);
           this.paymentService.getMePayment().subscribe({
             next: (response) => {
               this.listPayment = response.payments.sort((a, b) => {
@@ -192,6 +192,7 @@ export default class GetLeadsComponent {
     this.alertTimeout = setTimeout(() => {
       this.backendMessage = '';
       this.paymentForm.reset();
+      this.weeks = 0;
     }, 3000);
   }
 }
