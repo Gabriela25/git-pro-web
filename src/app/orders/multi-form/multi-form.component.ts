@@ -5,11 +5,13 @@ import { ZipcodeService } from '../../services/zipcode.service';
 import { Zipcode } from '../../interface/zipcode.interface';
 import { OrderService } from '../../services/order.service';
 import { HeaderComponent } from '../../shared/header/header.component';
-import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NgxMaskDirective } from 'ngx-mask';
 import { Order } from '../../interface/order.interface';
 import { Router } from '@angular/router';
 import { UploadsService } from '../../services/uploads.service';
+import { CategoryService } from '../../services/category.service';
+import { Category } from '../../interface/category.interface';
 
 @Component({
   selector: 'app-multi-form',
@@ -18,6 +20,7 @@ import { UploadsService } from '../../services/uploads.service';
     CommonModule,
     TranslateModule,
     ReactiveFormsModule,
+    FormsModule,
     HeaderComponent,
     NgxMaskDirective
   ],
@@ -33,7 +36,7 @@ export default class MultiFormComponent {
   phone: string = '';
   description: string = '';
   listZipcode: Array<Zipcode> = [];
-
+  listCategories: Array<Category> = [];
   orderForm: FormGroup;
   selectedFile: File | null = null;
   previewImg: string | ArrayBuffer | null = null;
@@ -46,9 +49,10 @@ export default class MultiFormComponent {
   constructor(
     private fb: FormBuilder,
     private router: Router,
+    private categoriesServices: CategoryService,
     private zipCodeService: ZipcodeService,
     private orderService: OrderService,
-    private uploadsService: UploadsService
+    private uploadsService: UploadsService,
   ){
     this.orderForm = this.fb.group({
       zipcode: new FormControl('', [Validators.required]),
@@ -59,21 +63,23 @@ export default class MultiFormComponent {
   
   ngOnInit(){
     this.zipCodeService.getAllZipcodes().subscribe({
-      next: (response) => {
-       
-        this.listZipcode = response.zipcodes;
-
-      },
-      error: (error) => {
-        console.log(error);
-      }
+      next: (response) =>  this.listZipcode = response.zipcodes,
+      error: (error) => console.log(error)
+    });
+    this.categoriesServices.getAllCategories().subscribe({
+      next: (response) =>  this.listCategories = response.categories,
+      error: (error) => console.log(error)
     });
     this.orderService.order$.subscribe((data: any) => {
       this.categoryName = data.categoryName;
       this.categoryId = data.categoryId;
     }); 
   }
- 
+  onSelectionCategory(){
+  
+    this.orderService.updateDataOrder('categoryId',this.selectedOption.id);
+    this.orderService.updateDataOrder('categoryName', this.selectedOption.name );
+  }
   step(step:number){
     if (step > this.currentStep) {
     

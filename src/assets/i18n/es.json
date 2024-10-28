@@ -6,7 +6,10 @@
   "general":{
       "save":"Guardar",
       "cancel":"Cancelar",
-      "add":"Agregar"
+      "add":"Agregar",
+      "send":"Enviar",
+      "next":"Siguiente",
+      "select": "Seleccione"
   },
   "header":{
     "profile":"Perfil",

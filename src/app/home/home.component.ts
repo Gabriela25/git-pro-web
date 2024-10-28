@@ -9,6 +9,7 @@ import { AuthService } from '../services/auth.service';
 import { ModalComponent } from '../shared/modal/modal.component';
 import { OrderService } from '../services/order.service';
 import { SocketComponent } from '../shared/socket/socket.component';
+import { Category } from '../interface/category.interface';
 
 @Component({
   selector: 'app-home',
@@ -54,7 +55,7 @@ export default class HomeComponent {
   
   //this.listServices = this.category.getCategory();
 }
-  navigateToServices(item: any) {
+  navigateToServices(item: Category) {
  
     this.router.navigate(['/orders/multi']);
     this.orderService.updateDataOrder('categoryId',item.id);

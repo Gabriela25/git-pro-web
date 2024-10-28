@@ -39,3 +39,8 @@ git push
 docker build -t pro-panel-web:3  . 
 docker image tag pro-panel-web:3 gabriela2014/pro-panel-web:3
 docker push gabriela2014/pro-panel-web:3
+descargar:
+
+
+docker pull gabriela2014/frontend-fixi:1 
+docker run --name frontend-fixi -p 8081:80 gabriela2014/frontend-fixi:1

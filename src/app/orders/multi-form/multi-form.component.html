@@ -26,20 +26,31 @@
           <div class="step-desc">{{this.description}}</div>
         </div>
       </div>
-    <div class="d-flex justify-content-center"> 
+      <div class="d-flex justify-content-center"> 
         <h1><strong>{{categoryName}}</strong></h1>
-    </div>
+      </div>
+      <div class="mb-3">
+        <label for="category" class="form-label fs-2"></label>
+        <select class="form-select" aria-label="select" id="category"  [(ngModel)]="selectedOption" (change)="onSelectionCategory();">
+          <option>{{'general.select' | translate}}</option>
+            @for (item of listCategories; track item) {
+            <option [ngValue]="item">{{item.name}}</option>
+            }
+        </select>
+    </div>  
+    
     <form [formGroup]="orderForm" >
       <!-- Step 1 -->
        @if(currentStep === 0){
-      <div >
-        <h3>{{'profile.zipCode' |
-                translate}}</h3>
-        <div class="mb-3">
-            <label for="zipcode" class="form-label fs-2"></label>
-            <select class="form-select" aria-label="select" id="zipcode"  [(ngModel)]="selectedOption"
+      <div class="">
+        
+        
+       
+        <div class="pt-3 mb-3">
+            <label for="zipcode" class="form-label fs-2">{{'profile.zipCode' |translate}}</label>
+            <select class="form-select" aria-label="select" id="zipcode" 
                 formControlName="zipcode">
-                <option>Seleccione</option>
+                <option>{{'general.select' | translate}}</option>
                 @for (item of listZipcode; track item) {
                 <option [ngValue]="item">{{item.name}}</option>
                 }
