@@ -62,20 +62,30 @@ export default class MultiFormComponent {
   }
   
   ngOnInit(){
+    this.orderService.order$.subscribe((data: any) => {
+      this.categoryName = data.categoryName;
+      this.categoryId = data.categoryId;
+    }); 
     this.zipCodeService.getAllZipcodes().subscribe({
       next: (response) =>  this.listZipcode = response.zipcodes,
       error: (error) => console.log(error)
     });
     this.categoriesServices.getAllCategories().subscribe({
-      next: (response) =>  this.listCategories = response.categories,
+      next: (response) => {
+        this.listCategories = response.categories
+        //asignamos el valor inicial de la categoría
+        this.selectedOption = this.listCategories.find(
+          (item) => item.id === this.categoryId
+        );
+      },
       error: (error) => console.log(error)
     });
-    this.orderService.order$.subscribe((data: any) => {
-      this.categoryName = data.categoryName;
-      this.categoryId = data.categoryId;
-    }); 
+    
+    
   }
+  
   onSelectionCategory(){
+  
   
     this.orderService.updateDataOrder('categoryId',this.selectedOption.id);
     this.orderService.updateDataOrder('categoryName', this.selectedOption.name );
