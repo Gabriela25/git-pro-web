@@ -8,11 +8,16 @@ export class SocketService {
 
   constructor(private socket: Socket) {}
 
-  sendMessage(msg: string) {
-    this.socket.emit('enviar', msg);
+  sendMessage(gateway: string, payload: Object) {
+    const token = localStorage.getItem('token') || '';
+    const payloadWithToken = {
+      ...payload,
+      token
+    }
+    this.socket.emit(gateway, payloadWithToken);
   }
 
-  getMessage() {
-    return this.socket.fromEvent<string>('recibir-mensaje');
+  getMessage(gateway: string = 'recibir-mensaje') {
+    return this.socket.fromEvent<any>(gateway);
   }
 }

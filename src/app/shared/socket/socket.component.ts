@@ -26,7 +26,7 @@ export class SocketComponent {
   }
 
   sendMessage() {
-    this.socketService.sendMessage(this.myMessage);
+    this.socketService.sendMessage('enviar', this.myMessage);
     this.myMessage = ''; 
   }
 }

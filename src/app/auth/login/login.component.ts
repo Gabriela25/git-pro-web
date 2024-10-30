@@ -8,6 +8,8 @@ import { AuthService } from '../../services/auth.service';
 import { Location } from '@angular/common';
 import { Login } from '../../interface/login.interface';
 import { UserService } from '../../services/user.service';
+import { SocketComponent } from '../../shared/socket/socket.component';
+import { SocketService } from '../../services/socket.service';
 @Component({
   selector: 'app-login',
   standalone: true,
@@ -16,7 +18,6 @@ import { UserService } from '../../services/user.service';
     TranslateModule,
     RouterLink,
     HeaderComponent,
-    
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
@@ -33,7 +34,8 @@ export default class LoginComponent {
     public router: Router,
     private authService:  AuthService,
     private location: Location,
-    private userService: UserService
+    private userService: UserService,
+    private socketService: SocketService,
   ){
     
   }
@@ -57,6 +59,9 @@ export default class LoginComponent {
         this.isLoading = false; 
         this.token = response.token;
         localStorage.setItem('token', this.token);
+
+        // peticion a un websocket
+        this.socketService.sendMessage('auth', {});
   
         const userData = {
           name: `${response.user.firstname} ${response.user.lastname}`,

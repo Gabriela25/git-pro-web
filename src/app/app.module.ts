@@ -1,9 +1,10 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SocketIoConfig, SocketIoModule } from 'ngx-socket-io';
+import { environment } from '../environments/environment.development';
 
 
-const config: SocketIoConfig = { url: 'http://localhost:4500', options: {} };
+const config: SocketIoConfig = { url: environment.apiUrlBackend, options: {} };
 
 @NgModule({
 

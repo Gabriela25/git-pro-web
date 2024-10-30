@@ -12,6 +12,7 @@ import { Router } from '@angular/router';
 import { UploadsService } from '../../services/uploads.service';
 import { CategoryService } from '../../services/category.service';
 import { Category } from '../../interface/category.interface';
+import { SocketService } from '../../services/socket.service';
 
 @Component({
   selector: 'app-multi-form',
@@ -53,6 +54,7 @@ export default class MultiFormComponent {
     private zipCodeService: ZipcodeService,
     private orderService: OrderService,
     private uploadsService: UploadsService,
+    private socketService: SocketService,
   ){
     this.orderForm = this.fb.group({
       zipcode: new FormControl('', [Validators.required]),
@@ -80,7 +82,9 @@ export default class MultiFormComponent {
       },
       error: (error) => console.log(error)
     });
-    
+    this.socketService.getMessage('order-created').subscribe((msg) => {
+      this.onCreatedOrder(msg);
+    });
     
   }
   
@@ -154,8 +158,18 @@ export default class MultiFormComponent {
         zipcodeId: formData.zipcode.id,
         phone: formData.phone,
         description: formData.description,
-        
+        images: '',
+        statusOrder: '',
       };
+      console.log(order)
+      // peticion a un websocket
+      this.socketService.sendMessage('create-order', { order });
+
+      this.alertMessage = 'alert-success'
+      this.backendMessage = 'Order created success';
+
+      this.isLoading = false;
+      /*
       this.orderService.postOrder(order).subscribe({
         next: (response) => {
           
@@ -200,6 +214,7 @@ export default class MultiFormComponent {
           this.startAlertTimer();
         }
       });
+      */
     }
     
   }
@@ -220,5 +235,47 @@ export default class MultiFormComponent {
         redirectCallback();
       }
     }, 3000); 
+  }
+  onCreatedOrder(payload: unknown) {
+    console.log('onCreatedOrder', payload)
+    if (this.selectedFile) {
+
+      if (!payload) {
+        return;
+      }
+
+      if (typeof payload !== 'object') {
+        return;
+      }
+
+      if (!('order' in payload)) {
+        return;
+      }
+
+      const { order } = payload as { order: Order };
+
+
+      this.isLoading = true;
+      const formData = new FormData();
+      formData.append('model', 'order');
+      formData.append('idModel', order.id!);
+      formData.append('field', 'images');
+      formData.append('file', this.selectedFile);
+    
+      this.uploadsService.postUploads(formData).subscribe({
+        next: (response) => {
+          console.log(response)
+
+        },
+        error: (error) => {
+          this.alertMessage = 'alert-danger'
+          this.backendMessage = error.error.message;
+          this.isLoading = false;
+          this.startAlertTimer();
+        }
+      });
+
+
+    }
   }
 }
