@@ -20,6 +20,7 @@ import { UserService } from '../../services/user.service';
 import { AuthService } from '../../services/auth.service';
 import { UploadsService } from '../../services/uploads.service';
 import { SocketComponent } from "../../shared/socket/socket.component";
+import { CapitalizeFirstDirective } from '../../shared/directives/capitalizeFirst.directive';
 
 @Component({
   selector: 'app-become-to-pro',
@@ -34,7 +35,8 @@ import { SocketComponent } from "../../shared/socket/socket.component";
     AutocompleteComponent,
     ModalComponent,
     NgxMaskDirective,
-    SocketComponent
+    SocketComponent,
+    CapitalizeFirstDirective
   ],
   templateUrl: './become-to-pro.component.html',
   styleUrl: './become-to-pro.component.css'

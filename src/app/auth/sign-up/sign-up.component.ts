@@ -13,6 +13,7 @@ import { PlatformService } from '../../services/platform.service';
 import { NgxMaskDirective } from 'ngx-mask';
 import { AuthService } from '../../services/auth.service';
 import { User } from '../../interface/user.interface';
+import { CapitalizeFirstDirective } from '../../shared/directives/capitalizeFirst.directive';
 
 @Component({
   selector: 'app-sign-up',
@@ -21,12 +22,12 @@ import { User } from '../../interface/user.interface';
     ReactiveFormsModule,
     TranslateModule,
     RouterLink,
+    NgxMaskDirective,
     HeaderComponent,
-    SocialLoginModule,
-    GoogleSigninButtonModule,
-    NgxCaptchaModule,
-    NgxMaskDirective
+    CapitalizeFirstDirective
   ],
+  
+
   templateUrl: './sign-up.component.html',
   styleUrl: './sign-up.component.css'
 })

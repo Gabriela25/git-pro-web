@@ -25,7 +25,7 @@
                                     <label for="firstName" class="form-label fw-bold">{{'profile.firstName' |
                                         translate}}</label>
                                     <input type="text" class="form-control" placeholder="" id="firstName"
-                                        formControlName="firstname" value="{{user.firstname}}" toUppercase/>
+                                        formControlName="firstname" value="{{user.firstname}}" appCapitalizeFirst/>
                                     @if(basicInfoForm.get('firstname')?.invalid &&
                                     (basicInfoForm.get('firstname')?.dirty || basicInfoForm.get('firstname')?.touched
                                     )){
@@ -42,7 +42,7 @@
                                     <label for="lastName" class="form-label fw-bold">{{'profile.lastName' |
                                         translate}}</label>
                                     <input type="text" class="form-control" placeholder="" id="lastName"
-                                        formControlName="lastname" />
+                                        formControlName="lastname" appCapitalizeFirst/>
                                     @if(basicInfoForm.get('lastname')?.invalid && (basicInfoForm.get('lastname')?.dirty
                                     || basicInfoForm.get('lastname')?.touched )){
                                     <div class="alert alert-danger mt-2">

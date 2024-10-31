@@ -9,6 +9,7 @@ import { SidebarComponent } from '../../sidebar/sidebar.component';
 import { NgxMaskDirective } from 'ngx-mask';
 import { AuthService } from '../../services/auth.service';
 import { SocketComponent } from "../../shared/socket/socket.component";
+import { CapitalizeFirstDirective } from '../../shared/directives/capitalizeFirst.directive';
 
 @Component({
   selector: 'app-basic-info',
@@ -20,7 +21,8 @@ import { SocketComponent } from "../../shared/socket/socket.component";
     NgxMaskDirective,
     HeaderComponent,
     SidebarComponent,
-    SocketComponent
+    SocketComponent,
+    CapitalizeFirstDirective
 ],
   templateUrl: './basic-info.component.html',
   styleUrl: './basic-info.component.css'

@@ -9,13 +9,15 @@ import { HttpClient } from '@angular/common/http';
 import { UserService } from '../../services/user.service';
 import { Modal } from 'bootstrap';
 import { User } from '../../interface/user.interface';
+import { NotificationComponent } from '../notification/notification.component';
 @Component({
   selector: 'app-header',
   standalone: true,
   imports: [
     RouterLink,
     TranslateModule,
-    ModalComponent
+    ModalComponent,
+    NotificationComponent
   ],
   templateUrl: './header.component.html',
   styleUrl: './header.component.css'

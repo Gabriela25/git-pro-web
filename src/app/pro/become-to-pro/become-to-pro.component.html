@@ -122,7 +122,7 @@
                                 <div class="mb-3">
                                     <label for="address" class="form-label fw-bold">{{'profile.address' |
                                         translate}}</label>
-                                    <input type="text" class="form-control" id="address" formControlName="address" />
+                                    <input type="text" class="form-control" id="address" formControlName="address" appCapitalizeFirst/>
                                     @if(proPersonalForm.get('address')?.invalid &&
                                     (proPersonalForm.get('address')?.dirty || proPersonalForm.get('address')?.touched
                                     )){
@@ -146,7 +146,7 @@
                                 <div class="mb-3">
                                     <label for="introduction" class="form-label fw-bold">Introduction</label>
                                     <textarea class="form-control" id="introduction" rows="3"
-                                        formControlName="introduction"></textarea>
+                                        formControlName="introduction" appCapitalizeFirst></textarea>
                                 </div>
                             </div>
                             <div class="d-flex justify-content-end mt-3">
@@ -197,7 +197,7 @@
                                     <label for="nameBusiness" class="form-label fw-bold">{{'profile.nameBusiness' |
                                         translate}}</label>
                                     <input type="text" class="form-control" id="nameBusiness"
-                                        formControlName="nameBusiness" />
+                                        formControlName="nameBusiness" appCapitalizeFirst/>
                                     @if(proPersonalForm.get('nameBusiness')?.invalid &&
                                     (proPersonalForm.get('nameBusiness')?.dirty ||
                                     proPersonalForm.get('nameBusiness')?.touched )){

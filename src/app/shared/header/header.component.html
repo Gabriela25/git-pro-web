@@ -40,6 +40,7 @@
 
         @if(!isAuthenticated){
           <div class="d-flex">
+            <app-notification/>
             <button type="button" class="btn btn-secondary me-2" style="color:#fff" routerLink="/auth/sign-up" [queryParams]="{ isCustomer: false }">Sign&nbsp;up</button>
             <button type="button" class="btn btn-secondary" routerLink="/auth/login" style="color:#fff">{{'auth.login' | translate}}</button>
           </div>

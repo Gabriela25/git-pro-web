@@ -13,7 +13,7 @@
                     <div class="col-12 col-lg-6">
                         <label for="firstName" class="form-label fw-bold">{{'auth.firstName' | translate}}</label>
                         <input type="text" class="form-control" placeholder="" id="firstName"
-                            formControlName="firstName" />
+                            formControlName="firstName" appCapitalizeFirst/>
                         @if(signUpForm.get('firstName')?.invalid && (signUpForm.get('firstName')?.dirty ||
                         signUpForm.get('firstName')?.touched )){
                         <div class="alert alert-danger mt-2 mt-2">
@@ -28,7 +28,7 @@
                     <div class="col-12 col-lg-6">
                         <label for="lastName" class="form-label fw-bold">{{'auth.lastName' | translate}}</label>
                         <input type="text" class="form-control" placeholder="" id="lastName"
-                            formControlName="lastName" />
+                            formControlName="lastName" appCapitalizeFirst />
                         @if(signUpForm.get('lastName')?.invalid && (signUpForm.get('lastName')?.dirty ||
                         signUpForm.get('lastName')?.touched )){
                         <div class="alert alert-danger mt-2">

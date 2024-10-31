@@ -15,6 +15,7 @@ import { provideFirestore, getFirestore } from '@angular/fire/firestore';
 import { provideStorage, getStorage } from '@angular/fire/storage';
 import { NgxMaskDirective, provideEnvironmentNgxMask } from 'ngx-mask';
 import { AppModule } from './app.module';
+import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
 }
@@ -25,6 +26,7 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(withFetch()),
 
     importProvidersFrom(
+      AppModule,
       HttpClient,
       TranslateModule.forRoot({
         defaultLanguage:'en',
@@ -60,7 +62,7 @@ export const appConfig: ApplicationConfig = {
     provideFirestore(() => getFirestore()),
     provideStorage(() => getStorage()),
     provideEnvironmentNgxMask(),
-    importProvidersFrom(AppModule)
+    { provide: LocationStrategy, useClass: HashLocationStrategy }
   ]
 };
 

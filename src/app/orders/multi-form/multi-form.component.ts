@@ -14,6 +14,7 @@ import { CategoryService } from '../../services/category.service';
 import { Category } from '../../interface/category.interface';
 import { SocketService } from '../../services/socket.service';
 
+
 @Component({
   selector: 'app-multi-form',
   standalone: true,
@@ -23,7 +24,8 @@ import { SocketService } from '../../services/socket.service';
     ReactiveFormsModule,
     FormsModule,
     HeaderComponent,
-    NgxMaskDirective
+    NgxMaskDirective,
+    
   ],
   templateUrl: './multi-form.component.html',
   styleUrl: './multi-form.component.css'
@@ -82,7 +84,7 @@ export default class MultiFormComponent {
       },
       error: (error) => console.log(error)
     });
-    this.socketService.getMessage('order-created').subscribe((msg) => {
+    this.socketService.getMessage('order-created').subscribe((msg:any) => {
       this.onCreatedOrder(msg);
     });
     
