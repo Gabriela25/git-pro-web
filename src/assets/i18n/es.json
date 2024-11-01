@@ -9,7 +9,9 @@
       "add":"Agregar",
       "send":"Enviar",
       "next":"Siguiente",
-      "select": "Seleccione"
+      "select": "Seleccione",
+      "reject": "Rechazar",
+      "accept":"Aceptar"
   },
   "header":{
     "profile":"Perfil",

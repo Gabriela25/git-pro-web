@@ -13,6 +13,7 @@ import { UploadsService } from '../../services/uploads.service';
 import { CategoryService } from '../../services/category.service';
 import { Category } from '../../interface/category.interface';
 import { SocketService } from '../../services/socket.service';
+import { ModalComponent } from '../../shared/modal/modal.component';
 
 
 @Component({
@@ -25,6 +26,7 @@ import { SocketService } from '../../services/socket.service';
     FormsModule,
     HeaderComponent,
     NgxMaskDirective,
+    ModalComponent
     
   ],
   templateUrl: './multi-form.component.html',
@@ -48,7 +50,14 @@ export default class MultiFormComponent {
   backendMessage = '';
   alertMessage = '';
   alertTimeout: any;
+  @ViewChild('modal') modal!: ModalComponent;
+  isSelected = false;
   @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
+
+
+  title: string = 'Order';
+  messageOrder: string ='';
+  
   constructor(
     private fb: FormBuilder,
     private router: Router,
@@ -153,7 +162,7 @@ export default class MultiFormComponent {
   onSubmit() {
     if(this.orderForm.valid){
       this.isLoading = true
-      console.log(this.orderForm.value)
+     
       const formData = this.orderForm.value;
       const order: Order = {
         categoryId: this.categoryId,
@@ -163,14 +172,14 @@ export default class MultiFormComponent {
         images: '',
         statusOrder: '',
       };
-      console.log(order)
+     
       // peticion a un websocket
       this.socketService.sendMessage('create-order', { order });
 
-      this.alertMessage = 'alert-success'
-      this.backendMessage = 'Order created success';
+      //this.alertMessage = 'alert-success'
+      //this.backendMessage = 'Order created success';
 
-      this.isLoading = false;
+      //this.isLoading = false;
       /*
       this.orderService.postOrder(order).subscribe({
         next: (response) => {
@@ -220,27 +229,17 @@ export default class MultiFormComponent {
     }
     
   }
-  startAlertTimer(redirectCallback?: () => void) {
+  startAlertTimer() {
     if (this.alertTimeout) {
       clearTimeout(this.alertTimeout);
     }
     this.alertTimeout = setTimeout(() => {
-      this.orderForm.reset();
-      this.currentStep = 0
-      this.phone = '';
-      this.description= '';
-      this.zipcodeName = '';
-      this.backendMessage = '';
-      this.router.navigate(['/']);
-      
-      if (redirectCallback) {
-        redirectCallback();
-      }
-    }, 3000); 
+      this.closeModal();
+    }, 3000);
   }
   onCreatedOrder(payload: unknown) {
-    console.log('onCreatedOrder', payload)
-    if (this.selectedFile) {
+    console.log('onCreatedOrder1', payload)
+    //if (this.selectedFile) {
 
       if (!payload) {
         return;
@@ -250,15 +249,20 @@ export default class MultiFormComponent {
         return;
       }
 
-      if (!('order' in payload)) {
+      if (!('orders' in payload)) {
         return;
       }
 
-      const { order } = payload as { order: Order };
-
-
-      this.isLoading = true;
-      const formData = new FormData();
+      const {  orders } = payload as { orders: Order };
+      
+      
+      this.isLoading = false;
+    
+      console.log('antes del modal')
+      this.messageOrder = 'The order has been generated successfully';
+      this.openModal()
+      this.startAlertTimer()
+      /*const formData = new FormData();
       formData.append('model', 'order');
       formData.append('idModel', order.id!);
       formData.append('field', 'images');
@@ -275,9 +279,22 @@ export default class MultiFormComponent {
           this.isLoading = false;
           this.startAlertTimer();
         }
-      });
+      });*/
 
 
-    }
+    //}
+  }
+  closeModal(){
+    this.modal.close();
+  }
+  openModal() {
+    this.isLoading = false;
+    this.modal.open();
+   
+  }
+
+  onConfirmAction() {
+    console.log("Confirmación del modal recibida");
+    // Lógica después de confirmar la acción
   }
 }

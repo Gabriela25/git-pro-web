@@ -1,19 +1,16 @@
-@if(isOpen){
-<div class="backdrop" ></div>
-}
-<div class="modal" tabindex="-1" [class.show]="isOpen" [class.fade]="!isOpen" [style.display]="isOpen ? 'block' : 'none'" tabindex="-1" role="dialog">
+
+<div *ngIf="isOpen" class="backdrop"></div>
+<div *ngIf="isOpen" class="modal" [class.show]="isOpen" [style.display]="isOpen ? 'block' : 'none'" role="dialog">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">{{ title }}</h5>
         <button type="button" class="btn-close" aria-label="Close" (click)="close()"></button>
       </div>
-      <div class="modal-body">
-        <ng-container [ngTemplateOutlet]="contentTemplate" [ngTemplateOutletContext]="contentContext"></ng-container>
-      </div>
+      <div class="modal-body" [innerHTML]="message"></div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" (click)="close()">Close</button>
-        <button type="button" class="btn btn-primary" (click)="onConfirm()" [disabled]="!isSelected">{{'general.next' | translate}}</button>
+        <button type="button" class="btn btn-secondary" (click)="reject()">{{'general.reject'| translate}}</button>
+        <button type="button" class="btn btn-primary" (click)="accept()">{{'general.accept'| translate}}</button>
       </div>
     </div>
   </div>

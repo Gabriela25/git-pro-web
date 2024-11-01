@@ -23,94 +23,99 @@ import { SocketService } from '../../services/socket.service';
   styleUrl: './login.component.css'
 })
 export default class LoginComponent {
- 
+
   isLoading = false;
   backendMessage = '';
   alertMessage = '';
   alertTimeout: any;
-  token: string= '';
-  
+  token: string = '';
+
   constructor(
     public router: Router,
-    private authService:  AuthService,
+    private authService: AuthService,
     private location: Location,
     private userService: UserService,
     private socketService: SocketService,
-  ){
-    
+  ) {
+
   }
   loginForm = new FormGroup({
     email: new FormControl('', [Validators.required, Validators.email]),
-    password: new FormControl('', [Validators.required,Validators.minLength(6)]),
+    password: new FormControl('', [Validators.required, Validators.minLength(6)]),
   });
-  
- 
-  onSubmit() {
-    this.isLoading = true; 
-    const formData = this.loginForm.value;
-  
-    const auth: Login = {
-      email: formData.email || '',   
-      password: formData.password || '',
-    };
-  
-    this.authService.postLogin(auth).subscribe({
-      next: (response) => {
-        this.isLoading = false; 
-        this.token = response.token;
-        localStorage.setItem('token', this.token);
 
-        // peticion a un websocket
-        this.socketService.sendMessage('auth', {});
-  
-        const userData = {
-          name: `${response.user.firstname} ${response.user.lastname}`,
-          email: response.user.email,
-          imagePersonal: response.user.profile?.imagePersonal || null,
-          isPro: !!response.user.profile?.id, 
-          available: response.user.profile?.available || false
-        };
-        console.log(userData)
-        this.userService.getMe().subscribe({
-          next: (userResponse) => {
-            const profile = userResponse.user.profile;
-  
-            if (profile?.id != null) {  
-              userData.isPro = true; 
-            }
-            if (profile?.imagePersonal) { 
-              userData.imagePersonal = profile.imagePersonal;
-            }
-            userData.available = profile?.available || false;
-  
-           
-            localStorage.setItem('user', JSON.stringify(userData));
-            
+
+  onSubmit() {
+    this.loginForm.markAllAsTouched();
+    if (this.loginForm.invalid) {
+      return;
+    }
+    else {
+      this.isLoading = true;
+      const formData = this.loginForm.value;
+
+      const auth: Login = {
+        email: formData.email || '',
+        password: formData.password || '',
+      };
+
+      this.authService.postLogin(auth).subscribe({
+        next: (response) => {
+          this.isLoading = false;
+          this.token = response.token;
+          localStorage.setItem('token', this.token);
+
+          // peticion a un websocket
+          this.socketService.sendMessage('auth', {});
+
+          const userData = {
+            name: `${response.user.firstname} ${response.user.lastname}`,
+            email: response.user.email,
+            imagePersonal: response.user.profile?.imagePersonal || null,
+            isPro: !!response.user.profile?.id,
+            available: response.user.profile?.available || false
+          };
       
-            this.authService.updateUser('user', userData);
-          },
-          error: (error) => console.log(error)
-        });
-  
-        this.router.navigate(['/']);
-      },
-      error: (error) => this.handleError(error)
-    });
-  }
-  
-  
-    handleError(error: any) {
-      this.alertMessage = 'alert-danger';
-      this.backendMessage = error.error.message || 'An error occurred';
-      this.isLoading = false;
-      this.startAlertTimer();
+          this.userService.getMe().subscribe({
+            next: (userResponse) => {
+              const profile = userResponse.user.profile;
+
+              if (profile?.id != null) {
+                userData.isPro = true;
+              }
+              if (profile?.imagePersonal) {
+                userData.imagePersonal = profile.imagePersonal;
+              }
+              userData.available = profile?.available || false;
+
+              localStorage.setItem('user', JSON.stringify(userData));
+
+              this.authService.updateUser('user', userData);
+            },
+            error: (error) => console.log(error)
+          });
+
+          this.router.navigate(['/']);
+        },
+        error: (error) => this.handleError(error)
+      });
     }
-    startAlertTimer() {
-      if (this.alertTimeout) {
-        clearTimeout(this.alertTimeout); 
-      }
-      this.alertTimeout = setTimeout(() => {
-        this.backendMessage = '';
-      }, 3000); 
-    }
+  
   }
+
+
+  handleError(error: any) {
+    this.alertMessage = 'alert-danger';
+    this.backendMessage = error.error.message || 'An error occurred';
+    this.isLoading = false;
+    this.startAlertTimer();
+  }
+  startAlertTimer() {
+    if (this.alertTimeout) {
+      clearTimeout(this.alertTimeout);
+    }
+    this.alertTimeout = setTimeout(() => {
+      this.backendMessage = '';
+    }, 3000);
+  }
+}

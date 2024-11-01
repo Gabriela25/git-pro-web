@@ -17,29 +17,29 @@ export class ModalComponent {
   @Input() title!: string;
   @Input() contentTemplate!: TemplateRef<any>;
   @Input() contentContext: any;
-
   @Output() confirmAction = new EventEmitter<void>();
-
-
+  @Input() message!:  SafeHtml | string;;
   isOpen : boolean = false;
   @Input() isSelected : boolean = false;
+ 
   constructor(
-    private sanitizer: DomSanitizer,
     private location: Location
   ) {}
 
   open() {
-   
     this.isOpen = true;
   } 
 
   close() {
     this.isOpen = false;
-    this.location.back();
   }
-  onConfirm() {
+  reject() {
+    this.isOpen = false;
+  }
+  accept() {
     this.confirmAction.emit();
     this.isOpen = false;
-
   }
+
+  
 }

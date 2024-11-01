@@ -10,12 +10,14 @@ import { ModalComponent } from '../shared/modal/modal.component';
 import { OrderService } from '../services/order.service';
 import { SocketComponent } from '../shared/socket/socket.component';
 import { Category } from '../interface/category.interface';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-home',
   standalone: true,
   imports: [
     RouterLink,
+    CommonModule,
     HeaderComponent,
     ModalComponent,
     SocketComponent
@@ -61,4 +63,5 @@ export default class HomeComponent {
     this.orderService.updateDataOrder('categoryId',item.id);
     this.orderService.updateDataOrder('categoryName',item.name );
   }
+  
 }

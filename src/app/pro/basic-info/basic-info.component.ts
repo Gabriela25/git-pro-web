@@ -23,7 +23,7 @@ import { CapitalizeFirstDirective } from '../../shared/directives/capitalizeFirs
     SidebarComponent,
     SocketComponent,
     CapitalizeFirstDirective
-],
+  ],
   templateUrl: './basic-info.component.html',
   styleUrl: './basic-info.component.css'
 })
@@ -37,21 +37,21 @@ export default class BasicInfoComponent implements OnInit {
   basicInfoForm!: FormGroup;
   currentStep: number = 1;
   user: User = {
-    id:'',
+    id: '',
     firstname: '',
     lastname: '',
     email: '',
     phone: '',
-    profile:  {
-      id:'',
-      categories:[],
+    profile: {
+      id: '',
+      categories: [],
       zipcodeId: '',
       address: '',
       imagePersonal: '',
       introduction: '',
-    
-      isBusiness:false,
-      available:true
+
+      isBusiness: false,
+      available: true
     }
   }
   constructor(
@@ -60,20 +60,20 @@ export default class BasicInfoComponent implements OnInit {
     private authService: AuthService
   ) {
     this.initializebasicInfoForm();
-    
+
   }
-  
+
   ngOnInit(): void {
     this.checkUser()
   }
-  
-  initializebasicInfoForm(){
+
+  initializebasicInfoForm() {
     this.basicInfoForm = this.fb.group({
       firstname: new FormControl('', [Validators.required]),
       lastname: new FormControl('', [Validators.required]),
-      phone: new FormControl('', [Validators.required,  Validators.pattern(/^\d{10}$/)]),
-      email: new FormControl('',[ Validators.required ,Validators.email]),
-    
+      phone: new FormControl('', [Validators.required, Validators.pattern(/^\d{10}$/)]),
+      email: new FormControl('', [Validators.required, Validators.email]),
+
     });
   }
   checkUser() {
@@ -85,41 +85,44 @@ export default class BasicInfoComponent implements OnInit {
       error: (error) => console.error(error)
     });
   }
-  populateUser(user: User){
-      this.basicInfoForm.patchValue({
-        firstname: user.firstname,
-        lastname: user.lastname,
-        phone: user.phone,
-        email: user.email,
+  populateUser(user: User) {
+    this.basicInfoForm.patchValue({
+      firstname: user.firstname,
+      lastname: user.lastname,
+      phone: user.phone,
+      email: user.email,
     });
   }
- 
+
   onSubmit() {
-    this.isLoading = true; 
-    const formData = this.basicInfoForm.value;
-    if (this.basicInfoForm.valid) {
+   
+    if (this.basicInfoForm.invalid) {
+      return;
+    } else {
+      this.isLoading = true;
+      const formData = this.basicInfoForm.value;
       const user: User = {
         firstname: formData.firstname || [],
         lastname: formData.lastname || '',
         phone: formData.phone || '',
         email: formData.email || '',
-        enabled:true,
-        profile:  {
-          id:'',
-          categories:[],
+        enabled: true,
+        profile: {
+          id: '',
+          categories: [],
           zipcodeId: '',
           address: '',
           imagePersonal: '',
           introduction: '',
-          isBusiness:false
+          isBusiness: false
         }
       };
       this.userService.putMe(user).subscribe({
-        next: (response) =>{
+        next: (response) => {
           this.handleSuccessfulSubmission(response)
-          
-          this.authService.updateUser('name', `${response.user.firstname}  ${response.user.lastname}` );
-          this.authService.updateUser('email', `${response.user.email} ` );
+
+          this.authService.updateUser('name', `${response.user.firstname}  ${response.user.lastname}`);
+          this.authService.updateUser('email', `${response.user.email} `);
         },
         error: (error) => this.handleError(error)
       });
