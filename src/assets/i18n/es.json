@@ -11,7 +11,8 @@
       "next":"Siguiente",
       "select": "Seleccione",
       "reject": "Rechazar",
-      "accept":"Aceptar"
+      "accept":"Aceptar",
+      "isWhitespace":"El campo debe tener caracteres válidos "
   },
   "header":{
     "profile":"Perfil",
@@ -33,6 +34,7 @@
     "isFirstNameRequired": "El nombre es requerido",
     "isLastNameRequired": "El apellido es requerido",
     "isPasswordRequired": "La clave es requerida",
+    "isImagePersonalRequired": "La imagen es requerida",
     "forgotpassword": "¿Has olvidado tu contraseña?",
     "currentPassword": "Contraseña actual",
     "newPassword": "Contraseña nueva",

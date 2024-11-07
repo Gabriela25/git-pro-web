@@ -8,7 +8,8 @@
         "next":"Next",
         "select": "Select",
         "reject": "Reject",
-        "accept":"Accept"
+        "accept":"Accept",
+        "isWhitespace":"The field must have valid characters"
     },
     "header":{
         "profile":"Profile",
@@ -31,6 +32,7 @@
         "isPasswordRequired": "Password is required",
         "isPhoneRequired": "Phone is required",
         "isPhoneMaximum10":"The phone number is 10 digits",
+        "isImagePersonalRequired": "Image is required",
         "forgotpassword": "Forgot Password?",
         "currentPassword": "Current password",
         "newPassword": "New password",
@@ -75,6 +77,7 @@
         "isZipcodeRequired":"Zip code is required",
         "isAddressRequired":"Address is required",
         "isImagePersonalRequired":"Image is required"
+    
     },
   
   "payment":{

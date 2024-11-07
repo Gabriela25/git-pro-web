@@ -95,7 +95,7 @@ export default class BasicInfoComponent implements OnInit {
   }
 
   onSubmit() {
-   
+    this.basicInfoForm.markAllAsTouched();
     if (this.basicInfoForm.invalid) {
       return;
     } else {

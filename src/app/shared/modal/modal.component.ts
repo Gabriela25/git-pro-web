@@ -15,9 +15,12 @@ import { Location } from '@angular/common';
 })
 export class ModalComponent {
   @Input() title!: string;
+  @Input() acceptButtonText: string = '';
+  @Input() rejectButtonText: string = '';
   @Input() contentTemplate!: TemplateRef<any>;
   @Input() contentContext: any;
   @Output() confirmAction = new EventEmitter<void>();
+  @Output() cancelAction = new EventEmitter<void>();
   @Input() message!:  SafeHtml | string;;
   isOpen : boolean = false;
   @Input() isSelected : boolean = false;
@@ -34,7 +37,9 @@ export class ModalComponent {
     this.isOpen = false;
   }
   reject() {
+    this.cancelAction.emit();
     this.isOpen = false;
+   
   }
   accept() {
     this.confirmAction.emit();

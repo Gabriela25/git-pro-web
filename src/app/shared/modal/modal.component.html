@@ -7,10 +7,17 @@
         <h5 class="modal-title">{{ title }}</h5>
         <button type="button" class="btn-close" aria-label="Close" (click)="close()"></button>
       </div>
-      <div class="modal-body" [innerHTML]="message"></div>
+      <div class="modal-body">
+        <ng-content></ng-content>
+      </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" (click)="reject()">{{'general.reject'| translate}}</button>
-        <button type="button" class="btn btn-primary" (click)="accept()">{{'general.accept'| translate}}</button>
+        @if(rejectButtonText){
+          
+          <button type="button" class="btn btn-secondary" (click)="reject()">{{ rejectButtonText }}</button>
+        }
+        @if(acceptButtonText){
+          <button type="button" class="btn btn-primary" (click)="accept()">{{ acceptButtonText }}</button>
+        }
       </div>
     </div>
   </div>

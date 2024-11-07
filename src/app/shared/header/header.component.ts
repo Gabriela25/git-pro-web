@@ -91,7 +91,7 @@ export class HeaderComponent implements OnInit {
     this.userService.putMe(user).subscribe({
       next: (response) => {
         console.log(response)
-
+        this.authService.updateUser('available', response.user.profile?.available);
       },
       error: (error) => {
 

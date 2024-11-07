@@ -1,39 +1,40 @@
 <app-header></app-header>
-<ng-template #content let-onRadioChange="onRadioChange">
+
+<app-modal #modal [title]="'Select the option of your preference'" [rejectButtonText]="'general.cancel'| translate"
+    [acceptButtonText]="'general.accept'| translate" (confirmAction)="onAccept()">
+
     <div style="text-align:center">
         <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="inlineRadioOptions" id="isPersonal" value="isPersonal"
-                [(ngModel)]="isSelectOption" (change)="onRadioChange($event)">
+            <input class="form-check-input" type="radio" id="isPersonal" value="isPersonal" [(ngModel)]="isSelectOption"
+                (change)="onRadioChange($event)">
             <label class="form-check-label" for="isPersonal">Personal</label>
         </div>
         <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="inlineRadioOptions" id="isBusiness" value="isBusiness"
-                [(ngModel)]="isSelectOption" (change)="onRadioChange($event)">
+            <input class="form-check-input" type="radio" id="isBusiness" value="isBusiness" [(ngModel)]="isSelectOption"
+                (change)="onRadioChange($event)">
             <label class="form-check-label" for="isBusiness">Business</label>
         </div>
     </div>
-</ng-template>
-
-<app-modal #modal [title]="'Select the option of your preference '" [contentTemplate]="content"
-    [contentContext]="{ onRadioChange: onRadioChange.bind(this) }" (confirmAction)="handleConfirm()"
-    [isSelected]="onSelect">
 </app-modal>
 <div class="container-fluid">
     <div class="row">
-        <div class="col-lg-4 col-img">
+        <div class="col-lg-4 col-img d-none d-lg-block">
         </div>
-        <div class="col-lg-8 p-5">
+        <div class="col-lg-8 p-4 col-12">
             <div class="card container-box">
                 <div class="card-header">
                     <ul class="nav nav-tabs card-header-tabs">
+
                         <li class="nav-item">
                             <a class="nav-link" [class.active]="currentStep === 1" (click)="goToStep(1)">Personal</a>
                         </li>
-                        @if(!isUserProPersonal){
+
+
+
                         <li class="nav-item">
                             <a class="nav-link" [class.active]="currentStep === 2" (click)="goToStep(2)">Business</a>
                         </li>
-                        }
+
 
 
                     </ul>
@@ -41,7 +42,7 @@
                 <div class="card-body">
 
                     @if(currentStep === 1){
-                    <form [formGroup]="proPersonalForm" (ngSubmit)="onSubmit(false)" autocomplete="off">
+                    <form [formGroup]="proPersonalForm" (ngSubmit)="onSubmit()" autocomplete="off">
                         <div class="fade-in">
                             <div class="form-group">
                                 <div class="form-group text-center position-relative">
@@ -49,14 +50,25 @@
                                         <div class="position-relative d-inline-block">
                                             <img [src]="previewImgPersonal || imagePersonal || 'assets/avatar_profile.png'"
                                                 alt="Vista Previa" alt="Vista Previa" class="rounded-circle mb-3"
-                                                width="100" height="100" (click)="triggerFileInputP()">
+                                                style="object-fit: cover;" width="100" height="100"
+                                                (click)="triggerFileInputP()">
                                             <i class="bi bi-pen position-absolute"
                                                 style="right: 5px; bottom: 5px; font-size: 18px; cursor: pointer;"
                                                 (click)="triggerFileInputP()"></i>
                                         </div>
                                         <input type="file" class="form-control" id="imagePersonal" #fileInputPersonal
-                                             (change)="onFileSelected($event)"
-                                            style="display: none;">
+                                            (change)="onFileSelected($event)" style="display: none;">
+                                        @if(proPersonalForm.get('imagePersonal')?.invalid &&
+                                        (proPersonalForm.get('imagePersonal')?.dirty ||
+                                        proPersonalForm.get('imagePersonal')?.touched )){
+                                        <div class="alert alert-danger mt-2">
+                                            @if(proPersonalForm.get('imagePersonal')?.errors?.['required']){
+                                            <span>
+                                                {{'auth.isImagePersonalRequired' | translate}}
+                                            </span>
+                                            }
+                                        </div>
+                                        }
                                     </div>
                                 </div>
                             </div>
@@ -111,18 +123,13 @@
                                     }
                                 </div>
                             </div>
-                            <!--div class="form-group">
-                                <div class="mb-3">
-                                    <label for="imagePersonal" class="form-label fw-bold">{{'profile.imgProfile' |
-                                        translate}}</label>
-                                    <input type="file" class="form-control" id="imagePersonal" />
-                                </div>
-                            </div-->
+
                             <div class="form-group">
                                 <div class="mb-3">
                                     <label for="address" class="form-label fw-bold">{{'profile.address' |
                                         translate}}</label>
-                                    <input type="text" class="form-control" id="address" formControlName="address" appCapitalizeFirst/>
+                                    <input type="text" class="form-control" id="address" formControlName="address"
+                                        appCapitalizeFirst />
                                     @if(proPersonalForm.get('address')?.invalid &&
                                     (proPersonalForm.get('address')?.dirty || proPersonalForm.get('address')?.touched
                                     )){
@@ -137,6 +144,12 @@
                                             {{'profile.minimum10Characters' | translate}}
                                         </span>
                                         }
+                                        @else if(proPersonalForm.get('address')?.errors?.['noWhitespace']){
+                                        <span>
+                                            {{'general.isWhitespace' | translate}}
+                                        </span>
+                                        }
+
                                     </div>
                                     }
                                 </div>
@@ -150,13 +163,8 @@
                                 </div>
                             </div>
                             <div class="d-flex justify-content-end mt-3">
-                                @if(!this.showOptsPro){
-                                <button type="submit" class="btn btn-outline-primary me-2"
-                                    (click)="goStep()">{{'general.next' | translate}}</button>
-                                }
-
-                                <button type="submit" class="btn btn-primary"
-                                    [disabled]="!proPersonalForm.valid">{{'general.save' | translate}}</button>
+                                <button type="button" class="btn btn-primary" (click)="nextStep()">{{'general.next' |
+                                    translate}}</button>
                             </div>
                         </div>
                         @if(isLoading){
@@ -172,8 +180,8 @@
                         }
                     </form>
                     }
-                    @if(!isUserProPersonal && currentStep ==2 ){
-                    <form [formGroup]="proBusinessForm" (ngSubmit)="onSubmit(true)" autocomplete="off">
+                    @if( currentStep ==2 ){
+                    <form [formGroup]="proBusinessForm" (ngSubmit)="onSubmit()" autocomplete="off">
                         <div class="fade-in">
                             <div class="form-group">
                                 <div class="form-group text-center position-relative">
@@ -187,8 +195,7 @@
                                                 (click)="triggerFileInputB()"></i>
                                         </div>
                                         <input type="file" class="form-control" id="imageBusiness" #fileInputBusiness
-                                            (change)="onFileSelected($event)"
-                                            style="display: none;">
+                                            (change)="onFileSelected($event)" style="display: none;">
                                     </div>
                                 </div>
                             </div>
@@ -197,7 +204,7 @@
                                     <label for="nameBusiness" class="form-label fw-bold">{{'profile.nameBusiness' |
                                         translate}}</label>
                                     <input type="text" class="form-control" id="nameBusiness"
-                                        formControlName="nameBusiness" appCapitalizeFirst/>
+                                        formControlName="nameBusiness" appCapitalizeFirst />
                                     @if(proPersonalForm.get('nameBusiness')?.invalid &&
                                     (proPersonalForm.get('nameBusiness')?.dirty ||
                                     proPersonalForm.get('nameBusiness')?.touched )){
@@ -217,8 +224,8 @@
                                 <div class="mb-3">
                                     <label for="yearFounded" class="form-label fw-bold">{{'profile.yearFounded' |
                                         translate}}</label>
-                                    <input type="number" class="form-control" id="yearFounded"
-                                        formControlName="yearFounded" />
+                                    <input type="tel" class="form-control" id="yearFounded"
+                                        formControlName="yearFounded" (keypress)="validateNumber($event)" />
                                     @if(proPersonalForm.get('yearFounded')?.invalid &&
                                     (proPersonalForm.get('yearFounded')?.dirty ||
                                     proPersonalForm.get('yearFounded')?.touched )){
@@ -238,8 +245,8 @@
                                     <label for="numberOfemployees"
                                         class="form-label fw-bold">{{'profile.numberEmployees'
                                         | translate}}</label>
-                                    <input type="number" class="form-control" id="numberOfemployees"
-                                        formControlName="numberOfemployees" />
+                                    <input type="tel" class="form-control" id="numberOfemployees"
+                                        formControlName="numberOfemployees" (keypress)="validateNumber($event)" />
                                     @if(proPersonalForm.get('numberOfemployees')?.invalid &&
                                     (proPersonalForm.get('numberOfemployees')?.dirty ||
                                     proPersonalForm.get('numberOfemployees')?.touched )){
@@ -258,8 +265,8 @@
                             <div class="d-flex justify-content-between mt-3">
                                 <button type="button" class="btn btn-outline-primary mt-3"
                                     (click)="previousStep()">Previous</button>
-                                <button type="submit" class="btn btn-primary mt-3"
-                                    [disabled]="!proBusinessForm.valid">{{'general.save' | translate}}</button>
+                                <button type="submit" class="btn btn-primary mt-3">{{'general.save' |
+                                    translate}}</button>
                             </div>
                         </div>
                         @if(isLoading){

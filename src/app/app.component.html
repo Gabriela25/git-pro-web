@@ -6,5 +6,6 @@
   [message]="messageOrder"
   [isSelected]="isSelected"
   (confirmAction)="onConfirmAction()">
+  <div [innerHTML]="messageOrder"></div>
 </app-modal>
 <router-outlet />

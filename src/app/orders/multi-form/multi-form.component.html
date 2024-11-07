@@ -7,7 +7,10 @@
   [title]="title"
   [message]="messageOrder"
   [isSelected]="isSelected"
+  [rejectButtonText]="'general.reject'| translate"
+  [acceptButtonText]="'general.accept'| translate"
   (confirmAction)="onConfirmAction()">
+  <div [innerHTML]="messageOrder"></div>
 </app-modal>
 
 
@@ -15,12 +18,12 @@
   <div class="col-lg-3">
 
   </div>
-  <div class="col-lg-6 col-12">
+  <div class="col-lg-6 col-12 p-4">
     <div class="container mt-5 container-box p-5">
 
       <div class="progress-indicator">
         <div class="step" (click)="step(0)">
-          <div class="step-label">Zip code</div>
+          <div class="step-label">Zipcode</div>
 
           <div class="circle" [ngClass]="{'active': currentStep >= 0}">1</div>
           <div class="step-desc">{{this.zipcodeName}}</div>

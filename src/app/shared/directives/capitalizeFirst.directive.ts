@@ -13,6 +13,7 @@ export class CapitalizeFirstDirective {
   }
 
   private capitalizeFirstLetter(value: string): string {
-    return value.replace(/\b\w/g, first => first.toUpperCase());
+    if (!value) return value;
+    return value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
   }
 }

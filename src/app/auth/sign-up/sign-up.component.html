@@ -56,7 +56,7 @@
                             {{'auth.isPhoneRequired' | translate}}
                         </span>
                         }
-                        @if(signUpForm.get('phone')?.errors?.['min']){
+                        @if(signUpForm.get('phone')?.errors?.['minlength']){
                         <span>
                             {{'auth.isPhoneMaximum10' | translate}}
                         </span>

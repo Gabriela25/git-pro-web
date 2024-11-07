@@ -1,64 +1,56 @@
 <app-header />
-<div >
+<div>
     <div id="carouselExampleIndicators" class="carousel slide">
         <div class="carousel-indicators">
-          <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-          <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
-          <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
+            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
+            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
         </div>
         <div class="carousel-inner">
-          <div class="carousel-item active">
-            <img src="./../../assets/interior.jpg" class="d-block w-100 img-carousel" alt="...">
-          </div>
-          <div class="carousel-item">
-            <img src="./../../assets/cocina.jpg" class="d-block w-100 img-carousel" alt="...">
-          </div>
-          <div class="carousel-item">
-            <img src="./../../assets/cocina.jpg" class="d-block w-100 img-carousel" alt="...">
-          </div>
+            <div class="carousel-item active">
+                <img src="./../../assets/interior.jpg" class="d-block w-100 img-carousel" alt="...">
+            </div>
+            <div class="carousel-item">
+                <img src="./../../assets/cocina.jpg" class="d-block w-100 img-carousel" alt="...">
+            </div>
+            <div class="carousel-item">
+                <img src="./../../assets/cocina.jpg" class="d-block w-100 img-carousel" alt="...">
+            </div>
         </div>
         <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
-          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-          <span class="visually-hidden">Previous</span>
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
         </button>
         <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
-          <span class="carousel-control-next-icon" aria-hidden="true"></span>
-          <span class="visually-hidden">Next</span>
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
         </button>
-      </div>
-    
-</div>
-<div class="container text-center" style="position: absolute;top:350px">
-    <h2 style="color:white"><b>Find the best professionals who will satisfy all your needs.</b></h2>
-</div>
-<div class="container-fluid ml-3 mr-3">
-    
-    <div class="row" >
-
-        <div class="col-md-1">
-          
-        </div>
-  
-        <div class="col-md-10 p-2 col-10" style="position: absolute;top:380px;left:50%; transform: translateX(-50%);">
-         
-          <div class="container">
-            <div class="row pt-5 d-flex justify-content-center">
-              @for (item of listCategories; track item) {
-              <div class="col-md-3 text-center bg-white p-3 rounded shadow m-2 container-center-img">
-                <a (click)="navigateToServices(item)"  >
-                  <img [src]="item.image" alt="" width="120" height="120">
-                  <div class="text-center"><span><b>{{ item.name }}</b></span></div>
-                </a>
-              </div>
-            }
-            </div>
-          
-          </div>
-            
-            
-            <div class="col-md-1">
-
-            </div>
-        </div>
-
     </div>
+</div>
+
+<div class="container text-center" style="position: absolute; top: 350px;">
+    <h2 style="color: white;"><b>Find the best professionals who will satisfy all your needs.</b></h2>
+</div>
+
+<div class="container-fluid ml-3 mr-3">
+    <div class="row">
+        <div class="col-md-1"></div>
+
+        <div class="col-md-10 p-2 col-10" style="position: absolute; top: 380px; left: 50%; transform: translateX(-50%);">
+            <div class="container">
+                <div class="row pt-5 d-flex justify-content-center">
+                    @for (item of listCategories; track item) {
+                        <a (click)="navigateToServices(item)"  class="col-md-3 text-center p-3 m-2 bg-white rounded shadow container-center-img text-decoration-none" style="display: inline-block;">
+                            <div >
+                                <img [src]="item.image" alt="" width="120" height="120">
+                                <div class="text-center"><span><b>{{ item.name }}</b></span></div>
+                            </div>
+                        </a>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-1"></div>
+    </div>
+</div>

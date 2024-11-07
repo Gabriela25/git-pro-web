@@ -62,7 +62,7 @@ export default class SignUpComponent implements OnInit {
     this.signUpForm = new FormGroup({
       firstName: new FormControl('', [Validators.required]),
       lastName: new FormControl('', [Validators.required]),
-      phone: new FormControl('', [Validators.required, Validators.min(10)]),
+      phone: new FormControl('', [Validators.required, Validators.minLength(10)]),
       email: new FormControl('', [Validators.required, Validators.email]),
       isTerm: new FormControl(false, Validators.requiredTrue),
       //recaptcha: new FormControl('', [Validators.required]),
