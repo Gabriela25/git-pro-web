@@ -9,7 +9,8 @@ import { SidebarComponent } from '../../sidebar/sidebar.component';
 import { NgxMaskDirective } from 'ngx-mask';
 import { AuthService } from '../../services/auth.service';
 import { SocketComponent } from "../../shared/socket/socket.component";
-import { CapitalizeFirstDirective } from '../../shared/directives/capitalizeFirst.directive';
+import { CapitalizeFirstDirective } from '../../shared/directives/capitalize-first.directive';
+import { NoWhitespaceDirective } from '../../shared/directives/no-whitespace';
 
 @Component({
   selector: 'app-basic-info',
@@ -22,7 +23,8 @@ import { CapitalizeFirstDirective } from '../../shared/directives/capitalizeFirs
     HeaderComponent,
     SidebarComponent,
     SocketComponent,
-    CapitalizeFirstDirective
+    CapitalizeFirstDirective,
+    NoWhitespaceDirective
   ],
   templateUrl: './basic-info.component.html',
   styleUrl: './basic-info.component.css'

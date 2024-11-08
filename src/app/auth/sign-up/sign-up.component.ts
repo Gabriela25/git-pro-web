@@ -13,7 +13,8 @@ import { PlatformService } from '../../services/platform.service';
 import { NgxMaskDirective } from 'ngx-mask';
 import { AuthService } from '../../services/auth.service';
 import { User } from '../../interface/user.interface';
-import { CapitalizeFirstDirective } from '../../shared/directives/capitalizeFirst.directive';
+import { CapitalizeFirstDirective } from '../../shared/directives/capitalize-first.directive';
+import { NoWhitespaceDirective } from '../../shared/directives/no-whitespace';
 
 @Component({
   selector: 'app-sign-up',
@@ -24,7 +25,8 @@ import { CapitalizeFirstDirective } from '../../shared/directives/capitalizeFirs
     RouterLink,
     NgxMaskDirective,
     HeaderComponent,
-    CapitalizeFirstDirective
+    CapitalizeFirstDirective,
+    NoWhitespaceDirective
   ],
 
 
@@ -42,6 +44,8 @@ export default class SignUpComponent implements OnInit {
 
   isBrowser: boolean = true;
   signUpForm!: FormGroup;
+  showPassword: boolean = false;
+  showConfirmPassword: boolean = false;
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -57,6 +61,16 @@ export default class SignUpComponent implements OnInit {
       const paramValue = paramMap.get('isCustomer');
       this.isCustomer = paramValue === 'true' ? true : paramValue === 'false' ? false : null;
     });
+  }
+  togglePasswordVisibility(value:string): void {
+    console.log(value)
+    if(value == 'password'){
+      this.showPassword = !this.showPassword;
+    }
+    else if(value == 'confirmPassword'){
+      this.showConfirmPassword = !this.showConfirmPassword;
+    }
+    
   }
   initializeSignUpForm() {
     this.signUpForm = new FormGroup({

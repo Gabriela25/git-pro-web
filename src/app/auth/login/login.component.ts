@@ -10,6 +10,7 @@ import { Login } from '../../interface/login.interface';
 import { UserService } from '../../services/user.service';
 import { SocketComponent } from '../../shared/socket/socket.component';
 import { SocketService } from '../../services/socket.service';
+import { NoWhitespaceDirective } from '../../shared/directives/no-whitespace';
 @Component({
   selector: 'app-login',
   standalone: true,
@@ -18,6 +19,7 @@ import { SocketService } from '../../services/socket.service';
     TranslateModule,
     RouterLink,
     HeaderComponent,
+    NoWhitespaceDirective
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
@@ -29,7 +31,7 @@ export default class LoginComponent {
   alertMessage = '';
   alertTimeout: any;
   token: string = '';
-
+  showPassword: boolean = false;
   constructor(
     public router: Router,
     private authService: AuthService,
@@ -44,7 +46,9 @@ export default class LoginComponent {
     password: new FormControl('', [Validators.required, Validators.minLength(6)]),
   });
 
-
+  togglePasswordVisibility(): void {
+    this.showPassword = !this.showPassword;
+  }
   onSubmit() {
     this.loginForm.markAllAsTouched();
     if (this.loginForm.invalid) {

@@ -25,7 +25,7 @@
                                     <label for="firstName" class="form-label fw-bold">{{'profile.firstName' |
                                         translate}}</label>
                                     <input type="text" class="form-control" placeholder="" id="firstName"
-                                        formControlName="firstname" value="{{user.firstname}}" appCapitalizeFirst/>
+                                        formControlName="firstname" value="{{user.firstname}}" appCapitalizeFirst noWhitespace />
                                     @if(basicInfoForm.get('firstname')?.invalid &&
                                     (basicInfoForm.get('firstname')?.dirty || basicInfoForm.get('firstname')?.touched
                                     )){

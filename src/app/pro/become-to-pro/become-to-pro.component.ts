@@ -20,7 +20,8 @@ import { UserService } from '../../services/user.service';
 import { AuthService } from '../../services/auth.service';
 import { UploadsService } from '../../services/uploads.service';
 import { SocketComponent } from "../../shared/socket/socket.component";
-import { CapitalizeFirstDirective } from '../../shared/directives/capitalizeFirst.directive';
+import { CapitalizeFirstDirective } from '../../shared/directives/capitalize-first.directive';
+import { NoWhitespaceDirective } from '../../shared/directives/no-whitespace';
 
 @Component({
   selector: 'app-become-to-pro',
@@ -29,14 +30,14 @@ import { CapitalizeFirstDirective } from '../../shared/directives/capitalizeFirs
     ReactiveFormsModule,
     FormsModule,
     TranslateModule,
-    RouterLink,
     HeaderComponent,
-    SidebarComponent,
-    AutocompleteComponent,
     ModalComponent,
-    NgxMaskDirective,
-    SocketComponent,
-    CapitalizeFirstDirective
+    CapitalizeFirstDirective,
+    
+    NoWhitespaceDirective
+    
+  
+    
   ],
   templateUrl: './become-to-pro.component.html',
   styleUrl: './become-to-pro.component.css'
@@ -113,19 +114,12 @@ export default class BecomeToProComponent implements OnInit {
     return this.fb.group({
       categories: new FormControl([], [Validators.required]),
       zipcode: new FormControl('', [Validators.required]),
-      address: new FormControl('', [Validators.required, Validators.minLength(10), this.noWhitespaceValidator()]),
+      address: new FormControl('', [Validators.required, Validators.minLength(10)]),
       imagePersonal: new FormControl('', [Validators.required]),
       introduction: new FormControl('')
     });
   }
-  noWhitespaceValidator(): ValidatorFn {
-    return (control: AbstractControl): ValidationErrors | null => {
-      const value = control.value || '';
-      const whitespace = value !== value.trim();
-
-      return whitespace ? { noWhitespace: true } : null;
-    };
-  }
+  
 
   initializeProBusinessForm(): FormGroup {
     return this.fb.group({
@@ -137,7 +131,6 @@ export default class BecomeToProComponent implements OnInit {
   }
   validateNumber(event: KeyboardEvent): void {
     const charCode = event.keyCode ? event.keyCode : event.which;
-    // Permitir solo números (códigos de teclas 48-57), y borrar (keyCode 8) o tabulación (keyCode 9)
     if ((charCode < 48 || charCode > 57) && charCode !== 8 && charCode !== 9) {
       event.preventDefault();
     }
@@ -174,7 +167,6 @@ export default class BecomeToProComponent implements OnInit {
   checkUserProfile() {
     this.userService.getMe().subscribe({
       next: (response) => {
-
         this.populateUserProfile(response.user)
       },
       error: (error) => console.error(error)
@@ -185,9 +177,8 @@ export default class BecomeToProComponent implements OnInit {
     if (user.profile) {
       //asignamos si el perfil es personal o business
       this.isUserProPersonal = !user.profile.isBusiness;
-      console.log('en el usuario', user)
       this.user = user;
-      this.imagePersonal = user.profile.imagePersonal || '';
+      this.imagePersonal = user.profile.imagePersonal || 'assets/avatar_profile.png';
       this.proPersonalForm.patchValue({
         categories: user.profile.categories.map((category: any) => category.id),
         zipcode: user.profile.zipcodeId,
@@ -197,7 +188,7 @@ export default class BecomeToProComponent implements OnInit {
       });
       if (user.profile.isBusiness) {
         this.isBusiness = true;
-        this.imageBusiness = user.profile.imageBusiness || '';
+        this.imageBusiness = user.profile.imageBusiness || 'assets/avatar_profile.png';
         this.proBusinessForm.patchValue({
           nameBusiness: user.profile.nameBusiness,
           yearFounded: user.profile.yearFounded,
@@ -210,11 +201,9 @@ export default class BecomeToProComponent implements OnInit {
   }
   openModalOnPageLoad() {
     if (this.modal) {
-
       this.modal.open();
     }
   }
-
   onRadioChange(event: Event) {
     this.onSelect = true;
     const target = event.target as HTMLInputElement;
@@ -338,10 +327,6 @@ export default class BecomeToProComponent implements OnInit {
         });
 
       } else if (this.proBusinessForm.valid) {
-
-        console.log(3)
-        console.log('personal', this.selectedFilePersonal)
-        console.log('business', this.selectedFileBusiness)
         const profile: Profile = {
           categories: this.proPersonalForm.value.categories || [],
           zipcodeId: this.proPersonalForm.value.zipcode || '',
@@ -378,7 +363,7 @@ export default class BecomeToProComponent implements OnInit {
     }*/
   }
 
-  submitProfile(formGroup: FormGroup, isBusiness: boolean) {
+  /*submitProfile(formGroup: FormGroup, isBusiness: boolean) {
     formGroup.markAllAsTouched();
     if (formGroup.invalid) {
       return;
@@ -397,8 +382,6 @@ export default class BecomeToProComponent implements OnInit {
         };
 
         if (!this.user.profile || !this.user.profile.id) {
-
-          console.log(1)
           this.userService.becomeToPro(profile).subscribe({
             next: (response) => {
               this.user.profile = response.profile
@@ -408,23 +391,20 @@ export default class BecomeToProComponent implements OnInit {
               this.authService.updateUser('isPro', true);
               /*if (this.selectedFile) {
                 this.uploadImage(this.selectedFile, isBusiness);
-              }*/
+              }
             },
             error: (error) => this.handleError(error)
           });
         }
         else {
           if (!isBusiness) {
-            console.log(2)
             this.userService.putMe({ ...this.user, profile }).subscribe({
               next: (response) => {
-
                 this.authService.updateUser('available', response.user.profile?.available);
-
                 this.handleSuccessfulSubmission(response);
                 /*if (this.selectedFile) {
                   this.uploadImage(this.selectedFile, isBusiness);
-                }*/
+                }
               },
               error: (error) => this.handleError(error)
             });
@@ -451,7 +431,7 @@ export default class BecomeToProComponent implements OnInit {
 
                 /*if (this.selectedFile) {
                   this.uploadImage(this.selectedFile, isBusiness);
-                }*/
+                }
               },
               error: (error) => this.handleError(error)
             });
@@ -459,7 +439,7 @@ export default class BecomeToProComponent implements OnInit {
         }
       }
     }
-  }
+  }*/
   handleSuccessfulSubmission(response: any) {
     this.alertMessage = 'alert-success';
     this.backendMessage = response.message || 'Profile updated successfully';

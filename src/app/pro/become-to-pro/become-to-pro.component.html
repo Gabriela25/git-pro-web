@@ -24,23 +24,15 @@
             <div class="card container-box">
                 <div class="card-header">
                     <ul class="nav nav-tabs card-header-tabs">
-
                         <li class="nav-item">
                             <a class="nav-link" [class.active]="currentStep === 1" (click)="goToStep(1)">Personal</a>
                         </li>
-
-
-
                         <li class="nav-item">
                             <a class="nav-link" [class.active]="currentStep === 2" (click)="goToStep(2)">Business</a>
                         </li>
-
-
-
                     </ul>
                 </div>
                 <div class="card-body">
-
                     @if(currentStep === 1){
                     <form [formGroup]="proPersonalForm" (ngSubmit)="onSubmit()" autocomplete="off">
                         <div class="fade-in">
@@ -49,7 +41,7 @@
                                     <div class="mb-3">
                                         <div class="position-relative d-inline-block">
                                             <img [src]="previewImgPersonal || imagePersonal || 'assets/avatar_profile.png'"
-                                                alt="Vista Previa" alt="Vista Previa" class="rounded-circle mb-3"
+                                                alt="Image Personal"  class="rounded-circle mb-3"
                                                 style="object-fit: cover;" width="100" height="100"
                                                 (click)="triggerFileInputP()">
                                             <i class="bi bi-pen position-absolute"
@@ -103,11 +95,11 @@
                                 <div class="mb-3">
                                     <label for="zipcode" class="form-label fw-bold">{{'profile.zipCode' |
                                         translate}}</label>
-                                    <select class="form-select" aria-label="select" id="zipcode"
+                                    <select class="form-select"  aria-label="select" id="zipcode"
                                         formControlName="zipcode">
-                                        <option>Seleccione</option>
+                                            <option value=""   selected>{{'general.select' | translate}}</option>
                                         @for (item of listZipcode; track item) {
-                                        <option [value]="item.id">{{item.name}}</option>
+                                            <option [value]="item.id">{{item.name}}</option>
                                         }
                                     </select>
                                     @if(proPersonalForm.get('zipcode')?.invalid &&
@@ -129,7 +121,7 @@
                                     <label for="address" class="form-label fw-bold">{{'profile.address' |
                                         translate}}</label>
                                     <input type="text" class="form-control" id="address" formControlName="address"
-                                        appCapitalizeFirst />
+                                        appCapitalizeFirst noWhitespace/>
                                     @if(proPersonalForm.get('address')?.invalid &&
                                     (proPersonalForm.get('address')?.dirty || proPersonalForm.get('address')?.touched
                                     )){
@@ -188,7 +180,7 @@
                                     <div class="mb-3">
                                         <div class="position-relative d-inline-block">
                                             <img [src]="previewImgBusiness || imageBusiness || 'assets/avatar_profile.png'"
-                                                alt="Vista Previa" alt="Vista Previa" class="rounded-circle mb-3"
+                                                alt="Image Business"  class="rounded-circle mb-3"
                                                 width="100" height="100" (click)="triggerFileInputB()">
                                             <i class="bi bi-pen position-absolute"
                                                 style="right: 5px; bottom: 5px; font-size: 18px; cursor: pointer;"

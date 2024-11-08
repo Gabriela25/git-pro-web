@@ -13,7 +13,7 @@
                     <div class="col-12 col-lg-6">
                         <label for="firstName" class="form-label fw-bold">{{'auth.firstName' | translate}}</label>
                         <input type="text" class="form-control" placeholder="" id="firstName"
-                            formControlName="firstName" appCapitalizeFirst/>
+                            formControlName="firstName" appCapitalizeFirst noWhitespace/>
                         @if(signUpForm.get('firstName')?.invalid && (signUpForm.get('firstName')?.dirty ||
                         signUpForm.get('firstName')?.touched )){
                         <div class="alert alert-danger mt-2 mt-2">
@@ -22,19 +22,29 @@
                                 {{'auth.isFirstNameRequired' | translate}}
                             </span>
                             }
+                            @else if(signUpForm.get('firstName')?.errors?.['noWhitespace']){
+                            <span>
+                                {{'general.isWhitespace' | translate}}
+                            </span>
+                            }
                         </div>
                         }
                     </div>
                     <div class="col-12 col-lg-6">
                         <label for="lastName" class="form-label fw-bold">{{'auth.lastName' | translate}}</label>
                         <input type="text" class="form-control" placeholder="" id="lastName"
-                            formControlName="lastName" appCapitalizeFirst />
+                            formControlName="lastName" appCapitalizeFirst noWhitespace/>
                         @if(signUpForm.get('lastName')?.invalid && (signUpForm.get('lastName')?.dirty ||
                         signUpForm.get('lastName')?.touched )){
                         <div class="alert alert-danger mt-2">
                             @if(signUpForm.get('lastName')?.errors?.['required']){
                             <span>
                                 {{'auth.isLastNameRequired' | translate}}
+                            </span>
+                            }
+                            @else if(signUpForm.get('lastName')?.errors?.['noWhitespace']){
+                            <span>
+                                {{'general.isWhitespace' | translate}}
                             </span>
                             }
                         </div>
@@ -66,7 +76,7 @@
                 </div>
                 <div class="mb-3">
                     <label for="email" class="form-label fw-bold">{{'auth.email' | translate}}</label>
-                    <input type="email" class="form-control" id="email" placeholder="Email" formControlName="email" />
+                    <input type="email" class="form-control" id="email" placeholder="Email" formControlName="email" noWhitespace/>
                     @if(signUpForm.get('email')?.invalid && (signUpForm.get('email')?.dirty ||
                     signUpForm.get('email')?.touched )){
                     <div class="alert alert-danger mt-2">
@@ -75,19 +85,43 @@
                             {{'auth.isEmailRequired' | translate}}
                         </span>
                         }
-                        @if(signUpForm.get('email')?.errors?.['email']){
+                        @else if(signUpForm.get('email')?.errors?.['noWhitespace']){
+                            <span>
+                                {{'general.isWhitespace' | translate}}
+                            </span>
+                            }
+                        @else if(signUpForm.get('email')?.errors?.['email']){
                         <span>
                             {{'auth.isEmailValid' | translate}}
                         </span>
                         }
+                        
                     </div>
                     }
 
                 </div>
                 <div class="mb-3">
-                    <label for="password" class="form-label fw-bold">{{'auth.password' | translate}}</label>
-                    <input type="password" class="form-control" id="password" placeholder="" type="password"
-                        minlength="6" formControlName="password" />
+                    <label for="password" class="form-label fw-bold">
+                      {{ 'auth.password' | translate }}
+                    </label>
+                    <div class="input-group">
+                      <input 
+                        [type]="showPassword ? 'text' : 'password'" 
+                        class="form-control" 
+                        id="password" 
+                        placeholder="Password" 
+                        formControlName="password" 
+                      />
+                      <button 
+                        type="button" 
+                        class="btn btn-outline-secondary" 
+                        (click)="togglePasswordVisibility('password')" 
+                        aria-label="Toggle password visibility"
+                      >
+                        <i [class]="showPassword ? 'bi bi-eye' : 'bi bi-eye-slash'"></i>
+                      </button>
+                    </div>
+                    
                     @if(signUpForm.get('password')?.invalid && (signUpForm.get('password')?.dirty ||
                     signUpForm.get('password')?.touched )){
                     <div class="alert alert-danger mt-2">
@@ -96,7 +130,7 @@
                             {{'auth.isPasswordRequired' | translate}}
                         </span>
                         }
-                        @if(signUpForm.get('password')?.errors?.['pattern']){
+                        @else if(signUpForm.get('password')?.errors?.['pattern']){
                         <ul>
                             <li>{{'auth.minimum6Characters' | translate}}</li>
                             <li>{{'auth.maximum15Characters' | translate}}</li>
@@ -108,10 +142,28 @@
                     }
                 </div>
                 <div class="mb-3">
-                    <label for="confirmPassword" class="form-label fw-bold">{{'auth.confirmPassword' |
-                        translate}}</label>
-                    <input type="password" class="form-control" id="confirmPassword" placeholder="" type="password"
-                        minlength="6" formControlName="confirmPassword" />
+                    <label for="password" class="form-label fw-bold">
+                        {{'auth.confirmPassword' |
+                        translate}}
+                    </label>
+                    <div class="input-group">
+                      <input 
+                        [type]="showConfirmPassword ? 'text' : 'password'" 
+                        class="form-control" 
+                        id="confirmPassword" 
+                        placeholder="Password" 
+                        formControlName="confirmPassword" minlength="6"
+                      />
+                      <button 
+                        type="button" 
+                        class="btn btn-outline-secondary" 
+                        (click)="togglePasswordVisibility('confirmPassword')" 
+                        aria-label="Toggle password visibility"
+                      >
+                        <i [class]="showConfirmPassword ? 'bi bi-eye' : 'bi bi-eye-slash'"></i>
+                      </button>
+                    </div>
+                    
                     @if(signUpForm.get('confirmPassword')?.invalid && (signUpForm.get('confirmPassword')?.dirty ||
                     signUpForm.get('confirmPassword')?.touched )){
                     <div class="alert alert-danger mt-2">
@@ -130,15 +182,14 @@
                             <li>{{'auth.oneLowercaseLetterAndOneNumber' | translate}}</li>
                         </ul>
                         }
-                        @if(signUpForm.get('confirmPassword')?.errors?.['mismatch']){
+                        @else if(signUpForm.get('confirmPassword')?.errors?.['mismatch']){
                         <span>
                             {{'auth.thePasswordsDoNotMatch' | translate}}
                         </span>
                         }
                     </div>
                     }
-                </div>
-
+                </div>             
                 <div class="mb-3">
 
                     <div class="form-check">
