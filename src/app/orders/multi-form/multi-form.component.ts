@@ -96,6 +96,8 @@ export default class MultiFormComponent {
     this.socketService.getMessage('order-created').subscribe((msg:any) => {
       this.onCreatedOrder(msg);
     });
+
+    this.socketService.getMessage('order-accepted').subscribe(this.onAcceptedOrder);
     
   }
   
@@ -259,9 +261,9 @@ export default class MultiFormComponent {
       this.isLoading = false;
     
       console.log('antes del modal')
-      this.messageOrder = 'The order has been generated successfully';
+      this.messageOrder = 'Seraching professionals...';
       this.openModal()
-      this.startAlertTimer()
+      // this.startAlertTimer()
       /*const formData = new FormData();
       formData.append('model', 'order');
       formData.append('idModel', order.id!);
@@ -291,6 +293,25 @@ export default class MultiFormComponent {
     this.isLoading = false;
     this.modal.open();
    
+  }
+
+  onAcceptedOrder(payload: unknown) {
+    console.log({payload});
+    if (typeof payload !== 'object') {
+      return;
+    }
+
+    if (!payload) {
+      return;
+    }
+
+    if (!('professional' in payload)) {
+      return;
+    }
+
+    const { professional } = payload as { professional: { fullName: string; image: string; } };
+
+    console.log(professional);
   }
 
   onConfirmAction() {

@@ -5,11 +5,13 @@ import { SocketService } from './services/socket.service';
 import { ModalComponent } from './shared/modal/modal.component';
 import { Order } from './interface/order.interface';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { TranslateModule } from '@ngx-translate/core';
+import { OrderAcceptedInfo } from './interface/order-accepted-info';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, ModalComponent],
+  imports: [RouterOutlet, ModalComponent, TranslateModule],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
@@ -23,6 +25,8 @@ export class AppComponent  {
   titleModal: string = 'Order';
   messageOrder!: SafeHtml | string;
   alertTimeout: any;
+  orderId: string = '';
+
   constructor(
     private sanitizer: DomSanitizer,
     private socketService: SocketService,
@@ -59,9 +63,12 @@ export class AppComponent  {
            </ul>
         </div>
      `);
+     this.orderId = order.id;
       this.openModal()
-      this.startAlertTimer();
+      // this.startAlertTimer();
     });
+    this.socketService.getMessage('order-accepted-info').subscribe(this.onAcceptedOrderInfo);
+    
   }
 
   authSocket() {
@@ -78,7 +85,9 @@ export class AppComponent  {
   }*/
   onConfirmAction() {
     console.log("Confirmación del modal recibida");
-   
+    this.socketService.sendMessage('accept-order', {
+      orderId: this.orderId
+    });
   }
   closeModal(){
     this.modalPro.close();
@@ -87,6 +96,33 @@ export class AppComponent  {
   openModal() {
     this.modalPro.open();
   }
+
+  onAcceptedOrderInfo(payload: unknown) {
+    
+    if (typeof payload !== 'object') {
+      return;
+    }
+
+    if (!payload) {
+      return;
+    }
+
+    if (!('order' in payload)) {
+      return;
+    }
+
+    const { order } = payload as { order: OrderAcceptedInfo };
+
+    if (order.orderLimitReached) {
+      this.messageOrder = 'This order has reached the limit of professionals';
+      this.openModal();
+      return;
+    }
+
+    console.log(order);
+  }
+
+
   startAlertTimer() {
     if (this.alertTimeout) {
        clearTimeout(this.alertTimeout);

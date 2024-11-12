@@ -5,6 +5,8 @@
   [title]="titleModal"
   [message]="messageOrder"
   [isSelected]="isSelected"
+  [rejectButtonText]="'general.reject'| translate"
+  [acceptButtonText]="'general.accept'| translate"
   (confirmAction)="onConfirmAction()">
   <div [innerHTML]="messageOrder"></div>
 </app-modal>
