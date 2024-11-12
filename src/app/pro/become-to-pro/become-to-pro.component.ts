@@ -22,7 +22,7 @@ import { UploadsService } from '../../services/uploads.service';
 import { SocketComponent } from "../../shared/socket/socket.component";
 import { CapitalizeFirstDirective } from '../../shared/directives/capitalize-first.directive';
 import { NoWhitespaceDirective } from '../../shared/directives/no-whitespace';
-
+import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 @Component({
   selector: 'app-become-to-pro',
   standalone: true,
@@ -34,8 +34,8 @@ import { NoWhitespaceDirective } from '../../shared/directives/no-whitespace';
     ModalComponent,
     CapitalizeFirstDirective,
     
-    NoWhitespaceDirective
-    
+    NoWhitespaceDirective,
+    NgMultiSelectDropDownModule
   
     
   ],
@@ -94,6 +94,10 @@ export default class BecomeToProComponent implements OnInit {
       isBusiness: false
     }
   }
+  dropdownList :any = [];
+  selectedItems:any= [];
+  dropdownSettings:any = {};
+  
   constructor(
     private fb: FormBuilder,
     private categoryService: CategoryService,
@@ -109,6 +113,25 @@ export default class BecomeToProComponent implements OnInit {
   ngOnInit(): void {
     this.loadInitialData();
     this.checkUserProfile();
+  
+      
+      this.dropdownSettings = {
+        singleSelection: false,
+        idField: 'id',
+        textField: 'name',
+        selectAllText: 'Select All',
+        unSelectAllText: 'UnSelect All',
+        itemsShowLimit: 4,
+        allowSearchFilter: true
+      };
+     
+   
+  }
+  onItemSelect(item: any) {
+    console.log(item);
+  }
+  onSelectAll(items: any) {
+    console.log(items);
   }
   initializeProPersonalForm(): FormGroup {
     return this.fb.group({
@@ -179,8 +202,11 @@ export default class BecomeToProComponent implements OnInit {
       this.isUserProPersonal = !user.profile.isBusiness;
       this.user = user;
       this.imagePersonal = user.profile.imagePersonal || 'assets/avatar_profile.png';
+      
+       
+      
       this.proPersonalForm.patchValue({
-        categories: user.profile.categories.map((category: any) => category.id),
+        categories: user.profile.categories,
         zipcode: user.profile.zipcodeId,
         address: user.profile.address,
         imagePersonal: user.profile.imagePersonal,
@@ -286,10 +312,10 @@ export default class BecomeToProComponent implements OnInit {
 
   onSubmit() {
     if (this.proPersonalForm.valid) {
-      
+      console.log(this.proPersonalForm.value.categories)
       const formData = this.proPersonalForm.value;
       const profile: Profile = {
-        categories: formData.categories || [],
+        categories: this.proPersonalForm.value.categories.map((category: any) => category.id),
         zipcodeId: formData.zipcode || '',
         address: formData.address || '',
         imagePersonal: formData.imagePersonal || '',
@@ -328,7 +354,7 @@ export default class BecomeToProComponent implements OnInit {
 
       } else if (this.proBusinessForm.valid) {
         const profile: Profile = {
-          categories: this.proPersonalForm.value.categories || [],
+          categories: this.proPersonalForm.value.categories.map((category: any) => category.id),
           zipcodeId: this.proPersonalForm.value.zipcode || '',
           address: this.proPersonalForm.value.address || '',
           imagePersonal: this.proPersonalForm.value.imagePersonal || '',
@@ -361,6 +387,7 @@ export default class BecomeToProComponent implements OnInit {
     } else {
       this.submitProfile(this.proPersonalForm, isBusiness);
     }*/
+    
   }
 
   /*submitProfile(formGroup: FormGroup, isBusiness: boolean) {

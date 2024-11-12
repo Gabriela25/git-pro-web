@@ -41,7 +41,7 @@
                                     <div class="mb-3">
                                         <div class="position-relative d-inline-block">
                                             <img [src]="previewImgPersonal || imagePersonal || 'assets/avatar_profile.png'"
-                                                alt="Image Personal"  class="rounded-circle mb-3"
+                                                alt="Image Personal" class="rounded-circle mb-3"
                                                 style="object-fit: cover;" width="100" height="100"
                                                 (click)="triggerFileInputP()">
                                             <i class="bi bi-pen position-absolute"
@@ -64,42 +64,38 @@
                                     </div>
                                 </div>
                             </div>
-
                             <div class="form-group">
                                 <div class="mb-3">
                                     <label for="category" class="form-label fw-bold">{{'profile.categories' |
                                         translate}}</label>
-                                    <select class="form-select" multiple aria-label="multiple select example"
-                                        id="category" formControlName="categories">
-                                        @for (item of listCategories; track item) {
-                                        <option [value]="item.id"
-                                            [selected]="proPersonalForm.get('categories')?.value && proPersonalForm.get('categories')?.value.includes(item.id)">
-                                            {{item.name}}</option>
+                                    <ng-multiselect-dropdown [placeholder]="'Select'| translate"
+                                        [settings]="dropdownSettings" [data]="listCategories"
+                                         formControlName="categories"
+                                        (onSelect)="onItemSelect($event)" (onSelectAll)="onSelectAll($event)" >
+                                    </ng-multiselect-dropdown>
+                                        @if(proPersonalForm.get('categories')?.invalid &&
+                                        (proPersonalForm.get('categories')?.dirty ||
+                                        proPersonalForm.get('categories')?.touched )){
+                                        <div class="alert alert-danger mt-2">
+                                            @if(proPersonalForm.get('categories')?.errors?.['required']){
+                                            <span>
+                                                {{'profile.isCategoryIdsRequired' | translate}}
+                                            </span>
+                                            }
+                                        </div>
                                         }
-
-                                    </select>
-                                    @if(proPersonalForm.get('categories')?.invalid &&
-                                    (proPersonalForm.get('categories')?.dirty ||
-                                    proPersonalForm.get('categories')?.touched )){
-                                    <div class="alert alert-danger mt-2">
-                                        @if(proPersonalForm.get('categories')?.errors?.['required']){
-                                        <span>
-                                            {{'profile.isCategoryIdsRequired' | translate}}
-                                        </span>
-                                        }
-                                    </div>
-                                    }
+                                   
                                 </div>
                             </div>
                             <div class="form-group">
                                 <div class="mb-3">
                                     <label for="zipcode" class="form-label fw-bold">{{'profile.zipCode' |
                                         translate}}</label>
-                                    <select class="form-select"  aria-label="select" id="zipcode"
+                                    <select class="form-select" aria-label="select" id="zipcode"
                                         formControlName="zipcode">
-                                            <option value=""   selected>{{'general.select' | translate}}</option>
+                                        <option value="" selected>{{'general.select' | translate}}</option>
                                         @for (item of listZipcode; track item) {
-                                            <option [value]="item.id">{{item.name}}</option>
+                                        <option [value]="item.id">{{item.name}}</option>
                                         }
                                     </select>
                                     @if(proPersonalForm.get('zipcode')?.invalid &&
@@ -121,7 +117,7 @@
                                     <label for="address" class="form-label fw-bold">{{'profile.address' |
                                         translate}}</label>
                                     <input type="text" class="form-control" id="address" formControlName="address"
-                                        appCapitalizeFirst noWhitespace/>
+                                        appCapitalizeFirst noWhitespace />
                                     @if(proPersonalForm.get('address')?.invalid &&
                                     (proPersonalForm.get('address')?.dirty || proPersonalForm.get('address')?.touched
                                     )){
@@ -180,8 +176,8 @@
                                     <div class="mb-3">
                                         <div class="position-relative d-inline-block">
                                             <img [src]="previewImgBusiness || imageBusiness || 'assets/avatar_profile.png'"
-                                                alt="Image Business"  class="rounded-circle mb-3"
-                                                width="100" height="100" (click)="triggerFileInputB()">
+                                                alt="Image Business" class="rounded-circle mb-3" width="100"
+                                                height="100" (click)="triggerFileInputB()">
                                             <i class="bi bi-pen position-absolute"
                                                 style="right: 5px; bottom: 5px; font-size: 18px; cursor: pointer;"
                                                 (click)="triggerFileInputB()"></i>

@@ -16,6 +16,7 @@ import { provideStorage, getStorage } from '@angular/fire/storage';
 import { NgxMaskDirective, provideEnvironmentNgxMask } from 'ngx-mask';
 import { AppModule } from './app.module';
 import { HashLocationStrategy, LocationStrategy } from '@angular/common';
+import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
 }
@@ -26,6 +27,7 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(withFetch()),
 
     importProvidersFrom(
+      NgMultiSelectDropDownModule.forRoot(),
       AppModule,
       HttpClient,
       TranslateModule.forRoot({
@@ -62,6 +64,7 @@ export const appConfig: ApplicationConfig = {
     provideFirestore(() => getFirestore()),
     provideStorage(() => getStorage()),
     provideEnvironmentNgxMask(),
+    
     { provide: LocationStrategy, useClass: HashLocationStrategy }
   ]
 };

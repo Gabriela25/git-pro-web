@@ -11,6 +11,7 @@ import { OrderService } from '../services/order.service';
 import { SocketComponent } from '../shared/socket/socket.component';
 import { Category } from '../interface/category.interface';
 import { CommonModule } from '@angular/common';
+import { FooterComponent } from "../shared/footer/footer.component";
 
 @Component({
   selector: 'app-home',
@@ -20,8 +21,9 @@ import { CommonModule } from '@angular/common';
     CommonModule,
     HeaderComponent,
     ModalComponent,
-    SocketComponent
-  ],
+    SocketComponent,
+    FooterComponent
+],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
 })
