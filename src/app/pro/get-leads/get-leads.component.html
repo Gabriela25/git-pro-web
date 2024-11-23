@@ -1,18 +1,21 @@
-<app-header></app-header>
-
+<app-header/>
+<app-modal #modal [title]="title">
+    <div [innerHTML]="image"></div>
+</app-modal>
 <div class="container-fluid">
     <div class="row">
-        <div class="col-lg-4 col-img">
+        <div class="col-lg-3">
         </div>
-        <div class="col-lg-8 p-5">
+        <div class="col-lg-6 col-12 p-5 container-box">
+            <h1 class="text-center">Leads</h1>
             <div class="card">
                 <div class="card-header">
                     <ul class="nav nav-tabs card-header-tabs">
                         <li class="nav-item">
-                            <a class="nav-link" [class.active]="currentStep === 1" (click)="goToStep(1)">Payment</a>
+                            <a class="nav-link" [class.active]="currentStep === 1" (click)="goToStep(1)">Orders</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" [class.active]="currentStep === 2" (click)="goToStep(2)">Payment history</a>
+                            <a class="nav-link" [class.active]="currentStep === 2" (click)="goToStep(2)">Leads</a>
                         </li>
 
 
@@ -21,191 +24,75 @@
                 <div class="card-body">
 
                     @if(currentStep === 1){
-                    <form [formGroup]="paymentForm" (ngSubmit)="onSubmit()" autocomplete="off">
                         <div class="fade-in">
-                            <div class="form-group">
-                                <div class="mb-3">
-                                    <label for="serviceId" class="form-label fw-bold">{{'payment.plans'|
-                                        translate}}</label>
-                                    <select class="form-select" aria-label="select" id="serviceId" (change)="onService()"
-                                        formControlName="serviceId">
-                                        <option [ngValue]="null">Select</option>
-                                        @for (item of listServices; track item) {
-                                        <option [ngValue]="item">{{item.name}} - {{item.price}}</option>
-                                        }
-
-                                    </select>
-                                    @if(paymentForm.get('serviceId')?.invalid && (paymentForm.get('serviceId')?.dirty ||
-                                    paymentForm.get('serviceId')?.touched )){
-                                    <div class="alert alert-danger mt-2">
-                                        @if(paymentForm.get('serviceId')?.errors?.['required']){
-                                        <span>
-                                            {{'payment.isPlanRequired' | translate}}
-                                        </span>
-                                        }
-                                    </div>
-                                    }
-                                </div>
-                            </div>
-                            <div class="form-group">
-
-                                <div class="mb-3">
-
-                                    <div class="accordion" id="accordionPayment">
-                                        @for (item of paymentMethod; track item) {
-                                        <div class="accordion-item">
-                                            <h2 class="accordion-header" id="heading{{item.key}}">
-                                                <button
-                                                    class="accordion-button {{item.key === 'cash' ? '' : 'collapsed'}}"
-                                                    type="button" data-bs-toggle="collapse"
-                                                    attr.data-bs-target="#collapse{{item.key}}"
-                                                    attr.aria-expanded="{{item.key === 'cash' ? 'true' : 'false'}}"
-                                                    attr.aria-controls="#collapse{{item.key}}">
-                                                    {{item.value}}
-                                                </button>
-                                            </h2>
-                                            <div id="collapse{{item.key}}" data-bs-parent="#accordionPayment"
-                                                class="accordion-collapse collapse {{item.key === 'cash' ? 'show' : ''}}">
-                                                <div class="accordion-body">
-                                                    @if(item.key === 'cash'){
-                                                    <div class="row mb-3">
-                                                        <div class="col-12 col-lg-6">
-                                                            <label for="reference"
-                                                                class="form-label fw-bold">{{'payment.reference' |
-                                                                translate}}</label>
-                                                            <input type="text" class="form-control" placeholder=""
-                                                                id="reference" formControlName="reference" />
-                                                            <div id="referencetHelp" class="form-text">
-                                                                Enter your payment reference number
-                                                                </div>    
-                                                            @if(paymentForm.get('reference')?.invalid &&
-                                                            (paymentForm.get('reference')?.dirty ||
-                                                            paymentForm.get('reference')?.touched
-                                                            )){
-                                                            <div class="alert alert-danger mt-2 mt-2">
-                                                                @if(paymentForm.get('reference')?.errors?.['required']){
-                                                                <span>
-                                                                    {{'payment.isReferenceRequired' | translate}}
-                                                                </span>
-                                                                }
-                                                            </div>
-                                                            }
-                                                        </div>
-                                                        <div class="col-12 col-lg-6">
-                                                            <label for="amount"
-                                                                class="form-label fw-bold">{{'payment.amount' |
-                                                                translate}}</label>
-                                                            <input type="text" class="form-control" placeholder=""
-                                                                id="amount" formControlName="amount" (input)="calculateWeek()"/>
-                                                            <div id="amountHelp" class="form-text">
-                                                                Enter multiples of {{price}} US$ to cover your leads.
-                                                             </div>
-                                                            @if(paymentForm.get('amount')?.invalid &&
-                                                            (paymentForm.get('amount')?.dirty
-                                                            || paymentForm.get('amount')?.touched )){
-                                                            <div class="alert alert-danger mt-2">
-                                                                @if(paymentForm.get('amount')?.errors?.['required']){
-                                                                    <span>{{'payment.isAmountRequired' | translate}}</span>
-                                                                }
-                                                                @if(paymentForm.get('amount')?.errors?.['notANumber']){
-                                                                    <span>{{'payment.notANumber' | translate }}</span>
-                                                                }
-                                                                @if(paymentForm.get('amount')?.errors?.['amountInvalid']){
-                                                                    <span>{{'payment.amountInvalid' | translate }} {{ price }} US$.</span>
-                                                                }
-                                                            </div>
-                                                            }
-                                                        </div>
-                                                    </div>
-                                                    <div class="mb-3">
-                                                        <label for="week" class="form-label fw-bold">Weeks completed</label>
-                                                        <input type="text" class="form-control" id="week" readonly [value]="weeks">
-                                                    </div>
-                                                    <div *ngIf="remainingAmount > 0" class="alert alert-info mt-3">
-                                                        The difference in <strong>{{ formattedAmount }}</strong> will be accumulated until another week is completed, for plan {{nameService}}.
-                                                      </div>
-                                                   
-                                                    }
-                                                    @else {<strong>Atención: </strong> Próximamente podrás hacer estos
-                                                    pagos}
-                                                </div>
-                                            </div>
-                                        </div>
-                                        }
-
-                                    </div>
-
-                                </div>
-
-                            </div>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Amount</th>
+                                    <th scope="col">Surplus</th>
+                                    <th scope="col">Status</th>
+                                    <th scope="col">Activation date </th>
+                                    <th scope="col">Expiration date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @for (item of listLeadByUser; track item; let i = $index) {
+                                <tr>
+                                   <td></td>
 
 
-                            <div class="d-flex justify-content-end mt-3">
-
-
-
-
-                                <button type="submit" class="btn btn-primary"
-                                    [disabled]="!paymentForm.valid">{{'general.save' | translate}}</button>
-                            </div>
-                        </div>
-                        @if(isLoading){
-                        <div class="d-flex justify-content-center mt-3">
-                            <div class="spinner-border" role="status">
-                            </div>
-                        </div>
-                        }
-                        @if(backendMessage){
-                        <div class="alert {{alertMessage}} mt-3">
-                            {{ backendMessage }}
-                        </div>
-                        }
-                    </form>
+                                </tr>
+                                }
+                            </tbody>
+                        </table> 
+                    </div>         
                     }
                     @if(currentStep === 2){
-                      
-                            <div class="fade-in">
-                                <table class="table">
-                                    <thead>
-                                      <tr>
-                                        <th scope="col">#</th>
-                                        <th scope="col">Amount</th>
-                                        <th scope="col">Surplus</th>
-                                        <th scope="col">Status</th>
-                                        <th scope="col">Activation date </th>
-                                        <th scope="col">Expiration date</th>
-                                      </tr>
-                                    </thead>
-                                    <tbody>
-                                        @for (item of listPayment; track item; let  i = $index) { 
-                                      <tr>
-                                        <th scope="row">{{i+1}}</th>
-                                        <td>{{ item.amount | currency:'USD':'symbol':'1.2-2' }}</td>
-                                        @if( item.surplus! > 0){
-                                            <td>{{ item.surplus| currency:'USD':'symbol':'1.2-2' }}</td>
+
+                    <div class="fade-in">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Date</th>
+                                    <th scope="col">Category</th>
+                                    <th scope="col">Zipcode</th>
+                                    <th scope="col">Description </th>
+                                    <th scope="col">Image</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @for (item of listLeadByUser; track item; let i = $index) {
+                                <tr>
+                                    <th scope="row">{{i+1}}</th>
+                                    <td>{{ item.createdAt | date: 'dd/MM/yyyy' }}</td>
+                                    <td>{{ item.order.category.name}}</td>
+                                    <td>{{ item.order.zipcode.name}}</td>
+                                    <td>{{ item.order.description | slice:0:10}}... </td>
+                                    <td>
+                                        @if(item.order.images){
+                                        <img [src]="urlUploads+item.order.images" class="cursor" width="80" height="60" alt="Image"
+                                            (click)="showImage(urlUploads+item.order.images)" />
                                         }
-                                        @else{
-                                            <td></td>    
-                                        }
-                                        <td>{{item.status}}</td>
-                                        <td>{{ item.activationDate | date: 'dd/MM/yyyy hh:mm a' }}</td>
-                                        <td>{{ item.expirationDate | date: 'dd/MM/yyyy hh:mm a' }}</td>
-                                       
-                                        
-                                      </tr>
-                                    }
-                                    </tbody>
-                                  </table>
-                            </div>
-                           
-                       
-                        }
+                                    </td>
+                                     
+                                    <td><span><i class="bi bi-search cursor" (click)="leadDetail(item.id!)"></i></span></td>
+                                </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+
+
+                    }
                 </div>
             </div>
             <div>
 
             </div>
         </div>
-
+        <div class="col-lg-3">
+        </div>
     </div>
 </div>

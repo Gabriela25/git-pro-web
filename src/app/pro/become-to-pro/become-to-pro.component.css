@@ -1,7 +1,7 @@
 .col-img{
     background-image: url("https://images.unsplash.com/photo-1497366754035-f200968a6e72?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1500&q=80");
     background-size: cover;
-    min-height: 100vh;
+    max-height: 100vh;
 }
 
 .fade-in {

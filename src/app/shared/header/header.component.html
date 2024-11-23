@@ -26,10 +26,11 @@
               <li><a class="dropdown-item"><i class="bi bi-person-circle"></i> {{ nameUser }}</a></li>
               <li><a class="dropdown-item"><i class="bi bi-envelope"></i> {{ emailUser }}</a></li>
               <li><a class="dropdown-item" routerLink="/pro/basic"><i class="bi bi-person"></i> {{'header.profile'|translate}}</a></li>
-              <li><a class="dropdown-item" routerLink="/pro/become-to-pro/"><i class="bi bi-briefcase"></i> {{'header.becomeToPro'|translate}}</a></li>
+              <li><a class="dropdown-item" routerLink="/pro/become-to-pro/"><i class="bi bi-briefcase"></i> {{textPro}}</a></li>
               @if(isPro){
                 <li><a class="dropdown-item" routerLink="/pro/get-leads/"><i class="bi bi-currency-dollar"></i> {{'header.getLeads'|translate}}</a></li>
-              }
+                <li><a class="dropdown-item" routerLink="/pro/payments/"><i class="bi bi-currency-dollar"></i> {{'header.payments'|translate}}</a></li>
+              }   
               <li>
                 <hr class="dropdown-divider">
               </li>

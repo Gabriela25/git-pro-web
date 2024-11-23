@@ -1,0 +1,7 @@
+.cursor{
+    cursor: pointer;
+}
+.center-content td {
+    vertical-align: middle; 
+    text-align: center;    
+}

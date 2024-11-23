@@ -33,6 +33,7 @@
         "isPhoneRequired": "Phone is required",
         "isPhoneMaximum10":"The phone number is 10 digits",
         "isImagePersonalRequired": "Image is required",
+        "isImageBusinessRequired": "Business image is required",
         "forgotpassword": "Forgot Password?",
         "currentPassword": "Current password",
         "newPassword": "New password",
@@ -42,10 +43,8 @@
         "maximum15Characters":"Maximum 15 characters",
         "atLeastOneUppercaseLetter":"At least one uppercase letter",
         "oneLowercaseLetterAndOneNumber":"One lowercase letter and one number",
-        "thePasswordsDoNotMatch":"The passwords do not match",
-        "isNameBusinessRequired": "Business name is required",
-        "isYearFoundedRequired": "The year of foundation is required",
-        "isNumberOfemployeesRequired": "The number of employees is required"
+        "thePasswordsDoNotMatch":"The passwords do not match"
+        
         
     },
     
@@ -76,8 +75,10 @@
         
         "isZipcodeRequired":"Zip code is required",
         "isAddressRequired":"Address is required",
-        "isImagePersonalRequired":"Image is required"
-    
+        "isImagePersonalRequired":"Image is required",
+        "isNameBusinessRequired": "Business name is required",
+        "isYearFoundedRequired": "The year of foundation is required",
+        "isNumberOfemployeesRequired": "The number of employees is required"
     },
   
   "payment":{
@@ -89,6 +90,9 @@
     "isAmountRequired":"The amount is required",
     "amountInvalid":"The amount must be greater than",
     "notANumber":"The field must be numeric"
+  }, 
+  "order":{
+    "showDetails": "Show details"
   }
     
     

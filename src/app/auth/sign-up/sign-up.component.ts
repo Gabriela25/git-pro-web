@@ -78,7 +78,7 @@ export default class SignUpComponent implements OnInit {
       lastName: new FormControl('', [Validators.required]),
       phone: new FormControl('', [Validators.required, Validators.minLength(10)]),
       email: new FormControl('', [Validators.required, Validators.email]),
-      isTerm: new FormControl(false, Validators.requiredTrue),
+      isTerm: new FormControl(false, [Validators.requiredTrue]),
       //recaptcha: new FormControl('', [Validators.required]),
       password: new FormControl(
         '', [Validators.required, Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{6,15}$/)],

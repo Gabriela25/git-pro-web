@@ -14,6 +14,8 @@ import { CategoryService } from '../../services/category.service';
 import { Category } from '../../interface/category.interface';
 import { SocketService } from '../../services/socket.service';
 import { ModalComponent } from '../../shared/modal/modal.component';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { environment } from '../../../environments/environment.development';
 
 
 @Component({
@@ -27,15 +29,15 @@ import { ModalComponent } from '../../shared/modal/modal.component';
     HeaderComponent,
     NgxMaskDirective,
     ModalComponent
-    
+
   ],
   templateUrl: './multi-form.component.html',
   styleUrl: './multi-form.component.css'
 })
 export default class MultiFormComponent {
 
-  currentStep: number = 0; 
-  categoryId: string = ''; 
+  currentStep: number = 0;
+  categoryId: string = '';
   categoryName: string = '';
   zipcodeName: string = '';
   phone: string = '';
@@ -50,37 +52,39 @@ export default class MultiFormComponent {
   backendMessage = '';
   alertMessage = '';
   alertTimeout: any;
-  @ViewChild('modal') modal!: ModalComponent;
-  isSelected = false;
-  @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
 
+  isSelected = false;
+  @ViewChild('modal') modal!: ModalComponent;
+  @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
+  urlUploads: string = environment.urlUploads || '';
 
   title: string = 'Order';
-  messageOrder: string ='';
-  
+  messageOrder!: SafeHtml | string;
+  isOpenModal: boolean = false;
   constructor(
     private fb: FormBuilder,
-    private router: Router,
+    private sanitizer: DomSanitizer,
     private categoriesServices: CategoryService,
     private zipCodeService: ZipcodeService,
     private orderService: OrderService,
     private uploadsService: UploadsService,
     private socketService: SocketService,
-  ){
+  ) {
     this.orderForm = this.fb.group({
       zipcode: new FormControl('', [Validators.required]),
       phone: new FormControl('', [Validators.required, Validators.minLength(10)]),
-      description: new FormControl('',[Validators.required, Validators.minLength(10)]),
+      description: new FormControl('', [Validators.required, Validators.minLength(10)]),
+      images: new FormControl('')
     });
   }
-  
-  ngOnInit(){
+
+  ngOnInit() {
     this.orderService.order$.subscribe((data: any) => {
       this.categoryName = data.categoryName;
       this.categoryId = data.categoryId;
-    }); 
+    });
     this.zipCodeService.getAllZipcodes().subscribe({
-      next: (response) =>  this.listZipcode = response.zipcodes,
+      next: (response) => this.listZipcode = response.zipcodes,
       error: (error) => console.log(error)
     });
     this.categoriesServices.getAllCategories().subscribe({
@@ -93,49 +97,47 @@ export default class MultiFormComponent {
       },
       error: (error) => console.log(error)
     });
-    this.socketService.getMessage('order-created').subscribe((msg:any) => {
+    this.socketService.getMessage('order-created').subscribe((msg: any) => {
       this.onCreatedOrder(msg);
     });
 
-    this.socketService.getMessage('order-accepted').subscribe(this.onAcceptedOrder);
-    
+    this.socketService.getMessage('order-accepted').subscribe(this.onAcceptedOrder.bind(this));
+
   }
-  
-  onSelectionCategory(){
-  
-  
-    this.orderService.updateDataOrder('categoryId',this.selectedOption.id);
-    this.orderService.updateDataOrder('categoryName', this.selectedOption.name );
+
+  onSelectionCategory() {
+    this.orderService.updateDataOrder('categoryId', this.selectedOption.id);
+    this.orderService.updateDataOrder('categoryName', this.selectedOption.name);
   }
-  step(step:number){
+  step(step: number) {
     if (step > this.currentStep) {
-    
+
       if (this.currentStep === 0 && !this.orderForm.controls['zipcode'].valid) {
         return;
       }
       if (this.currentStep === 1 && !this.orderForm.controls['phone'].valid) {
-        return; 
+        return;
       }
     }
 
     this.currentStep = step;
-  
+
   }
   nextStep() {
     if (this.currentStep < 2) {
       this.currentStep++;
     }
-    if(this.orderForm.value.zipcode){
-     
+    if (this.orderForm.value.zipcode) {
+
       this.zipcodeName = this.orderForm.value.zipcode.name;
     }
-    if(this.orderForm.value.phone){
-     
+    if (this.orderForm.value.phone) {
+
       this.phone = this.orderForm.value.phone;
     }
-    if(this.orderForm.value.description){
-     
-      this.description = this.orderForm.value.phone.substring(0,10)+ ' '+'...';
+    if (this.orderForm.value.description) {
+
+      this.description = this.orderForm.value.phone.substring(0, 10) + ' ' + '...';
     }
   }
 
@@ -162,74 +164,37 @@ export default class MultiFormComponent {
     this.fileInput.nativeElement.click();
   }
   onSubmit() {
-    if(this.orderForm.valid){
+    if (this.orderForm.valid) {
       this.isLoading = true
-     
-      const formData = this.orderForm.value;
+
+      const formOrder = this.orderForm.value;
+      const formData = new FormData();
       const order: Order = {
         categoryId: this.categoryId,
-        zipcodeId: formData.zipcode.id,
-        phone: formData.phone,
-        description: formData.description,
+        zipcodeId: formOrder.zipcode.id,
+        phone: formOrder.phone,
+        description: formOrder.description,
         images: '',
         statusOrder: '',
       };
-     
+      if (this.selectedFile) {
+        formData.append('file', this.selectedFile)
+        this.orderService.postUploadsOrder(formData).subscribe({
+          next: (response) => {
+
+            order.images = response.fileName;
+            this.socketService.sendMessage('create-order', { order });
+          },
+          error: (error) => {
+            console.error('Error al subir el archivo:', error);
+          },
+        });
+      }
+
       // peticion a un websocket
       this.socketService.sendMessage('create-order', { order });
-
-      //this.alertMessage = 'alert-success'
-      //this.backendMessage = 'Order created success';
-
-      //this.isLoading = false;
-      /*
-      this.orderService.postOrder(order).subscribe({
-        next: (response) => {
-          
-          this.alertMessage = 'alert-success'
-          this.backendMessage = 'Order created success';
-
-          this.isLoading = false;
-         
-          if (this.selectedFile) {
-            this.isLoading = true;
-            const formData = new FormData();
-            formData.append('model', 'order');
-            formData.append('idModel', response.order.id!);
-            formData.append('field', 'images');
-            formData.append('file', this.selectedFile);
-          
-            this.uploadsService.postUploads(formData).subscribe({
-              next: (response) => {
-                console.log(response)
-
-              },
-              error: (error) => {
-                this.alertMessage = 'alert-danger'
-                this.backendMessage = error.error.message;
-                this.isLoading = false;
-                this.startAlertTimer();
-              }
-            });
-
-
-          }
-         
-          this.startAlertTimer(() => {
-         
-            
-          });
-        },
-        error: (error) => {
-          this.alertMessage = 'alert-danger'
-          this.backendMessage = error.error.message;
-          this.isLoading = false;
-          this.startAlertTimer();
-        }
-      });
-      */
     }
-    
+
   }
   startAlertTimer() {
     if (this.alertTimeout) {
@@ -240,31 +205,28 @@ export default class MultiFormComponent {
     }, 3000);
   }
   onCreatedOrder(payload: unknown) {
-    console.log('onCreatedOrder1', payload)
+    console.log('onCreatedOrder2', payload)
+
     //if (this.selectedFile) {
 
-      if (!payload) {
-        return;
-      }
+    if (!payload) {
+      return;
+    }
 
-      if (typeof payload !== 'object') {
-        return;
-      }
+    if (typeof payload !== 'object') {
+      return;
+    }
 
-      if (!('orders' in payload)) {
-        return;
-      }
+    if (!('orders' in payload)) {
+      return;
+    }
 
-      const {  orders } = payload as { orders: Order };
-      
-      
-      this.isLoading = false;
-    
-      console.log('antes del modal')
-      this.messageOrder = 'Seraching professionals...';
-      this.openModal()
-      // this.startAlertTimer()
-      /*const formData = new FormData();
+    const { orders } = payload as { orders: Order };;
+
+    //this.isLoading = false;
+    /*if (this.selectedFile) {
+      this.isLoading = true;
+      const formData = new FormData();
       formData.append('model', 'order');
       formData.append('idModel', order.id!);
       formData.append('field', 'images');
@@ -276,27 +238,61 @@ export default class MultiFormComponent {
 
         },
         error: (error) => {
-          this.alertMessage = 'alert-danger'
-          this.backendMessage = error.error.message;
-          this.isLoading = false;
-          this.startAlertTimer();
+          console.log(error)
         }
-      });*/
+      });
+
+
+    }*/
+    this.messageOrder = this.sanitizer.bypassSecurityTrustHtml(`
+        <div>
+          <p>Seraching professionals...</p> 
+        </div>
+        <div class="d-flex justify-content-center mt-3">
+            <div class="spinner-border" role="status">
+            </div>
+        </div>
+     `);
+    this.openModal()
+    // this.startAlertTimer()
+    /*const formData = new FormData();
+    formData.append('model', 'order');
+    formData.append('idModel', order.id!);
+    formData.append('field', 'images');
+    formData.append('file', this.selectedFile);
+  
+    this.uploadsService.postUploads(formData).subscribe({
+      next: (response) => {
+        console.log(response)
+
+      },
+      error: (error) => {
+        this.alertMessage = 'alert-danger'
+        this.backendMessage = error.error.message;
+        this.isLoading = false;
+        this.startAlertTimer();
+      }
+    });*/
 
 
     //}
   }
-  closeModal(){
+  closeModal() {
     this.modal.close();
+    this.isOpenModal = false;
   }
   openModal() {
     this.isLoading = false;
     this.modal.open();
-   
+    this.isOpenModal = true;
+
   }
 
+
   onAcceptedOrder(payload: unknown) {
-    console.log({payload});
+
+    console.log({ payload });
+
     if (typeof payload !== 'object') {
       return;
     }
@@ -309,9 +305,30 @@ export default class MultiFormComponent {
       return;
     }
 
-    const { professional } = payload as { professional: { fullName: string; image: string; } };
-
-    console.log(professional);
+    const { professional } = payload as { professional: { fullname: string; image: string; introduction?: string } };
+    this.title = 'Professionals';
+    this.messageOrder = this.sanitizer.bypassSecurityTrustHtml(`
+      <div style="font-family: Arial, sans-serif;">
+    <div style="text-align: center; margin-bottom: 20px;">
+        ${professional.image
+        ? `<img src="${this.urlUploads}${professional.image}" 
+                   class="rounded-circle" 
+                   style="width: 80px; height: 80px; object-fit: cover; display: block; margin: 0 auto;" />`
+        : `<img src="assets/avatar_profile.png" 
+                   class="rounded-circle" 
+                   style="width: 80px; height: 80px; object-fit: cover; display: block; margin: 0 auto;" />`}
+        <span style="display: block; margin-top: 10px; font-size: 18px; font-weight: bold;">
+            ${professional.fullname}
+        </span>
+    </div>
+          <div style="margin-top: 10px;">
+              <p style="margin: 0; font-size: 14px; line-height: 1.5;">
+                  ${professional.introduction}
+              </p>
+          </div>
+      </div>
+    `);
+    this.openModal()
   }
 
   onConfirmAction() {

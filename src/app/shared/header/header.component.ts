@@ -10,13 +10,14 @@ import { UserService } from '../../services/user.service';
 import { Modal } from 'bootstrap';
 import { User } from '../../interface/user.interface';
 import { NotificationComponent } from '../notification/notification.component';
+import { environment } from '../../../environments/environment.development';
 @Component({
   selector: 'app-header',
   standalone: true,
   imports: [
     RouterLink,
     TranslateModule,
-    ModalComponent,
+    
     NotificationComponent
   ],
   templateUrl: './header.component.html',
@@ -38,32 +39,44 @@ export class HeaderComponent implements OnInit {
   isOpen: boolean = false;
   isOnline: boolean = true;
   isPro: boolean = false;
+  textPro: string = '';
+  urlUploads: string = environment.urlUploads
   @ViewChild('modal') modal!: ModalComponent;
   @ViewChild('profilePicModal') profilePicModal!: ElementRef;
   @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
   @ViewChild('closebutton') closeButton!: ElementRef;
+
   constructor(
-    private http: HttpClient,
     private trans: TranslateService,
     private authService: AuthService,
     private userService: UserService
   ) {
     this.trans.addLangs(['es', 'en']);
     this.isAuthenticated = this.authService.isAuthenticated()
-    console.log(this.isAuthenticated)
+
   }
   ngOnInit() {
+    this.trans.get('header.becomeToPro').subscribe((res: string) => {
+      this.textPro = res;
+      console.log(res)
+    });
     this.authService.user$.subscribe((data: any) => {
       if (data) {
         this.nameUser = data.name;
         this.emailUser = data.email; 
         if (data.imagePersonal) {
-          this.imagePersonal = data.imagePersonal; 
+          this.imagePersonal = `${this.urlUploads}${data.imagePersonal}`; 
         }
         this.isOnline = data.available; 
         this.isPro = data.isPro || false; 
+        if(this.isPro){
+          this.textPro  = 'Professional info';
+       
+        }
       }
     });
+   
+   
   }
 
 
@@ -90,7 +103,7 @@ export class HeaderComponent implements OnInit {
 
     this.userService.putMe(user).subscribe({
       next: (response) => {
-        console.log(response)
+        
         this.authService.updateUser('available', response.user.profile?.available);
       },
       error: (error) => {

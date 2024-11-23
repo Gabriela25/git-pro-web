@@ -18,7 +18,6 @@ import { NoWhitespaceDirective } from '../../shared/directives/no-whitespace';
     ReactiveFormsModule,
     TranslateModule,
     RouterLink,
-    HeaderComponent,
     NoWhitespaceDirective
   ],
   templateUrl: './login.component.html',

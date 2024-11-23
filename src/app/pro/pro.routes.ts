@@ -15,8 +15,16 @@ export const  routes: Routes = [
         loadComponent:() => import('./basic-info/basic-info.component'),
     },
     {
+        path:'payments',
+        loadComponent:() => import('./payments/payments.component'),
+    },
+    {
         path:'get-leads',
         loadComponent:() => import('./get-leads/get-leads.component'),
+    },
+    {
+        path:'lead/detail/:id',
+        loadComponent:() => import('./detail-lead/detail-lead.component'),
     }
 ]
 export default routes;

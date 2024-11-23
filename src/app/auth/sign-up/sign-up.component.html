@@ -198,6 +198,19 @@
                             <a href="http://" class="link-underline-opacity-0 link-secondary">I accept terms and
                                 conditions</a>
                         </label>
+                        @if(signUpForm.get('isTerm')?.invalid && (signUpForm.get('isTerm')?.dirty ||
+                        signUpForm.get('isTerm')?.touched )){
+                        <div class="alert alert-danger mt-2">
+                            @if(signUpForm.get('isTerm')?.errors?.['required']){
+                            <span>
+                                You must accept the terms and conditions
+                            </span>
+                            }
+                           
+                           
+                            
+                        </div>
+                        }
                     </div>
                 </div>
 

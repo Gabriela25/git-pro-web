@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import  GetLeadsComponent  from './get-leads.component';
+import PaymentsComponent from './payments.component';
 
-describe('GetLeadsComponent', () => {
-  let component: GetLeadsComponent;
-  let fixture: ComponentFixture<GetLeadsComponent>;
+describe('PaymentsComponent', () => {
+  let component: PaymentsComponent;
+  let fixture: ComponentFixture<PaymentsComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [GetLeadsComponent]
+      imports: [PaymentsComponent]
     })
     .compileComponents();
     
-    fixture = TestBed.createComponent(GetLeadsComponent);
+    fixture = TestBed.createComponent(PaymentsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

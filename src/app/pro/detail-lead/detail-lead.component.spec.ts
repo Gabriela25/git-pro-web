@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import PhoneComponent  from './phone.component';
+import { DetailLeadComponent } from './detail-lead.component';
 
-describe('PhoneComponent', () => {
-  let component: PhoneComponent;
-  let fixture: ComponentFixture<PhoneComponent>;
+describe('DetailLeadComponent', () => {
+  let component: DetailLeadComponent;
+  let fixture: ComponentFixture<DetailLeadComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [PhoneComponent]
+      imports: [DetailLeadComponent]
     })
     .compileComponents();
     
-    fixture = TestBed.createComponent(PhoneComponent);
+    fixture = TestBed.createComponent(DetailLeadComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
