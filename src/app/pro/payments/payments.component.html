@@ -2,10 +2,10 @@
 
 <div class="container-fluid">
     <div class="row">
-        <div class="col-lg-4 col-img">
+        <div class="col-lg-3">
         </div>
-        <div class="col-lg-8 p-5">
-            <div class="card">
+        <div class="col-lg-6 p-5">
+            <div class="card container-box">
                 <div class="card-header">
                     <ul class="nav nav-tabs card-header-tabs">
                         <li class="nav-item">
@@ -172,39 +172,40 @@
                     @if(currentStep === 2){
 
                     <div class="fade-in">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th scope="col">#</th>
-                                    <th scope="col">Amount</th>
-                                    <th scope="col">Surplus</th>
-                                    <th scope="col">Status</th>
-                                    <th scope="col">Activation date </th>
-                                    <th scope="col">Expiration date</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @for (item of listPayment; track item; let i = $index) {
-                                <tr>
-                                    <th scope="row">{{i+1}}</th>
-                                    <td>{{ item.amount | currency:'USD':'symbol':'1.2-2' }}</td>
-                                    @if( item.surplus! > 0){
-                                    <td>{{ item.surplus| currency:'USD':'symbol':'1.2-2' }}</td>
-                                    }
-                                    @else{
-                                    <td></td>
-                                    }
-                                    <td>{{item.status}}</td>
-                                    <td>{{ item.activationDate | date: 'dd/MM/yyyy hh:mm a' }}</td>
-                                    <td>{{ item.expirationDate | date: 'dd/MM/yyyy hh:mm a' }}</td>
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">Amount</th>
+                                        <th scope="col">Surplus</th>
+                                        <th scope="col">Status</th>
+                                        <th scope="col">Activation date </th>
+                                        <th scope="col">Expiration date</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @for (item of listPayment; track item; let i = $index) {
+                                    <tr>
+                                        <th scope="row">{{i+1}}</th>
+                                        <td>{{ item.amount | currency:'USD':'symbol':'1.2-2' }}</td>
+                                        @if( item.surplus! > 0){
+                                        <td>{{ item.surplus| currency:'USD':'symbol':'1.2-2' }}</td>
+                                        }
+                                        @else{
+                                        <td></td>
+                                        }
+                                        <td>{{item.status}}</td>
+                                        <td>{{ item.activationDate | date: 'dd/MM/yyyy hh:mm a' }}</td>
+                                        <td>{{ item.expirationDate | date: 'dd/MM/yyyy hh:mm a' }}</td>
 
 
-                                </tr>
-                                }
-                            </tbody>
-                        </table>
+                                    </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
-
 
                     }
                 </div>
@@ -213,6 +214,7 @@
 
             </div>
         </div>
-
+        <div class="col-lg-3">
+        </div>
     </div>
 </div>

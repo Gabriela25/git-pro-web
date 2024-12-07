@@ -21,8 +21,8 @@ export const routes: Routes = [
         loadChildren:()=>import('./pro/pro.routes')
     },
     {
-        path:'orders',
-        loadChildren:()=>import('./orders/orders.routes')
+        path:'leads',
+        loadChildren:()=>import('./leads/leads.routes')
     },
     {
         path:'sidebar',

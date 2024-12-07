@@ -1,18 +1,21 @@
+import { Lead } from "./lead.interface";
+import { User } from "./user.interface";
+
+
 
 export interface Order {
-  id?:             string;
-  userId?:         string;
-  categoryId:      string;
-  zipcodeId:       string;
-  phone:           string;
-  description:     string;
-  images:          string;
-  statusOrder?:     string;
-  qtyPro?:          number;
-  createdAt?:      Date;
-  updatedAt?:      Date;
-  deletedAt?:      null;
-  createdBy?:      string;
-  updatedBy?:      string;
-  deletedBy?:      null;
+  id:          string;
+  userId:      string;
+  user:        User;
+  lead:        Lead;
+  leadId:      string;
+  assigned:    boolean;
+  comment?:    string;
+  statusOrder?: string;
+  createdAt?:  Date;
+  updatedAt?:  Date;
+  deletedAt?:  null;
+  createdBy?:  string;
+  updatedBy?:  string;
+  deletedBy?:  null;
 }

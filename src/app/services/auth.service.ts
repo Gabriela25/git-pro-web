@@ -12,33 +12,38 @@ import { Login } from '../interface/login.interface';
 })
 export class AuthService {
   private apiUrlBackend = environment.apiUrlBackend;
-  private tokenSubject = new BehaviorSubject<string | null>(this.getToken()); 
-  
-  token$ = this.tokenSubject.asObservable(); 
+ 
   authStatus: authStatus = authStatus.checking;
 
   private _userSubject = new BehaviorSubject<any>(null); 
   user$ = this._userSubject.asObservable();
+
+
+  private readonly TOKEN_KEY = 'token'; 
+  
   constructor(private _http: HttpClient) {
     this.isAuthenticated(); 
     const storedUser = localStorage.getItem('user');
     if (storedUser) {
       this._userSubject.next(JSON.parse(storedUser)); 
     }
+
+   
   }
   
-  private getToken(): string | null {
-    return localStorage.getItem('token');
+  getToken(): string | null {
+    
+    return localStorage.getItem(this.TOKEN_KEY);
   }
-
-  private setToken(token: string): void {
-    localStorage.setItem('token', token);
-    this.tokenSubject.next(token); 
+  
+  setToken(token: string): void {
+    localStorage.setItem(this.TOKEN_KEY, token);
+   
   }
 
   private clearToken(): void {
-    localStorage.removeItem('token');
-    this.tokenSubject.next(null); 
+    localStorage.removeItem(this.TOKEN_KEY);
+
   }
 
   

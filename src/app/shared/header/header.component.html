@@ -1,13 +1,24 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-primary">
   <div class="container-fluid">
     <a class="navbar-brand" routerLink="/">
-      <img src="assets/logo.png" width="75" height="75" class="d-inline-block align-top" alt="Fixi">
+      <img src="assets/logo.png" width="75" height="50" class="d-inline-block align-top" alt="Fixi" style="object-fit: cover;">
     </a>
+    
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
-
+      <form class="d-flex w-100 mt-2 mt-lg-0 p-2" role="search">
+        <ng-multiselect-dropdown 
+          [placeholder]="'Search' | translate"
+          class="form-control"
+          [settings]="dropdownSettings"
+          [data]="listCategories"
+          formControlName="categories"
+          (onSelect)="onItemSelect($event)"
+          style="max-width: 500px; background: #fff; margin: 0 auto;">
+        </ng-multiselect-dropdown>
+      </form>
       <div class="d-flex align-items-center ms-auto">
         @if(isAuthenticated){
           @if(isPro){
@@ -27,9 +38,15 @@
               <li><a class="dropdown-item"><i class="bi bi-envelope"></i> {{ emailUser }}</a></li>
               <li><a class="dropdown-item" routerLink="/pro/basic"><i class="bi bi-person"></i> {{'header.profile'|translate}}</a></li>
               <li><a class="dropdown-item" routerLink="/pro/become-to-pro/"><i class="bi bi-briefcase"></i> {{textPro}}</a></li>
-              @if(isPro){
-                <li><a class="dropdown-item" routerLink="/pro/get-leads/"><i class="bi bi-currency-dollar"></i> {{'header.getLeads'|translate}}</a></li>
-                <li><a class="dropdown-item" routerLink="/pro/payments/"><i class="bi bi-currency-dollar"></i> {{'header.payments'|translate}}</a></li>
+             
+              @if(!isPro){
+                <li><a class="dropdown-item" routerLink="/leads/list"><i class="bi bi-list-ul"></i> My Leads</a></li>
+                <li><a class="dropdown-item" routerLink="/pro/get-orders/"><i class="bi bi-card-checklist"></i> My Orders</a></li>
+              }
+              @else {
+                <li><a class="dropdown-item" routerLink="/pro/get-leads/"><i class="bi bi-list-ul"></i> {{'header.getLeads'|translate}}</a></li>
+                <li><a class="dropdown-item" routerLink="/pro/get-orders/"><i class="bi bi-card-checklist"></i> {{'header.getOrders'|translate}}</a></li>
+                <li><a class="dropdown-item" routerLink="/pro/payments/"><i class="bi bi-clipboard2-check"></i> {{'header.payments'|translate}}</a></li>
               }   
               <li>
                 <hr class="dropdown-divider">
@@ -41,7 +58,8 @@
 
         @if(!isAuthenticated){
           <div class="d-flex">
-            <app-notification/>
+            
+           
             <button type="button" class="btn btn-secondary me-2" style="color:#fff" routerLink="/auth/sign-up" [queryParams]="{ isCustomer: false }">Sign&nbsp;up</button>
             <button type="button" class="btn btn-secondary" routerLink="/auth/login" style="color:#fff">{{'auth.login' | translate}}</button>
           </div>

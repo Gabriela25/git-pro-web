@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { DetailLeadComponent } from './detail-lead.component';
+import  LeadListComponent  from './lead-list.component';
 
-describe('DetailLeadComponent', () => {
-  let component: DetailLeadComponent;
-  let fixture: ComponentFixture<DetailLeadComponent>;
+describe('LeadListComponent', () => {
+  let component: LeadListComponent;
+  let fixture: ComponentFixture<LeadListComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [DetailLeadComponent]
+      imports: [LeadListComponent]
     })
     .compileComponents();
     
-    fixture = TestBed.createComponent(DetailLeadComponent);
+    fixture = TestBed.createComponent(LeadListComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

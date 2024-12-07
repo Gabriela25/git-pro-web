@@ -1,14 +1,16 @@
 import { profile } from "console";
-import { Order } from "./order.interface";
-import { User } from "./user.interface";
 
-export interface LeadByOrder {
-  id:         string;
-  userId:     string;
-  user:       User; 
-  orderId:    string;
-  order:      Order;
-  assigned:   boolean;
+import { User } from "./user.interface";
+import { LeadRegister } from "./lead-register.interface";
+
+
+export interface OrderByLead {
+  id:          string;
+  userId:      string;
+  user:        User; 
+  orderId:     string;
+  lead:        LeadRegister;
+  assigned:    boolean;
   comment?:    string;
   statusLead?: string;
   createdAt?:  Date;

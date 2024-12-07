@@ -24,7 +24,6 @@ import { NoWhitespaceDirective } from '../../shared/directives/no-whitespace';
     TranslateModule,
     RouterLink,
     NgxMaskDirective,
-    HeaderComponent,
     CapitalizeFirstDirective,
     NoWhitespaceDirective
   ],

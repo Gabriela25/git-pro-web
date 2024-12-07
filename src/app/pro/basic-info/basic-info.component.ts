@@ -18,11 +18,11 @@ import { NoWhitespaceDirective } from '../../shared/directives/no-whitespace';
   imports: [
     ReactiveFormsModule,
     TranslateModule,
-    RouterLink,
+    
     NgxMaskDirective,
     HeaderComponent,
-    SidebarComponent,
-    SocketComponent,
+    
+  
     CapitalizeFirstDirective,
     NoWhitespaceDirective
   ],

@@ -23,8 +23,12 @@ export const  routes: Routes = [
         loadComponent:() => import('./get-leads/get-leads.component'),
     },
     {
-        path:'lead/detail/:id',
-        loadComponent:() => import('./detail-lead/detail-lead.component'),
+        path:'get-orders',
+        loadComponent:() => import('./get-orders/get-orders.component'),
+    },
+    {
+        path:'order/detail/:id',
+        loadComponent:() => import('./detail-order/detail-order.component'),
     }
 ]
 export default routes;

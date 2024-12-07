@@ -3,8 +3,8 @@
 <div *ngIf="isOpen" class="modal" [class.show]="isOpen" [style.display]="isOpen ? 'block' : 'none'" role="dialog">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">{{ title }}</h5>
+      <div class="modal-header bg-primary">
+        <h5 class="modal-title text-white">{{ title }}</h5>
         <button type="button" class="btn-close" aria-label="Close" (click)="close()"></button>
       </div>
       <div class="modal-body">

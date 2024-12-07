@@ -1,6 +1,6 @@
 <app-header />
 <app-modal #modal [title]="title">
-    <div [innerHTML]="messageOrder"></div>
+    <div [innerHTML]="messageLead"></div>
 </app-modal>
 <div class="row">
     <div class="col-lg-3">
@@ -8,17 +8,22 @@
     <div class="col-lg-6 col-12 p-4">
         <div class="container mt-5 container-box p-5">
             <h1 class="text-center bg-primary text-white p-2">Orders</h1>
+            
             @if(orderList.length===0){
             <div>
-                <h2 class="text-center">Dear user, you have no orders issued</h2>
+                <h2 class="text-center">Dear user, you have no orders issued.</h2>
             </div>
+           
             }
             @else{
+          
             <div class="table-responsive">
                 <table class="table table-striped ">
                     <thead>
                         <tr>
                             <th scope="col">#</th>
+                            <th scope="col">Date</th>
+                            <th scope="col">Status</th>
                             <th scope="col">Category</th>
                             <th scope="col">Zipcode</th>
                             <th scope="col">Description</th>
@@ -29,13 +34,15 @@
                         @for (item of orderList; track item; let i = $index) {
                         <tr class="center-content">
                             <td>{{i+1}}</td>
-                            <td>{{item.category.name}}</td>
-                            <td>{{item.zipcode.name}}</td>
-                            <td>{{ item.description | slice:0:10}}... </td>
+                            <td>{{ item.createdAt | date: 'yyyy/MM/dd' }}</td>
+                            <td>{{item.statusOrder}}</td>
+                            <td>{{item.lead.category.name}}</td>
+                            <td>{{item.lead.zipcode.name}}</td>
+                            <td>{{ item.lead.description | slice:0:10}}... </td>
                             <td>
-                                @if(item.images){
-                                <img [src]="urlUploads+item.images" class="cursor" width="80" height="60" alt="Image"
-                                    (click)="showImage(urlUploads+item.images)" />
+                                @if(item.lead.images){
+                                <img [src]="urlUploads+item.lead.images" class="cursor" width="80" height="60" alt="Image"
+                                    (click)="showImage(urlUploads+item.lead.images)" />
                                 }
                             </td>
                             <td><span><i class="bi bi-search cursor" (click)="orderDetail(item.id!)"></i></span></td>

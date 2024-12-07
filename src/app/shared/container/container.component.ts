@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { OrderService } from '../../services/order.service';
+import { OrderService } from '../../services/lead.service';
 
 @Component({
   selector: 'app-container',

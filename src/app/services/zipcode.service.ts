@@ -3,6 +3,7 @@ import { environment } from '../../environments/environment.development';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Zipcode } from '../interface/zipcode.interface';
+import { AuthHeaders } from './auth-headers.service';
 
 @Injectable({
   providedIn: 'root'
@@ -10,16 +11,12 @@ import { Zipcode } from '../interface/zipcode.interface';
 export class ZipcodeService {
   private readonly _http = inject(HttpClient);
   private apiUrlBackend = environment.apiUrlBackend;
-  constructor() {
+  constructor( private authHeadersService: AuthHeaders) {
     
   }
   getAllZipcodes(): Observable<{zipcodes:Zipcode[]}> {
-    const options = {  
-      headers: {
-       'Content-Type': 'application/json',     
-      }
-    };
-    return this._http.get<{zipcodes:Zipcode[]}>(`${this.apiUrlBackend}/zipcodes`, options);
+    const headers = this.authHeadersService.getHeaders()
+    return this._http.get<{zipcodes:Zipcode[]}>(`${this.apiUrlBackend}/zipcodes`, headers);
   }
 
 }

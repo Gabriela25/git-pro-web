@@ -12,6 +12,7 @@ const config: SocketIoConfig = { url: environment.apiUrlBackend, options: {} };
 
     CommonModule,
     SocketIoModule.forRoot(config),
+    
   ],
   providers: [SocketIoModule],
 

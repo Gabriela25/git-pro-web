@@ -161,7 +161,7 @@ export default class PaymentsComponent {
       return { notANumber: true }; 
     }
     if (typeof amount === 'number' && amount < this.price) {
-      console.log({ amountInvalid: true });
+
       return { amountInvalid: true }; 
     }
     

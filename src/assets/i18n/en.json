@@ -15,7 +15,9 @@
         "profile":"Profile",
         "logOut": "Log out",
         "becomeToPro": "Become to pro",
-        "getLeads":"Get Leads"
+        "getLeads":"Get Leads",
+        "getOrders":"Get Orders",
+        "payments": "Payments"
     },
     "auth":{
         "login": "Login",
@@ -66,6 +68,7 @@
         "businessFaqs":"Business FAQs",
         "yourIntroduction":"Your introduction",
         "credentials":"Credentials",
+        "licenses":"Licenses",
         "backgroundCheck":"Background check",
         "professionalLicenses":"Professional licenses",
         "yearFounded": "Year founded",
@@ -91,7 +94,7 @@
     "amountInvalid":"The amount must be greater than",
     "notANumber":"The field must be numeric"
   }, 
-  "order":{
+  "lead":{
     "showDetails": "Show details"
   }
     

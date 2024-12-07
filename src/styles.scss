@@ -23,3 +23,9 @@ $secondary:$teal;
     //text-align: center;
     
 }
+//ajuste de ancho para el ng-multiselect en el item seleccionado.
+.selected-item[_ngcontent-ng-c692748064]{
+    max-width: 300px !important;
+}
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }

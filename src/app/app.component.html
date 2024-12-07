@@ -10,4 +10,15 @@
   (confirmAction)="onConfirmAction()">
   <div [innerHTML]="messageOrder"></div>
 </app-modal>
+<app-modal
+  #modalCustomer
+  [title]="titleModal"
+  [message]="messageOrder"
+  [isSelected]="isSelected"
+  [rejectButtonText]="'general.cancel'| translate"
+  (cancelAction)="closeModalCustomer()"
+  acceptButtonText="Go Order"
+  (confirmAction)="onOrder()">
+  <div [innerHTML]="messageOrder"></div>
+</app-modal>
 <router-outlet />

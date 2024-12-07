@@ -18,7 +18,8 @@
     "profile":"Perfil",
     "logOut": "Cerrar sesión",
     "becomeToPro": "Conviértete en profesional",
-    "getLeads":"Obtener clientes"
+    "getLeads":"Obtener clientes",
+     "payments": "Pagos"
   },
   
   "auth":{

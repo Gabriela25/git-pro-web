@@ -4,6 +4,9 @@ import { environment } from '../../environments/environment.development';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { User } from '../interface/user.interface';
 import { Profile } from '../interface/profile.interface';
+import { AuthService } from './auth.service';
+import { AuthHeaders } from './auth-headers.service';
+import { Image } from '../interface/image.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -16,56 +19,55 @@ export class UserService {
   private _userSubject = new BehaviorSubject<object>({});
   user$ = this._userSubject.asObservable();
 
-  token: string ='';
-  options = {} 
-  constructor(
-
-  ) {
-    
-     
-       
-      this.token = localStorage.getItem('token') || '';
-     
-      this.options = {
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${this.token}`
-        }
-      };
-  
-    
-  }
+  constructor( 
+    private authHeadersService: AuthHeaders,
+    private authService: AuthService
+  ) {}
   
   becomeToPro(body: Profile): Observable<any> {
-    
-    return this._http.post(`${this.apiUrlBackend}/users/become-to-pro`, body, this.options);
-  }
-  getMe(): Observable<{user:User}>{
-    //pendiente revision
-    this.token = localStorage.getItem('token') || '';
-     
-      this.options = {
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${this.token}`
-        }
-      };
-    return this._http.get<{user:User}>(`${this.apiUrlBackend}/users/me`, this.options);
-  }
-  putMe(body:User): Observable<{user:User}>{
-    console.log(body)
-    return this._http.put<{user:User}>(`${this.apiUrlBackend}/users/me`,body, this.options);
-  }
-  postUploads(fileData: FormData,  field: string): Observable<{user:User}>{
-    
-    const uploadOptions = {
+   //const headers= this.authHeadersService.getHeaders()
+   const token = this.authService.getToken();
+    const options = {
       headers: {
-        'Authorization': `Bearer ${this.token}`
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
       }
     };
-    return this._http.post<{user:User}>(`${this.apiUrlBackend}/pro/uploads/${field}`,fileData, uploadOptions);
+    return this._http.post(`${this.apiUrlBackend}/users/become-to-pro`, body,options);
   }
-  isBrowser(): boolean {
-    return typeof window !== 'undefined' && typeof localStorage !== 'undefined';
+  getMe(): Observable<{user:User}>{
+    const headers= this.authHeadersService.getHeaders();
+    return this._http.get<{user:User}>(`${this.apiUrlBackend}/users/me`,{...headers});
   }
+  putMe(body:User): Observable<{user:User}>{
+    const headers= this.authHeadersService.getHeaders();
+    //const headers= this.authHeadersService.getHeaders();
+    return this._http.put<{user:User}>(`${this.apiUrlBackend}/users/me`,body, {...headers});
+  }
+  uploadLicense(body:Image): Observable<{images:Image[]}>{
+    const headers= this.authHeadersService.getHeaders();
+
+    return this._http.post<{images:Image[]}>(`${this.apiUrlBackend}/users/licenses`,body, {...headers});
+  }
+  getLicense(profileId:string): Observable<{images:Image[]}>{
+    const headers= this.authHeadersService.getHeaders();
+    return this._http.get<{images:Image[]}>(`${this.apiUrlBackend}/users/licenses/${profileId}`, {...headers});
+  }
+  /*(fileData: FormData, field: string): Observable<{ user: User }> {
+      console.log('antes de la peticion')
+      const token = this.authService.getToken();
+       console.log(fileData)
+      // Usa HttpHeaders para construir los encabezados correctamente
+      const headers = new HttpHeaders({
+        Authorization: `Bearer ${token}`
+      });
+    
+      return this._http.post<{ user: User }>(
+        `${this.apiUrlBackend}/pro/uploads/${field}`,
+        fileData,
+        { headers }
+      );
+    }*/
 }
+ 
+

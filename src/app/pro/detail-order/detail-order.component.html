@@ -1,0 +1,87 @@
+<app-header />
+<app-modal #modal [title]="title">
+    <div [innerHTML]="image"></div>
+</app-modal>
+<div class="row">
+    <div class="col-lg-3">
+
+    </div>
+    <div class="col-lg-6 col-12 p-4">
+
+        <div class="container mt-5 container-box p-5">
+            <div>
+                @if(isPro){
+                    <div style="text-align:center">
+                        <img  src="assets/avatar_profile.png" 
+                            class="rounded-circle" 
+                            style="width: 80px; height: 80px; object-fit: cover; display: block; margin: 0 auto;" />
+                        <h1>{{order.lead.user!.firstname}} {{order.lead.user!.lastname}}</h1>
+                        <h3 class="text-center">{{order.lead.user!.email}}</h3>
+                        <h3 class="text-center">{{order.lead.user!.phone  }}</h3>
+                    </div>
+                }
+                <div style="text-align: center;">
+                    <h2 class="bg-primary text-white p-2" style="margin-bottom: 20px; font-weight: bold;">
+                        {{order.lead.category.name}} </h2>
+                </div>
+                <div style="margin-bottom: 10px;">
+                    <span><i class="bi bi-calendar"></i> {{ order.createdAt | date: 'yyyy/MM/dd' }}</span>
+                </div>
+                <div style="margin-bottom: 10px;">
+                    <span><i class="bi bi-arrow-clockwise"></i> {{ order.statusOrder}}</span>
+                </div>
+                <div style="margin-bottom: 10px;">
+                    <span><i class="bi bi-geo-alt-fill"></i> {{order.lead.zipcode.name}}</span>
+                </div>
+                <div style="margin-bottom: 10px;">
+                    <span><i class="bi bi-telephone"></i> {{order.lead.phone}}</span>
+                </div>
+                <div style="margin-bottom: 20px;" class="description">
+                    <span><i class="bi bi-card-text"></i> {{order.lead.description}}</span>
+                </div>
+                <div>
+                    @if(order.lead.images){
+                    <span><i class="bi bi-card-image"></i></span>
+                    <img [src]="urlUploads+order.lead.images"
+                        style="width: 200px; height: 120px; object-fit: cover; display: block; margin: 0 auto;"
+                        class="cursor" (click)="showImage(urlUploads+order.lead.images)" />
+                    }
+                </div>
+
+
+                @if(!isPro) {
+                    <div class="mt-5">
+                        <h2>Professional:</h2>
+                    </div>
+                    @for (item of listUserPro; track item; let i = $index) {
+                        <div class="d-flex align-items-center p-3">
+                            <!-- Imagen -->
+                            <img 
+                                [src]="urlUploads+item.profile?.imagePersonal" 
+                                class="rounded-circle" 
+                                style="width: 80px; height: 80px; object-fit: cover; display: block;" 
+                            />
+                            <!-- Datos -->
+                            <div class="ms-3">
+                                <div>
+                                    <span>{{item.firstname}} {{item!.lastname}}</span>
+                                </div>
+                                <div>
+                                    <span>{{item.email}}</span>
+                                </div>
+                                <div>
+                                    <span>{{item.phone}}</span>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+
+        </div>
+    </div>
+    <div class="col-lg-3">
+        <div class="text-center">
+        </div>
+    </div>
+</div>

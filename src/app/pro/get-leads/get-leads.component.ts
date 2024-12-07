@@ -1,21 +1,26 @@
 import { Component, ViewChild } from '@angular/core';
 import { HeaderComponent } from '../../shared/header/header.component';
 import { Service } from '../../interface/service.interface';
-import { Lead } from '../../interface/lead.interface';
-import { LeadService } from '../../services/lead.service';
+
 import { CommonModule, DatePipe } from '@angular/common';
-import { LeadByOrder } from '../../interface/lead-by-order.interface';
+
 import { environment } from '../../../environments/environment.development';
 import { ModalComponent } from '../../shared/modal/modal.component';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
+import { Order } from '../../interface/order.interface';
+import { LeadService } from '../../services/lead.service';
+import { OrderService } from '../../services/order.service';
+import { Lead } from '../../interface/lead.interface';
+
 
 
 @Component({
-  selector: 'app-get-leads',
+  selector: 'app-get-orders',
   standalone: true,
   imports: [
     CommonModule,
+    RouterLink,
     HeaderComponent,
     ModalComponent
   ],
@@ -27,8 +32,9 @@ export default class GetLeadsComponent {
 
 
   currentStep: number = 1;
-  listLeds: Array<Lead> = [];
-  listLeadByUser: Array<Lead> = [];
+  listLeads: Array<Lead> = [];
+  listMyLeads:  Array<Lead> = [];
+
   weeks: number = 0;
   @ViewChild('modal') modal!: ModalComponent;
   image!: SafeHtml | string;
@@ -36,7 +42,10 @@ export default class GetLeadsComponent {
   constructor(
     private sanitizer: DomSanitizer,
     private router: Router,
+   
     private leadService: LeadService,
+    private orderService: OrderService,
+
   ) {
   }
   ngOnInit(): void {
@@ -44,14 +53,24 @@ export default class GetLeadsComponent {
   }
 
   loadInitialData() {
-    /*this.leadService.postOrderByPro().subscribe({
-      next: (response) => this.listServices = response.services,
+    
+    this.leadService.getLeadAllByPro().subscribe({
+      next: (response) =>{
+       this.listLeads =  response.leads.sort((a: any, b: any) => {
+        const dateA = new Date(a.createdAt).getTime(); 
+        const dateB = new Date(b.createdAt).getTime();
+        return dateB - dateA; 
+      });
+      },
       error: (error) => console.error(error)
-    });*/
-    this.leadService.getLeadUser().subscribe({
+    });
+    this.leadService.getLeads().subscribe({
       next: (response) => {
-        this.listLeadByUser = response.leads
-        console.log(this.listLeadByUser)  
+        this.listMyLeads = response.leads.sort((a: any, b: any) => {
+          const dateA = new Date(a.createdAt).getTime(); 
+          const dateB = new Date(b.createdAt).getTime();
+          return dateB - dateA; 
+        });
       },
       error: (error) => {
         console.log(error);
@@ -88,6 +107,9 @@ export default class GetLeadsComponent {
     this.modal.open();
   }
   leadDetail(id:string){
-    this.router.navigate([`pro/lead/detail/${id}`]);
+    this.router.navigate([`leads/detail/${id}`]);
   }
+  /*orderDetail(id:string){
+    this.router.navigate([`/orders/detail/${id}`]);
+  }*/
 }

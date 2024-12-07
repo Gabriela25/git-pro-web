@@ -1,12 +1,8 @@
-import { Category } from "./category.interface";
-import { Zipcode } from "./zipcode.interface";
 
-export interface OrderList {
+export interface LeadRegister {
   id?:             string;
   userId?:         string;
-  category:        Category;
   categoryId:      string;
-  zipcode:         Zipcode;
   zipcodeId:       string;
   phone:           string;
   description:     string;

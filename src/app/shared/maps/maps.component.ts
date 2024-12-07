@@ -64,7 +64,7 @@ export class MapsComponent implements OnInit {
 
     if (this.distanceB <= this.radiusB) {
       this.resultb = 'Quito está dentro de los 300km de Guayaquil'
-      console.log('B está dentro del radio de 300km de A</br>');
+ 
     } else {
       this.resultb = 'Quito está fuera de los 300km de Guayaquil';
 

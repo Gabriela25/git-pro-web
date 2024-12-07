@@ -1,54 +1,71 @@
+
 import { Component, ViewChild } from '@angular/core';
-import { OrderService } from '../../services/order.service';
+
 import { HeaderComponent } from '../../shared/header/header.component';
-import { Order } from '../../interface/order.interface';
-import { OrderList } from '../../interface/order-list.interface';
+
+
 import { CommonModule } from '@angular/common';
 import { environment } from '../../../environments/environment.development';
 import { ModalComponent } from '../../shared/modal/modal.component';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
+
+import { LeadService } from '../../services/lead.service';
+import { Lead } from '../../interface/lead.interface';
+import { UserService } from '../../services/user.service';
+
+
 
 @Component({
-  selector: 'app-order-list',
+  selector: 'app-lead-list',
   standalone: true,
   imports: [
     CommonModule,
+    RouterLink,
     HeaderComponent,
     ModalComponent
   ],
-  templateUrl: './order-list.component.html',
-  styleUrl: './order-list.component.css'
+  templateUrl: './lead-list.component.html',
+  styleUrl: './lead-list.component.css'
 })
-export default class OrderListComponent {
-  orderList: Array<OrderList> =[];
+export default class LeadListComponent {
+  leadList: Array<Lead> =[];
   urlUploads: string = environment.urlUploads;
-  messageOrder!: SafeHtml | string;
+  messageLead!: SafeHtml | string;
   title: string ='';
   @ViewChild('modal') modal!: ModalComponent;
+ 
   constructor(
     private sanitizer: DomSanitizer,
     private router: Router,
-    private orderService: OrderService
+    private leadService: LeadService,
+    
   ){
 
   }
   ngOnInit(): void {
  
-    this.checkOrders();
+    this.checkLeads();
+  
   }
 
-  checkOrders(){
-    this.orderService.getOrders().subscribe({
+  checkLeads(){
+    //ordenamos descendente
+    this.leadService.getLeads().subscribe({
       next: (response) => {
-        this.orderList = response.orders
-        console.log(this.orderList)
+        this.leadList = response.leads.sort((a: any, b: any) => {
+          const dateA = new Date(a.createdAt).getTime(); 
+          const dateB = new Date(b.createdAt).getTime();
+          return dateB - dateA; 
+        });
+    
       },
       error: (error) => console.error(error)
     });
   }
+  
   showImage(urlImage: string){
-    this.messageOrder = this.sanitizer.bypassSecurityTrustHtml(`
+    this.messageLead = this.sanitizer.bypassSecurityTrustHtml(`
       <div style="font-family: Arial, sans-serif;">
     
          <img src=${urlImage}
@@ -65,7 +82,7 @@ export default class OrderListComponent {
   openModal() {
     this.modal.open();
   }
-  orderDetail(id:string){
-    this.router.navigate([`/orders/detail/${id}`]);
+  leadDetail(id:string){
+    this.router.navigate([`/leads/detail/${id}`]);
   }
 }

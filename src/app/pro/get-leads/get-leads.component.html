@@ -1,4 +1,4 @@
-<app-header/>
+<app-header />
 <app-modal #modal [title]="title">
     <div [innerHTML]="image"></div>
 </app-modal>
@@ -6,16 +6,16 @@
     <div class="row">
         <div class="col-lg-3">
         </div>
-        <div class="col-lg-6 col-12 p-5 container-box">
-            <h1 class="text-center">Leads</h1>
-            <div class="card">
+        <div class="col-lg-6 col-12 ">
+            <h1 class="text-center bg-primary text-white p-2 mt-5">Leads</h1>
+            <div class="card  container-box">
                 <div class="card-header">
                     <ul class="nav nav-tabs card-header-tabs">
                         <li class="nav-item">
-                            <a class="nav-link" [class.active]="currentStep === 1" (click)="goToStep(1)">Orders</a>
+                            <a class="nav-link" [class.active]="currentStep === 1" (click)="goToStep(1)">Leads</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" [class.active]="currentStep === 2" (click)="goToStep(2)">Leads</a>
+                            <a class="nav-link" [class.active]="currentStep === 2" (click)="goToStep(2)">My Leads</a>
                         </li>
 
 
@@ -24,32 +24,6 @@
                 <div class="card-body">
 
                     @if(currentStep === 1){
-                        <div class="fade-in">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th scope="col">#</th>
-                                    <th scope="col">Amount</th>
-                                    <th scope="col">Surplus</th>
-                                    <th scope="col">Status</th>
-                                    <th scope="col">Activation date </th>
-                                    <th scope="col">Expiration date</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @for (item of listLeadByUser; track item; let i = $index) {
-                                <tr>
-                                   <td></td>
-
-
-                                </tr>
-                                }
-                            </tbody>
-                        </table> 
-                    </div>         
-                    }
-                    @if(currentStep === 2){
-
                     <div class="fade-in">
                         <table class="table">
                             <thead>
@@ -63,27 +37,81 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @for (item of listLeadByUser; track item; let i = $index) {
+                                @for (item of listLeads; track item; let i = $index) {
                                 <tr>
                                     <th scope="row">{{i+1}}</th>
                                     <td>{{ item.createdAt | date: 'dd/MM/yyyy' }}</td>
-                                    <td>{{ item.order.category.name}}</td>
-                                    <td>{{ item.order.zipcode.name}}</td>
-                                    <td>{{ item.order.description | slice:0:10}}... </td>
+                                    <td>{{ item.category.name}}</td>
+                                    <td>{{ item.zipcode.name}}</td>
+                                    <td>{{ item.description | slice:0:10}}... </td>
                                     <td>
-                                        @if(item.order.images){
-                                        <img [src]="urlUploads+item.order.images" class="cursor" width="80" height="60" alt="Image"
-                                            (click)="showImage(urlUploads+item.order.images)" />
+                                        @if(item.images){
+                                        <img [src]="urlUploads+item.images" class="cursor" width="80" height="60"
+                                            alt="Image" (click)="showImage(urlUploads+item.images)" />
                                         }
                                     </td>
-                                     
-                                    <td><span><i class="bi bi-search cursor" (click)="leadDetail(item.id!)"></i></span></td>
+
+                                    <td><span><i class="bi bi-search cursor" (click)="leadDetail(item.id!)"></i></span>
+                                    </td>
                                 </tr>
                                 }
                             </tbody>
                         </table>
                     </div>
+                    }
+                    @if(currentStep === 2){
+                    @if(listMyLeads.length===0){
+                    <div class="p-3 d-flex justify-content-end">
+                        <button class="btn btn-primary" routerLink="/leads/multi"><i class="bi bi-plus-circle"></i>
+                            Lead</button>
+                    </div>
+                    <div>
+                        <h2 class="text-center">Dear user, you have no leads issued.</h2>
+                    </div>
 
+                    }
+                    @else{
+                    <div class="p-3 d-flex justify-content-end">
+                        <button class="btn btn-primary" routerLink="/leads/multi"><i class="bi bi-plus-circle"></i>
+                            Lead</button>
+                    </div>
+                    <div class="fade-in">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Date</th>
+                                    <th scope="col">Category</th>
+                                    <th scope="col">Zipcode</th>
+                                    <th scope="col">Description </th>
+                                    <th scope="col">Image</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @for (item of listMyLeads; track item; let i = $index) {
+                                <tr>
+                                    <th scope="row">{{i+1}}</th>
+                                    <td>{{ item.createdAt | date: 'dd/MM/yyyy' }}</td>
+                                    
+                                    <td>{{ item.category.name}}</td>
+                                    <td>{{ item.zipcode.name}}</td>
+                                    <td>{{ item.description | slice:0:10}}... </td>
+                                    <td>
+                                        @if(item.images){
+                                        <img [src]="urlUploads+item.images" class="cursor" width="80" height="60"
+                                            alt="Image" (click)="showImage(urlUploads+item.images)" />
+                                        }
+                                    </td>
+
+                                    <td><span><i class="bi bi-search cursor" (click)="leadDetail(item.id!)"></i></span>
+                                    </td>
+                                </tr>
+                                }
+                            </tbody>
+                        </table>
+
+                    </div>
+                    }
 
                     }
                 </div>

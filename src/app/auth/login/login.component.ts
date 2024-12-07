@@ -2,7 +2,9 @@ import { Component, Input } from '@angular/core';
 import { HeaderComponent } from '../../shared/header/header.component';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
-import { Router, RouterLink } from '@angular/router';
+
+import { Router, NavigationEnd,RouterLink } from '@angular/router';
+import { filter } from 'rxjs/operators';
 import { User } from '../../interface/user.interface';
 import { AuthService } from '../../services/auth.service';
 import { Location } from '@angular/common';
@@ -11,6 +13,7 @@ import { UserService } from '../../services/user.service';
 import { SocketComponent } from '../../shared/socket/socket.component';
 import { SocketService } from '../../services/socket.service';
 import { NoWhitespaceDirective } from '../../shared/directives/no-whitespace';
+
 @Component({
   selector: 'app-login',
   standalone: true,
@@ -31,20 +34,32 @@ export default class LoginComponent {
   alertTimeout: any;
   token: string = '';
   showPassword: boolean = false;
+  loginForm!: FormGroup;
+  previousUrl: string = '';
+  currentUrl: string = '';
   constructor(
     public router: Router,
     private authService: AuthService,
     private location: Location,
     private userService: UserService,
     private socketService: SocketService,
+
   ) {
 
   }
-  loginForm = new FormGroup({
-    email: new FormControl('', [Validators.required, Validators.email]),
-    password: new FormControl('', [Validators.required, Validators.minLength(6)]),
-  });
-
+ 
+  ngOnInit(){
+    this.loginForm = new FormGroup({
+      email: new FormControl('', [Validators.required, Validators.email]),
+      password: new FormControl('', [Validators.required, Validators.minLength(6)]),
+    });
+    /*this.router.events.pipe(
+      filter((event) => event instanceof NavigationEnd)
+    ).subscribe((event: NavigationEnd) => {
+      this.previousUrl = this.currentUrl;
+      this.currentUrl = event.url;
+    });*/
+  }
   togglePasswordVisibility(): void {
     this.showPassword = !this.showPassword;
   }
@@ -66,7 +81,15 @@ export default class LoginComponent {
         next: (response) => {
           this.isLoading = false;
           this.token = response.token;
-          localStorage.setItem('token', this.token);
+          //localStorage.setItem('token', this.token);
+          this.token = response.token;
+
+          if (!this.token) {
+            console.error("Token no recibido");
+            return;
+          }
+          //enviamos el token
+          this.authService.setToken(this.token)
 
           // peticion a un websocket
           this.socketService.sendMessage('auth', {});
@@ -92,13 +115,17 @@ export default class LoginComponent {
               userData.available = profile?.available || false;
 
               localStorage.setItem('user', JSON.stringify(userData));
-
+             
               this.authService.updateUser('user', userData);
             },
             error: (error) => console.log(error)
           });
-
-          this.router.navigate(['/']);
+          
+          //pendiente para revisar url anterior
+          //this.location.back()
+          //console.log('url',this.previousUrl)
+          this.router.navigate(['/'])
+         
         },
         error: (error) => this.handleError(error)
       });

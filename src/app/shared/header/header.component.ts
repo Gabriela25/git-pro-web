@@ -1,5 +1,10 @@
+
+import { FormControl } from '@angular/forms';
+import { Observable } from 'rxjs';
+import { map, startWith } from 'rxjs/operators';
+
 import { ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { TranslateModule } from '@ngx-translate/core';
 import { AuthService } from '../../services/auth.service';
@@ -11,14 +16,18 @@ import { Modal } from 'bootstrap';
 import { User } from '../../interface/user.interface';
 import { NotificationComponent } from '../notification/notification.component';
 import { environment } from '../../../environments/environment.development';
+import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
+import { Category } from '../../interface/category.interface';
+import { CategoryService } from '../../services/category.service';
+import { LeadService } from '../../services/lead.service';
 @Component({
   selector: 'app-header',
   standalone: true,
   imports: [
     RouterLink,
     TranslateModule,
-    
-    NotificationComponent
+    NgMultiSelectDropDownModule
+    //NotificationComponent
   ],
   templateUrl: './header.component.html',
   styleUrl: './header.component.css'
@@ -46,10 +55,17 @@ export class HeaderComponent implements OnInit {
   @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
   @ViewChild('closebutton') closeButton!: ElementRef;
 
+  dropdownList: any = [];
+  selectedItems: any = [];
+  dropdownSettings: any = {};
+  listCategories: Array<Category> = [];
   constructor(
     private trans: TranslateService,
-    private authService: AuthService,
-    private userService: UserService
+    private router: Router,
+    private userService: UserService,
+    private categoryService: CategoryService,
+    private authService : AuthService,
+    private leadService: LeadService
   ) {
     this.trans.addLangs(['es', 'en']);
     this.isAuthenticated = this.authService.isAuthenticated()
@@ -58,7 +74,7 @@ export class HeaderComponent implements OnInit {
   ngOnInit() {
     this.trans.get('header.becomeToPro').subscribe((res: string) => {
       this.textPro = res;
-      console.log(res)
+
     });
     this.authService.user$.subscribe((data: any) => {
       if (data) {
@@ -76,14 +92,39 @@ export class HeaderComponent implements OnInit {
       }
     });
    
-   
+    this.dropdownSettings = {
+      singleSelection: true,
+      idField: 'id',
+      textField: 'name',
+      selectAllText: 'Select All',
+      unSelectAllText: 'UnSelect All',
+      itemsShowLimit: 4,
+      allowSearchFilter: true,
+      closeDropDownOnSelection: true,
+      singleSelect: true
+    };
+    this.categoryService.getAllCategories().subscribe({
+      next: (response) => this.listCategories = response.categories,
+      error: (error) => console.error(error)
+    });
   }
 
-
+  onItemSelect(item: any) {
+    console.log('entre',item)
+    if(this.authService.isAuthenticated()){
+      this.router.navigate(['/leads/multi']);
+      this.leadService.updateDataLead('categoryId',item.id);
+      this.leadService.updateDataLead('categoryName',item.name );
+    }
+    else{
+      this.router.navigate(['/auth/login']);     
+    }
+  }
+ 
 
   toggleOnlineStatus(): void {
     this.isOnline = !this.isOnline;
-    console.log(this.isOnline)
+ 
     const user: User = {
       id: '',
       firstname: '',

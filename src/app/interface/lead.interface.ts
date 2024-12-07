@@ -1,18 +1,23 @@
-import { OrderList } from "./order-list.interface";
-import { Order } from "./order.interface";
+import { Category } from "./category.interface";
+import { User } from "./user.interface";
+import { Zipcode } from "./zipcode.interface";
 
 export interface Lead {
-  id:         string;
-  userId:     string;
-  order:      OrderList;
-  orderId:    string;
-  assigned:   boolean;
-  comment?:    string;
-  statusLead?: string;
-  createdAt?:  Date;
-  updatedAt?:  Date;
-  deletedAt?:  null;
-  createdBy?:  string;
-  updatedBy?:  string;
-  deletedBy?:  null;
+  id?:             string;
+  userId?:         string;
+  user?:           User;
+  category:        Category;
+  categoryId:      string;
+  zipcode:         Zipcode;
+  zipcodeId:       string;
+  phone:           string;
+  description:     string;
+  images:          string;
+  qtyPro?:         number;
+  createdAt?:      Date;
+  updatedAt?:      Date;
+  deletedAt?:      null;
+  createdBy?:      string;
+  updatedBy?:      string;
+  deletedBy?:      null;
 }

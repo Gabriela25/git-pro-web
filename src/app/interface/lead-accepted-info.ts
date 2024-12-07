@@ -1,4 +1,4 @@
-export interface OrderAcceptedInfo {
+export interface LeadAcceptedInfo {
   id: string;
   fullname: string;
   description: string;

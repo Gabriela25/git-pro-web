@@ -7,21 +7,18 @@ import { Router, RouterLink } from '@angular/router';
 import { CategoryService } from '../services/category.service';
 import { AuthService } from '../services/auth.service';
 import { ModalComponent } from '../shared/modal/modal.component';
-import { OrderService } from '../services/order.service';
 import { SocketComponent } from '../shared/socket/socket.component';
 import { Category } from '../interface/category.interface';
 import { CommonModule } from '@angular/common';
 import { FooterComponent } from "../shared/footer/footer.component";
+import { LeadService } from '../services/lead.service';
 
 @Component({
   selector: 'app-home',
   standalone: true,
   imports: [
-    RouterLink,
     CommonModule,
     HeaderComponent,
-    ModalComponent,
-    SocketComponent,
     FooterComponent
 ],
   templateUrl: './home.component.html',
@@ -40,8 +37,8 @@ export default class HomeComponent {
  constructor(
     private router: Router,
     private category: CategoryService,
-    private auth : AuthService,
-    private orderService: OrderService
+    private authService : AuthService,
+    private leadService: LeadService
   ){
 
   
@@ -60,10 +57,14 @@ export default class HomeComponent {
   //this.listServices = this.category.getCategory();
 }
   navigateToServices(item: Category) {
- 
-    this.router.navigate(['/orders/multi']);
-    this.orderService.updateDataOrder('categoryId',item.id);
-    this.orderService.updateDataOrder('categoryName',item.name );
+    if(this.authService.isAuthenticated()){
+      this.router.navigate(['/leads/multi']);
+      this.leadService.updateDataLead('categoryId',item.id);
+      this.leadService.updateDataLead('categoryName',item.name );
+    }
+    else{
+      this.router.navigate(['/auth/login']);     
+    }
   }
   
 }

@@ -19,7 +19,8 @@ export interface Profile {
     updatedBy?: string;
     deletedBy?: string | null;
     categories: Array<string>;
-    available?: boolean
+    available?: boolean;
+
   }
   
   

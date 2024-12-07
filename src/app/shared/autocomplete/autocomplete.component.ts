@@ -66,12 +66,9 @@ export class AutocompleteComponent implements OnInit, AfterViewInit {
           lng: place.geometry.location!.lng()
         };
         this.markerPosition = this.center;
-
-        console.log('Selected place:', place);
-        console.log('en la selección',place['formatted_address'])
         this.direccion = place['formatted_address'];
         this.comunication.changeData(this.direccion )
-        console.log('Coordinates:', this.center);
+   
       });
     });
   }
@@ -81,8 +78,7 @@ export class AutocompleteComponent implements OnInit, AfterViewInit {
         lat: event.latLng.lat(),
         lng: event.latLng.lng()
       };
-      console.log(event)
-      console.log('Marker moved to:', this.markerPosition);
+   
       this.getAddress(this.markerPosition.lat,this.markerPosition.lng)
     }
   }
