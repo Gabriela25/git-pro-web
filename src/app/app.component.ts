@@ -8,7 +8,7 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { TranslateModule } from '@ngx-translate/core';
 
 import { DatePipe } from '@angular/common';
-import { environment } from '../environments/environment.development';
+import { environment } from '../environments/environment';
 import { LeadAcceptedInfo } from './interface/lead-accepted-info';
 import { ProfessionalInfo } from './interface/professional-info';
 
@@ -42,6 +42,7 @@ export class AppComponent {
   ) { }
 
   ngOnInit() {
+   
     this.authSocket()
     this.socketService.getMessage('search-pros').subscribe((response) => {
       this.openModal()
@@ -102,8 +103,9 @@ export class AppComponent {
     //this.socketService.getMessage('lead-accepted').subscribe(this.onAcceptedPro);
     this.socketService.getMessage('lead-accepted-info').subscribe((payload) => this.onAcceptedOrderInfo(payload));
     this.socketService.getMessage('lead-accepted').subscribe((payload) => this.onAcceptedPro(payload));
+  
   }
-
+  
   authSocket() {
     if (localStorage.getItem('token')) {
       this.socketService.sendMessage('auth', {});
@@ -164,6 +166,7 @@ export class AppComponent {
       return;
     }
   }
+ 
   onAcceptedPro(payload: unknown) {
     
 
@@ -187,10 +190,10 @@ export class AppComponent {
             <img  src="${this.urlUploads}${professional.image}" 
                    class="rounded-circle" 
                    style="width: 80px; height: 80px; object-fit: cover; display: block; margin: 0 auto;" />
-            <span>${professional.fullname}</span>
+            <h2>${professional.fullname}</h2>
           </div>
         <div style="text-align: center;" >
-            <h2 style="margin-bottom: 20px; font-size: 24px; font-weight: bold;">${professional.introduction}</h2>
+            <p style="margin-bottom: 20px; font-size: 24px; font-weight: bold;">${professional.introduction}</p>
         </div>
         
         

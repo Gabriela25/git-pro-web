@@ -12,7 +12,7 @@
   </div>
   <div class="col-lg-6 col-12 p-4">
 
-    <div class="container mt-5 container-box p-5">
+    <div class="container mt-5 container-box p-3 p-lg-5">
 
       <div class="progress-indicator">
         <div class="step" (click)="step(0)">
@@ -40,7 +40,7 @@
       <form [formGroup]="leadForm">
         <div class="mb-3">
           <label for="category" class="form-label fs-2"></label>
-          <select class="form-select" aria-label="select" id="category" [(ngModel)]="selectedOption"
+          <select class="form-select" aria-label="select" id="category" 
             (change)="onSelectionCategory();" formControlName="category">
 
             <option *ngFor="let item of listCategories;" [ngValue]="item">
@@ -89,9 +89,9 @@
         }
         @if(currentStep ===1){ <!-- Step 2 -->
         <div>
-          <h3>Phone</h3>
+
           <div class="mb-3">
-            <label for="email" class="form-label"></label>
+            <label for="phone" class="form-label fs-2">Phone</label>
             <input type="tel" class="form-control" id="phone" formControlName="phone" placeholder="(123) 4567890" 
               mask="(000) 000-0000" />
           </div>
@@ -113,17 +113,19 @@
         <!-- Step 3 -->
         @if(currentStep ===2){
         <div>
-          <h3>Description</h3>
+     
           <div class="mb-3">
-            <label for="description" class="form-label"></label>
+            <label for="description" class="form-label fs-2">Description</label>
             <textarea id="description" rows="6" class="form-control" style="width: 100%; resize: none;"
               formControlName="description">
               </textarea>
           </div>
           <div class="form-group">
+            <label for="fileInput" class="form-label fs-2 mt-2">Add images about the issue </label>
             <div class="form-group text-center position-relative">
               <div class="mt-3">
-                <div class="position-relative d-inline-block">
+                
+                <div class="position-relative d-inline-block" style="margin-top: -15px;">
                   <img [src]="previewImg  || 'assets/generica.jpeg'" alt="Vista Previa" class="mb-3" width="300"
                     height="200" (click)="triggerFileInput()" style="object-fit: fill;">
                   <i class="bi bi-pen position-absolute"

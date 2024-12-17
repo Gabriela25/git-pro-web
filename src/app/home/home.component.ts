@@ -1,4 +1,4 @@
-import { environment } from './../../environments/environment.development';
+import { environment } from './../../environments/environment';
 import { Component, ViewChild } from '@angular/core';
 import { HeaderComponent } from '../shared/header/header.component';
 import { SidebarComponent } from '../sidebar/sidebar.component';

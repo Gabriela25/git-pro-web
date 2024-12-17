@@ -79,32 +79,13 @@ export default class SignUpComponent implements OnInit {
       email: new FormControl('', [Validators.required, Validators.email]),
       isTerm: new FormControl(false, [Validators.requiredTrue]),
       //recaptcha: new FormControl('', [Validators.required]),
-      password: new FormControl(
-        '', [Validators.required, Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{6,15}$/)],
-      ),
-      confirmPassword: new FormControl('', [Validators.required, Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{6,15}$/)])
-    }, { validators: this.passwordMatchValidator });
+      password: new FormControl('', [Validators.required, Validators.minLength(6), Validators.maxLength(15)]),
+    });
   }
 
 
 
-  passwordMatchValidator(control: AbstractControl): { [key: string]: boolean } | null {
-    const formGroup = control as FormGroup;
-    const password = formGroup.get('password')!.value;
-
-    const confirmPassword = formGroup.get('confirmPassword')!.value;
-    const controlConfirmPassword = formGroup.get('confirmPassword');
-
-    if (password === confirmPassword) {
-
-      controlConfirmPassword?.setErrors(null)
-      return null;
-    } else {
-      controlConfirmPassword?.setErrors({ mismatch: true })
-      return { mismatch: true }
-    }
-
-  }
+  
   onSubmit() {
     // TODO: Use EventEmitter with form value
     this.signUpForm.markAllAsTouched();

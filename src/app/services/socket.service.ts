@@ -18,6 +18,7 @@ export class SocketService {
   }
 
   getMessage(gateway: string = 'recibir-mensaje') {
+  
     return this.socket.fromEvent<any>(gateway);
   }
 }

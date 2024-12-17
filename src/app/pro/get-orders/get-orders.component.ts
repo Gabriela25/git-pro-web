@@ -4,7 +4,7 @@ import { HeaderComponent } from '../../shared/header/header.component';
 import { CommonModule } from '@angular/common';
 import { ModalComponent } from '../../shared/modal/modal.component';
 import { Lead } from '../../interface/lead.interface';
-import { environment } from '../../../environments/environment.development';
+import { environment } from '../../../environments/environment';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { LeadService } from '../../services/lead.service';
 import { OrderService } from '../../services/order.service';

@@ -25,6 +25,7 @@
   "auth":{
     "login": "Iniciar sesión",
     "signUp": "Registro",
+    "loading": "Cargando...",
     "firstName":"Nombre",
     "lastName": "Apellido",
     "phone":"Telefóno",

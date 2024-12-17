@@ -1,6 +1,6 @@
 import { Component, ViewChild } from '@angular/core';
 import { HeaderComponent } from '../../shared/header/header.component';
-import { environment } from '../../../environments/environment.development';
+import { environment } from '../../../environments/environment';
 import { ActivatedRoute } from '@angular/router';
 
 import { ModalComponent } from '../../shared/modal/modal.component';

@@ -22,6 +22,7 @@
     "auth":{
         "login": "Login",
         "signUp": "Sign up",
+        "loading": "Loading...",
         "firstName":"First name",
         "phone":"Phone",
         "lastName": "Last name",

@@ -15,7 +15,7 @@ import { UserService } from '../../services/user.service';
 import { Modal } from 'bootstrap';
 import { User } from '../../interface/user.interface';
 import { NotificationComponent } from '../notification/notification.component';
-import { environment } from '../../../environments/environment.development';
+import { environment } from '../../../environments/environment';
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 import { Category } from '../../interface/category.interface';
 import { CategoryService } from '../../services/category.service';

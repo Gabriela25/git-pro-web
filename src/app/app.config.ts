@@ -8,7 +8,7 @@ import { HttpClient,  provideHttpClient, withFetch } from '@angular/common/http'
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { GoogleMapsModule } from '@angular/google-maps';
 import { GoogleLoginProvider, SocialAuthServiceConfig } from '@abacritt/angularx-social-login';
-import { environment } from '../environments/environment.development';
+import { environment } from '../environments/environment';
 import {  initializeApp, provideFirebaseApp } from '@angular/fire/app';
 import { provideAuth, getAuth } from '@angular/fire/auth';
 import { provideFirestore, getFirestore } from '@angular/fire/firestore';

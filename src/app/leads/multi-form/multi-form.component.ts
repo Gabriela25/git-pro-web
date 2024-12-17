@@ -15,7 +15,7 @@ import { Category } from '../../interface/category.interface';
 import { SocketService } from '../../services/socket.service';
 import { ModalComponent } from '../../shared/modal/modal.component';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
-import { environment } from '../../../environments/environment.development';
+import { environment } from '../../../environments/environment';
 import { AuthService } from '../../services/auth.service';
 import { LeadRegister } from '../../interface/lead-register.interface';
 import { LeadService } from '../../services/lead.service';

@@ -5,7 +5,7 @@ import { HeaderComponent } from '../../shared/header/header.component';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { CommonModule, DatePipe, Location } from '@angular/common';
-import { environment } from '../../../environments/environment.development';
+import { environment } from '../../../environments/environment';
 
 import { ModalComponent } from '../../shared/modal/modal.component';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';

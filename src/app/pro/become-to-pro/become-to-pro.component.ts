@@ -23,8 +23,9 @@ import { SocketComponent } from "../../shared/socket/socket.component";
 import { CapitalizeFirstDirective } from '../../shared/directives/capitalize-first.directive';
 import { NoWhitespaceDirective } from '../../shared/directives/no-whitespace';
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
-import { environment } from '../../../environments/environment.development';
+import { environment } from '../../../environments/environment';
 import { Image } from '../../interface/image.interface';
+import { limit } from 'firebase/firestore';
 @Component({
   selector: 'app-become-to-pro',
   standalone: true,
@@ -128,7 +129,8 @@ export default class BecomeToProComponent implements OnInit {
       selectAllText: 'Select All',
       unSelectAllText: 'UnSelect All',
       itemsShowLimit: 4,
-      allowSearchFilter: true
+      allowSearchFilter: true,
+      limitSelection:3
     };
 
 

@@ -30,17 +30,21 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 ## Comandos para subir a github pages
 ## crea la carpeta docs
 ng build --output-path=docs/ --base-href /git-pro-web/
+
+## build de produccion:
+ ng build --configuration=production
+
 ## se copian los archivos de browser en la raiz de docs
 git add *
 git commit -m ""
 git push 
 
 ## comandos para docker
-docker build -t pro-panel-web:3  . 
-docker image tag pro-panel-web:3 gabriela2014/pro-panel-web:3
-docker push gabriela2014/pro-panel-web:3
+docker build -t frontend-fixi:5  . 
+docker image tag frontend-fixi:5 gabriela2014/frontend-fixi:5
+docker push gabriela2014/frontend-fixi:5
 descargar:
 
 
-docker pull gabriela2014/frontend-fixi:1 
-docker run --name frontend-fixi -p 8081:80 gabriela2014/frontend-fixi:1
+docker pull gabriela2014/frontend-fixi:5 
+docker run --name frontend-fixi -p 8083:80 gabriela2014/frontend-fixi:5

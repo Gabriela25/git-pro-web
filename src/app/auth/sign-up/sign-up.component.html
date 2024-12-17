@@ -7,7 +7,7 @@
                 <img src="./../../../assets/logo.png" width="300" alt="Logo" class="d-none d-lg-block">
             </a>
         </div>
-        <div class="col-12 col-lg-6 p-5   text-light-emphasis bg-white rounded container-box">
+        <div class="col-12 col-lg-6 p-3 p-lg-5   text-light-emphasis bg-white rounded container-box">
             <form [formGroup]="signUpForm" (ngSubmit)="onSubmit()" autocomplete="off" method="post">
                 <div class="row mb-3">
                     <div class="col-12 col-lg-6">
@@ -111,6 +111,7 @@
                         id="password" 
                         placeholder="Password" 
                         formControlName="password" 
+                        maxlength="15"
                       />
                       <button 
                         type="button" 
@@ -130,66 +131,20 @@
                             {{'auth.isPasswordRequired' | translate}}
                         </span>
                         }
-                        @else if(signUpForm.get('password')?.errors?.['pattern']){
-                        <ul>
-                            <li>{{'auth.minimum6Characters' | translate}}</li>
-                            <li>{{'auth.maximum15Characters' | translate}}</li>
-                            <li>{{'auth.atLeastOneUppercaseLetter' | translate}}</li>
-                            <li>{{'auth.oneLowercaseLetterAndOneNumber' | translate}}</li>
-                        </ul>
+                        @else if(signUpForm.get('password')?.errors?.['minlength']){
+                        <span>
+                            {{'auth.minimum6Characters' | translate}}
+                        </span>
+                        }
+                        @else if(signUpForm.get('password')?.errors?.['maxlength']){
+                        <span>
+                            {{'auth.maximum15Characters' | translate}}
+                        </span>
                         }
                     </div>
                     }
                 </div>
-                <div class="mb-3">
-                    <label for="password" class="form-label fw-bold">
-                        {{'auth.confirmPassword' |
-                        translate}}
-                    </label>
-                    <div class="input-group">
-                      <input 
-                        [type]="showConfirmPassword ? 'text' : 'password'" 
-                        class="form-control" 
-                        id="confirmPassword" 
-                        placeholder="Password" 
-                        formControlName="confirmPassword" minlength="6"
-                      />
-                      <button 
-                        type="button" 
-                        class="btn btn-outline-secondary" 
-                        (click)="togglePasswordVisibility('confirmPassword')" 
-                        aria-label="Toggle password visibility"
-                      >
-                        <i [class]="showConfirmPassword ? 'bi bi-eye' : 'bi bi-eye-slash'"></i>
-                      </button>
-                    </div>
-                    
-                    @if(signUpForm.get('confirmPassword')?.invalid && (signUpForm.get('confirmPassword')?.dirty ||
-                    signUpForm.get('confirmPassword')?.touched )){
-                    <div class="alert alert-danger mt-2">
-                        @if(signUpForm.get('confirmPassword')?.errors?.['required']){
-                        <span>
-                            {{'auth.isPasswordRequired' | translate}}
-                        </span>
-
-                        }
-                        @if(signUpForm.get('password')?.errors?.['pattern']){
-                        <ul>
-
-                            <li>{{'auth.minimum6Characters' | translate}}</li>
-                            <li>{{'auth.maximum15Characters' | translate}}</li>
-                            <li>{{'auth.atLeastOneUppercaseLetter' | translate}}</li>
-                            <li>{{'auth.oneLowercaseLetterAndOneNumber' | translate}}</li>
-                        </ul>
-                        }
-                        @else if(signUpForm.get('confirmPassword')?.errors?.['mismatch']){
-                        <span>
-                            {{'auth.thePasswordsDoNotMatch' | translate}}
-                        </span>
-                        }
-                    </div>
-                    }
-                </div>             
+                           
                 <div class="mb-3">
 
                     <div class="form-check">
@@ -216,8 +171,19 @@
 
 
                 <div class="d-grid mt-3">
-                    <button class="btn btn-primary" type="submit">{{'auth.signUp'
-                        | translate}}</button>
+                    <button class="btn btn-primary" type="submit" [disabled]="isLoading">
+                       
+                    @if(!isLoading){
+                        <span class="sr-only">{{'auth.signUp'| translate}}</span>
+
+                    }
+                    @else{
+                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true">  </span>
+                        <span class="sr-only">{{'auth.loading'| translate}}</span>
+                    }
+                   
+                    </button>
+                        
                     <div class="mt-3 d-flex justify-content-center">
                         <a routerLink="/auth/login" aria-current="page"
                             class="link-underline-opacity-0 link-secondary">{{'auth.login' | translate}}</a>
@@ -231,12 +197,7 @@
                 </div>
                 }
             </form>
-            @if(isLoading){
-            <div class="d-flex justify-content-center mt-3">
-                <div class="spinner-border" role="status">
-                </div>
-            </div>
-            }
+            
             @if(backendMessage){
             <div class="alert {{alertMessage}} mt-3">
                 {{ backendMessage }}

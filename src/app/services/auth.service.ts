@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import { environment } from '../../environments/environment.development';
+import { environment } from '../../environments/environment';
 import { User } from '../interface/user.interface';
 import { authStatus } from '../enum/auth.enum';
 import { Login } from '../interface/login.interface';
