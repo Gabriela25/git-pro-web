@@ -53,4 +53,11 @@ export class OrderService {
     
   }
 
+  updatedOrder(orderId: string, body: any):Observable<{order:Order}>{
+
+    const headers = this.authHeadersService.getHeaders(); 
+    return this._http.put<{ order:Order}>(`${this.apiUrlBackend}/orders/${orderId}`, body, headers);
+
+  }  
+
 }

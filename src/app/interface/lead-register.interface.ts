@@ -6,7 +6,12 @@ export interface LeadRegister {
   zipcodeId:       string;
   phone:           string;
   description:     string;
-  images:          string;
+  imageUrl1:       string;
+  imageUrl2:       string;
+  imageUrl3:       string;
+  imageUrl4:       string;
+  imageUrl5:       string;
+  imageUrl6:       string;
   statusOrder?:     string;
   qtyPro?:          number;
   createdAt?:      Date;

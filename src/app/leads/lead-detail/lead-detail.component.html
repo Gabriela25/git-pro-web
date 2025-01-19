@@ -26,14 +26,45 @@
                 <div style="margin-bottom: 20px;" class="description">
                     <span><i class="bi bi-card-text"></i> {{lead.description}}</span>
                 </div>
-                <div>
-                    @if(lead.images){
-                    <span><i class="bi bi-card-image"></i></span>
-                    <img [src]="urlUploads+lead.images"
-                        style="width: 200px; height: 120px; object-fit: cover; display: block; margin: 0 auto;"
-                        class="cursor" (click)="showImage(urlUploads+lead.images)" />
+                
+             
+                    @if(lead.imageUrl1 &&lead.imageUrl2 && lead.imageUrl3 && lead.imageUrl4 && lead.imageUrl5   && lead.imageUrl6   ){
+                    <div class="row">
+                        <div class="col-lg-4">
+                            <img [src]="urlUploads+lead.imageUrl1"
+                            style="width: 200px; height: 120px; object-fit: cover; display: block; margin: 0 auto;"
+                            class="cursor" (click)="showImage(urlUploads+lead.imageUrl1)" />
+                        </div>
+                        <div class="col-lg-4">
+                            <img [src]="urlUploads+lead.imageUrl2"
+                            style="width: 200px; height: 120px; object-fit: cover; display: block; margin: 0 auto;"
+                            class="cursor" (click)="showImage(urlUploads+lead.imageUrl2)" />
+                        </div>
+                        <div class="col-lg-4">
+                            <img [src]="urlUploads+lead.imageUrl3"
+                            style="width: 200px; height: 120px; object-fit: cover; display: block; margin: 0 auto;"
+                            class="cursor" (click)="showImage(urlUploads+lead.imageUrl3)" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4">
+                            <img [src]="urlUploads+lead.imageUrl4"
+                            style="width: 200px; height: 120px; object-fit: cover; display: block; margin: 0 auto;"
+                            class="cursor" (click)="showImage(urlUploads+lead.imageUrl4)" />
+                        </div>
+                        <div class="col-lg-4">
+                            <img [src]="urlUploads+lead.imageUrl5"
+                            style="width: 200px; height: 120px; object-fit: cover; display: block; margin: 0 auto;"
+                            class="cursor" (click)="showImage(urlUploads+lead.imageUrl5)" />
+                        </div>
+                        <div class="col-lg-4">
+                            <img [src]="urlUploads+lead.imageUrl6"
+                            style="width: 200px; height: 120px; object-fit: cover; display: block; margin: 0 auto;"
+                            class="cursor" (click)="showImage(urlUploads+lead.imageUrl6)" />
+                        </div>
+                    </div>
                     }
-                </div>
+                
                 @if(isPro){
                     <div class="d-flex justify-content-end mt-3">
                        

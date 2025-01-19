@@ -10,72 +10,144 @@
 
         <div class="container mt-5 container-box p-5">
             <div>
-                @if(isPro){
+                <form [formGroup]="updateOrderForm" (ngSubmit)="onSubmit(orderId,0)" autocomplete="off">
+                    @if(isPro){
                     <div style="text-align:center">
-                        <img  src="assets/avatar_profile.png" 
-                            class="rounded-circle" 
+                        <img src="assets/avatar_profile.png" class="rounded-circle"
                             style="width: 80px; height: 80px; object-fit: cover; display: block; margin: 0 auto;" />
                         <h1>{{order.lead.user!.firstname}} {{order.lead.user!.lastname}}</h1>
                         <h3 class="text-center">{{order.lead.user!.email}}</h3>
-                        <h3 class="text-center">{{order.lead.user!.phone  }}</h3>
+                        <h3 class="text-center">{{order.lead.user!.phone }}</h3>
+                    </div>
+                    }
+                    <div style="text-align: center;">
+                        <h2 class="bg-primary text-white p-2" style="margin-bottom: 20px; font-weight: bold;">
+                            {{order.lead.category.name}} </h2>
+                    </div>
+                    
+                    @if(isPro){
+                    <div class="mt-3 mb-3">
+                        <label for="statusOrder" class="form-label fw-bold">StatusOrder
+                        </label>
+                        <select class="form-select" aria-label="select" id="statusOrder" formControlName="statusOrder">
+
+                            @for (item of listStatusOrder; track item) {
+                            <option [value]="item.id">{{item.name}}</option>
+                            }
+                        </select>
                     </div>
                 }
-                <div style="text-align: center;">
-                    <h2 class="bg-primary text-white p-2" style="margin-bottom: 20px; font-weight: bold;">
-                        {{order.lead.category.name}} </h2>
-                </div>
-                <div style="margin-bottom: 10px;">
-                    <span><i class="bi bi-calendar"></i> {{ order.createdAt | date: 'yyyy/MM/dd' }}</span>
-                </div>
-                <div style="margin-bottom: 10px;">
-                    <span><i class="bi bi-arrow-clockwise"></i> {{ order.statusOrder}}</span>
-                </div>
-                <div style="margin-bottom: 10px;">
-                    <span><i class="bi bi-geo-alt-fill"></i> {{order.lead.zipcode.name}}</span>
-                </div>
-                <div style="margin-bottom: 10px;">
-                    <span><i class="bi bi-telephone"></i> {{order.lead.phone}}</span>
-                </div>
-                <div style="margin-bottom: 20px;" class="description">
-                    <span><i class="bi bi-card-text"></i> {{order.lead.description}}</span>
-                </div>
-                <div>
-                    @if(order.lead.images){
-                    <span><i class="bi bi-card-image"></i></span>
-                    <img [src]="urlUploads+order.lead.images"
-                        style="width: 200px; height: 120px; object-fit: cover; display: block; margin: 0 auto;"
-                        class="cursor" (click)="showImage(urlUploads+order.lead.images)" />
+                    <div class="mt-3">
+                        <span><i class="bi bi-calendar"></i> {{ order.createdAt | date: 'yyyy/MM/dd' }}</span>
+                    </div>
+
+
+                    <div class="mt-3">
+                        <span><i class="bi bi-geo-alt-fill"></i> {{order.lead.zipcode.name}}</span>
+                    </div>
+                    <div class="mt-3">
+                        <span><i class="bi bi-telephone"></i> {{order.lead.phone}}</span>
+                    </div>
+                    <div class="mt-3" class="description">
+                        <span><i class="bi bi-card-text"></i> {{order.lead.description}}</span>
+                    </div>
+                    @if(order.lead.imageUrl1 && order.lead.imageUrl2 && order.lead.imageUrl3 && order.lead.imageUrl4 && order.lead.imageUrl5   && order.lead.imageUrl6   ){
+                        <div class="row">
+                            <div class="col-lg-4">
+                                <img [src]="urlUploads+order.lead.imageUrl1"
+                                style="width: 200px; height: 120px; object-fit: cover; display: block; margin: 0 auto;"
+                                class="cursor" (click)="showImage(urlUploads+order.lead.imageUrl1)" />
+                            </div>
+                            <div class="col-lg-4">
+                                <img [src]="urlUploads+order.lead.imageUrl2"
+                                style="width: 200px; height: 120px; object-fit: cover; display: block; margin: 0 auto;"
+                                class="cursor" (click)="showImage(urlUploads+order.lead.imageUrl2)" />
+                            </div>
+                            <div class="col-lg-4">
+                                <img [src]="urlUploads+order.lead.imageUrl3"
+                                style="width: 200px; height: 120px; object-fit: cover; display: block; margin: 0 auto;"
+                                class="cursor" (click)="showImage(urlUploads+order.lead.imageUrl3)" />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-4">
+                                <img [src]="urlUploads+order.lead.imageUrl4"
+                                style="width: 200px; height: 120px; object-fit: cover; display: block; margin: 0 auto;"
+                                class="cursor" (click)="showImage(urlUploads+order.lead.imageUrl4)" />
+                            </div>
+                            <div class="col-lg-4">
+                                <img [src]="urlUploads+order.lead.imageUrl5"
+                                style="width: 200px; height: 120px; object-fit: cover; display: block; margin: 0 auto;"
+                                class="cursor" (click)="showImage(urlUploads+order.lead.imageUrl5)" />
+                            </div>
+                            <div class="col-lg-4">
+                                <img [src]="urlUploads+order.lead.imageUrl6"
+                                style="width: 200px; height: 120px; object-fit: cover; display: block; margin: 0 auto;"
+                                class="cursor" (click)="showImage(urlUploads+order.lead.imageUrl6)" />
+                            </div>
+                        </div>
+                        }
+                    @if(isPro){
+                    <div class="d-flex justify-content-end mt-3">
+                        <button type="button" class="btn btn-primary" (click)="onSubmit(orderId,0)">
+                            Update Order
+                        </button>
+                    </div>
                     }
-                </div>
-
-
-                @if(!isPro) {
+                    @if(!isPro) {
                     <div class="mt-5">
                         <h2>Professional:</h2>
                     </div>
                     @for (item of listUserPro; track item; let i = $index) {
-                        <div class="d-flex align-items-center p-3">
+                    <div class="d-flex align-items-between  p-3">
+                        <div>
                             <!-- Imagen -->
-                            <img 
-                                [src]="urlUploads+item.profile?.imagePersonal" 
-                                class="rounded-circle" 
-                                style="width: 80px; height: 80px; object-fit: cover; display: block;" 
-                            />
+                            <img [src]="urlUploads+item.user.profile?.imagePersonal" class="rounded-circle"
+                                style="width: 80px; height: 80px; object-fit: cover; display: block;" />
                             <!-- Datos -->
                             <div class="ms-3">
+
                                 <div>
-                                    <span>{{item.firstname}} {{item!.lastname}}</span>
+                                    <span>{{item.user.firstname}} {{item!.user.lastname}}</span>
                                 </div>
                                 <div>
-                                    <span>{{item.email}}</span>
+                                    <span>{{item.user.email}}</span>
                                 </div>
                                 <div>
-                                    <span>{{item.phone}}</span>
+                                    <span>{{item.user.phone}}</span>
                                 </div>
                             </div>
                         </div>
+                        <div formArrayName="statusOrder">
+                            <label for="statusOrder{{ i }}" class="form-label fw-bold">Status Order</label>
+                            <select class="form-select" [id]="'statusOrder' + i" [formControlName]="i">
+                                <option *ngFor="let status of listStatusOrder" [value]="status.id">
+                                    {{ status.name }}
+                                </option>
+                            </select>
+                        </div>
+
+                    </div>
+                    <div class="d-flex justify-content-end mt-3">
+                        <button type="button" class="btn btn-primary" (click)="onSubmit(item.orderId,i)">
+                            Update Order
+                        </button>
+                    </div>
                     }
-                }
+
+                    }
+                    @if(isLoading){
+                    <div class="d-flex justify-content-center mt-3">
+                        <div class="spinner-border" role="status">
+                        </div>
+                    </div>
+                    }
+                    @if(backendMessage){
+                    <div class="alert {{alertMessage}} mt-3">
+                        {{ backendMessage }}
+                    </div>
+                    }
+                </form>
             </div>
 
         </div>

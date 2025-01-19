@@ -335,8 +335,6 @@ export default class BecomeToProComponent implements OnInit {
 
   onSubmit() {
     this.proPersonalForm.markAllAsTouched();
-
-    console.log(this.proPersonalForm.get('licenses')?.value)
     //si el resgistro es por primera vez y Personal
     if (this.isSelectOption === 'isPersonal' && !this.isNext) {
       if (this.proPersonalForm.valid) {

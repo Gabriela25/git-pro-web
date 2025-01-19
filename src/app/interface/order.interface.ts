@@ -1,4 +1,5 @@
 import { Lead } from "./lead.interface";
+import { StatusOrder } from "./status-order.interface";
 import { User } from "./user.interface";
 
 
@@ -11,7 +12,8 @@ export interface Order {
   leadId:      string;
   assigned:    boolean;
   comment?:    string;
-  statusOrder?: string;
+  statusOrderId: string;
+  statusOrder: StatusOrder
   createdAt?:  Date;
   updatedAt?:  Date;
   deletedAt?:  null;

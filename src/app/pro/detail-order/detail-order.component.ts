@@ -15,6 +15,9 @@ import { UserService } from '../../services/user.service';
 import { AuthService } from '../../services/auth.service';
 import { Profile } from '../../interface/profile.interface';
 import { User } from '../../interface/user.interface';
+import { StatusOrderService } from '../../services/statusOrder.service';
+import { StatusOrder } from '../../interface/status-order.interface';
+import { FormArray, FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-detail-order',
@@ -23,10 +26,12 @@ import { User } from '../../interface/user.interface';
 
     HeaderComponent,
     ModalComponent,
-    CommonModule
+    CommonModule,
+    ReactiveFormsModule
   ],
   providers: [
-    provideNgxMask()
+    provideNgxMask(),
+
   ],
   templateUrl: './detail-order.component.html',
   styleUrl: './detail-order.component.css'
@@ -38,6 +43,7 @@ export default class DetailLeadComponent {
   image!: SafeHtml | string;
   isPro: boolean = false;
   @ViewChild('modal') modal!: ModalComponent;
+  updateOrderForm!: FormGroup;
   order: Order = {
     id: '',
     userId: '',
@@ -73,65 +79,136 @@ export default class DetailLeadComponent {
       },
       phone: '',
       description: '',
-      images: '',
       qtyPro: undefined,
-
+      imageUrl1: '',
+      imageUrl2: '',
+      imageUrl3: '',
+      imageUrl4: '',
+      imageUrl5: '',
+      imageUrl6: '',
     },
-
+    
     assigned: false,
     comment: '',
-    statusOrder: undefined,
+    statusOrderId: '',
+    statusOrder: {
+      name: ''
+    }
   }
   urlUploads: string = environment.urlUploads;
-  listUserPro: Array<User> = [];
-  listOrderTemp : Array<Order> = [];
+  listUserPro: Array<any> = [];
+  listOrderTemp: Array<Order> = [];
+  listStatusOrder: Array<StatusOrder> = [];
+  statusOrderId: string = '';
+  isLoading = false;
+  backendMessage = '';
+  alertMessage = '';
+  alertTimeout: any;
   constructor(
+    private fb: FormBuilder,
     private sanitizer: DomSanitizer,
 
     private route: ActivatedRoute,
     private orderService: OrderService,
-    private authService: AuthService
+    private authService: AuthService,
+    private statusOrderService: StatusOrderService
 
-  ) { }
+  ) {
+    
+  }
   ngOnInit() {
     this.orderId = this.route.snapshot.paramMap.get('id')!;
-    //todo 
-    //se debe pasar es el leadId para obtener el listado de ordenes y de cada orden  sacar el users
-    this.checkOrders(this.orderId);
     this.authService.user$.subscribe((data: any) => {
-      console.log(data)
+
       if (data) {
         this.isPro = data.isPro || false;
+        console.log('cero')
       }
     });
+
+    //todo 
+    //se debe pasar es el leadId para obtener el listado de ordenes y de cada orden  sacar el users
+
+    this.checkOrders(this.orderId);
+    this.updateOrderForm = this.initializeUpdateOrderForm()
+  }
+  initializeUpdateOrderForm(): FormGroup {
+    
+    if(this.isPro){
+      return this.fb.group({
+        //statusOrder: this.fb.array([]),
+        statusOrder:new FormControl('', [Validators.required]),
+      });
+    }else{
+      return this.fb.group({
+        statusOrder: this.fb.array([]),
+      });
+    }
+    
+  }
+  get statusOrderArray(): FormArray {
+  
+    return this.updateOrderForm.get('statusOrder') as FormArray;
   }
 
   checkOrders(orderId: string) {
+
+    this.statusOrderService.getAllStatusOrder().subscribe({
+      next: (response) => {
+        this.listStatusOrder = response.statusOrder;
+      },
+      error: (error) => console.error(error)
+    });
     this.orderService.getOrderDetail(orderId).subscribe({
       next: (response) => {
-        console.log(response)
-        console.log('en la order')
         this.order = response.order;
-        this.leadId= response.order.leadId;
-        if(this.leadId){
+        this.leadId = response.order.leadId;
+        this.statusOrderId = response.order.statusOrder.id!;
+        /*this.updateOrderForm.patchValue({
+          statusOrder:  this.statusOrderId
+         
+        });*/
+
+        if (this.leadId && !this.isPro) {
+          //si el usuario es cliente, revisamos los pro que ya tienen esa orden
           this.checkUsersPro(this.leadId)
+        }
+        else{
+          this.updateOrderForm.patchValue({
+            statusOrder:  this.statusOrderId
+          
+          });
         }
       },
       error: (error) => console.log(error)
     });
+
   }
   checkUsersPro(leadId: string) {
+
     this.orderService.getOrderbyLeadUser(leadId).subscribe({
       next: (response) => {
-        console.log('buscando los profesionales')
-        console.log(response)
         this.listOrderTemp = response.orders;
-       
-        for(let i=0; i<this.listOrderTemp.length; i++){
-          this.listUserPro.push(this.listOrderTemp[i]['user'])
+
+        for (let i = 0; i < this.listOrderTemp.length; i++) {
+
+          this.listUserPro.push(
+            {
+              "user": this.listOrderTemp[i]['user'],
+              "orderId": this.listOrderTemp[i]['id']
+            }
+          )
         }
+        this.statusOrderArray.clear();
        
+        this.listOrderTemp.forEach((order) => {
         
+          this.statusOrderArray.push(
+            this.fb.control(order.statusOrderId, Validators.required)
+          );
+        });
+      
+       
       },
       error: (error) => console.log(error)
     });
@@ -153,5 +230,57 @@ export default class DetailLeadComponent {
   }
   openModal() {
     this.modal.open();
+  }
+
+  onSubmit(orderId: string, i: number) {
+  
+    if (this.updateOrderForm.valid) {
+      const formData = this.updateOrderForm.value;
+      let data: any = {};
+      //si es distinto de cero el usuario es profesional
+      if(i!==0){
+        const statusOrderId = formData.statusOrder[i];
+        data  = {
+          statusOrderId: statusOrderId
+        }
+      }else{
+        const statusOrderId = formData.statusOrder;
+        data  = {
+          statusOrderId: statusOrderId
+        }
+      }
+      
+      this.orderService.updatedOrder(orderId, data).subscribe({
+        next: (response) => {
+        
+          this.handleSuccessfulSubmission(response)
+        },
+        error: (error) => this.handleError(error)
+      });
+
+    }
+
+  }
+  handleSuccessfulSubmission(response: any) {
+    this.alertMessage = 'alert-success';
+    this.backendMessage = response.message || 'Status order updated successfully';
+    this.isLoading = false;
+    this.startAlertTimer();
+  }
+
+  handleError(error: any) {
+    this.alertMessage = 'alert-danger';
+    this.backendMessage = error.error.message || 'An error occurred';
+    this.isLoading = false;
+    this.startAlertTimer();
+  }
+
+  startAlertTimer() {
+    if (this.alertTimeout) {
+      clearTimeout(this.alertTimeout);
+    }
+    this.alertTimeout = setTimeout(() => {
+      this.backendMessage = '';
+    }, 3000);
   }
 }

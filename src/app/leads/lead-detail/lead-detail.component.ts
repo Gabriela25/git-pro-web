@@ -62,9 +62,15 @@ export default class LeadDetailComponent {
     zipcodeId: '',
     phone: '',
     description: '',
-    images: '',
-
+    imageUrl1: '',
+    imageUrl2: '',
+    imageUrl3: '',
+    imageUrl4: '',
+    imageUrl5: '',
+    imageUrl6: '',
+   
     qtyPro: 0
+
   }
   //revisar
   

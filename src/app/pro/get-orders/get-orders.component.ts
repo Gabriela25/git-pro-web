@@ -10,6 +10,7 @@ import { LeadService } from '../../services/lead.service';
 import { OrderService } from '../../services/order.service';
 import { Order } from '../../interface/order.interface';
 import { AuthService } from '../../services/auth.service';
+import { StatusOrderService } from '../../services/statusOrder.service';
 
 @Component({
   selector: 'app-get-orders',
@@ -32,10 +33,9 @@ export default class GetOrdersComponent {
   constructor(
     private sanitizer: DomSanitizer,
     private router: Router,
-    private leadService: LeadService,
+  
+    private authService: AuthService,
     private orderService: OrderService,
-    private authService: AuthService
-
   ) {
 
   }

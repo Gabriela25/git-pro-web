@@ -35,16 +35,16 @@
                         <tr class="center-content">
                             <td>{{i+1}}</td>
                             <td>{{ item.createdAt | date: 'yyyy/MM/dd' }}</td>
-                            <td>{{item.statusOrder}}</td>
+                            <td>{{item.statusOrder.name}}</td>
                             <td>{{item.lead.category.name}}</td>
                             <td>{{item.lead.zipcode.name}}</td>
                             <td>{{ item.lead.description | slice:0:10}}... </td>
                             <td>
-                                @if(item.lead.images){
-                                <img [src]="urlUploads+item.lead.images" class="cursor" width="80" height="60" alt="Image"
-                                    (click)="showImage(urlUploads+item.lead.images)" />
+                                @if(item.lead.imageUrl1){
+                                <img [src]="urlUploads+item.lead.imageUrl1" class="cursor" width="80" height="60" alt="Image"
+                                    (click)="showImage(urlUploads+item.lead.imageUrl1)" />
                                 }
-                            </td>
+                            <td>
                             <td><span><i class="bi bi-search cursor" (click)="orderDetail(item.id!)"></i></span></td>
                         </tr>
 

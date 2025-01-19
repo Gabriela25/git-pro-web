@@ -85,10 +85,10 @@ export class AppComponent {
         <div style="margin-bottom: 20px;">
             <span><i class="bi bi-card-text"></i>    ${leads.description} </span>
         </div>
-        ${leads.images
+        ${leads.imageUrl1
           ? `<div>
                <span><i class="bi bi-card-image"></i></span>
-                <img src="${this.urlUploads}${leads.images}" 
+                <img src="${this.urlUploads}${leads.imageUrl1}" 
                      style="width: 200px; height: 120px; object-fit: cover; display: block; margin: 0 auto;" />
              </div>`
           : ''}

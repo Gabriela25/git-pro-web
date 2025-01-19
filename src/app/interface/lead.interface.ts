@@ -12,7 +12,12 @@ export interface Lead {
   zipcodeId:       string;
   phone:           string;
   description:     string;
-  images:          string;
+  imageUrl1:       string;
+  imageUrl2:       string;
+  imageUrl3:       string;
+  imageUrl4:       string;
+  imageUrl5:       string;
+  imageUrl6:       string;
   qtyPro?:         number;
   createdAt?:      Date;
   updatedAt?:      Date;

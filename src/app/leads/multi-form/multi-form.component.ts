@@ -50,8 +50,18 @@ export default class MultiFormComponent {
   listZipcode: Array<Zipcode> = [];
   listCategories: Array<Category> = [];
   leadForm: FormGroup;
-  selectedFile: File | null = null;
-  previewImg: string | ArrayBuffer | null = null;
+  selectedFile1: File | null = null;
+  selectedFile2: File | null = null;
+  selectedFile3: File | null = null;
+  selectedFile4: File | null = null;
+  selectedFile5: File | null = null;
+  selectedFile6: File | null = null;
+  previewImg1: string | ArrayBuffer | null = null;
+  previewImg2: string | ArrayBuffer | null = null;
+  previewImg3: string | ArrayBuffer | null = null;
+  previewImg4: string | ArrayBuffer | null = null;
+  previewImg5: string | ArrayBuffer | null = null;
+  previewImg6: string | ArrayBuffer | null = null;
   selectedOption: any;
   isLoading = false;
   backendMessage = '';
@@ -60,7 +70,12 @@ export default class MultiFormComponent {
 
   isSelected = false;
   @ViewChild('modal') modal!: ModalComponent;
-  @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
+  @ViewChild('fileInput1') fileInput1!: ElementRef<HTMLInputElement>;
+  @ViewChild('fileInput2') fileInput2!: ElementRef<HTMLInputElement>;
+  @ViewChild('fileInput3') fileInput3!: ElementRef<HTMLInputElement>;
+  @ViewChild('fileInput4') fileInput4!: ElementRef<HTMLInputElement>;
+  @ViewChild('fileInput5') fileInput5!: ElementRef<HTMLInputElement>;
+  @ViewChild('fileInput6') fileInput6!: ElementRef<HTMLInputElement>;
   urlUploads: string = environment.urlUploads || '';
 
   title: string = 'Lead';
@@ -88,7 +103,12 @@ export default class MultiFormComponent {
       zipcode: new FormControl('', [Validators.required]),
       phone: new FormControl('', [Validators.required, Validators.minLength(10)]),
       description: new FormControl('', [Validators.required, Validators.minLength(10)]),
-      images: new FormControl('')
+      imageUrl1: new FormControl(''),
+      imageUrl2: new FormControl(''),
+      imageUrl3: new FormControl(''),
+      imageUrl4: new FormControl(''),
+      imageUrl5: new FormControl(''),
+      imageUrl6: new FormControl('')
     });
   }
 
@@ -144,8 +164,10 @@ export default class MultiFormComponent {
     }
   }
   onSelectionCategory() {
-    this.leadService.updateDataLead('categoryId', this.selectedOption.id);
-    this.leadService.updateDataLead('categoryName', this.selectedOption.name);
+    const category = this.leadForm.get('category')?.value
+  
+    this.leadService.updateDataLead('categoryId', category.id);
+    this.leadService.updateDataLead('categoryName', category.name);
   }
   step(step: number) {
     if (step > this.currentStep) {
@@ -183,58 +205,132 @@ export default class MultiFormComponent {
   }
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
+    const fileNumber = input.id.substring(9)
+    console.log(input.id)
     if (input.files && input.files[0]) {
       const file = input.files[0];
-      this.selectedFile = file;
+      
       const reader = new FileReader();
       reader.onload = (e) => {
         if (e.target?.result) {
-          this.previewImg = e.target.result;
+          switch (fileNumber){
+            case '1': this.previewImg1 = e.target.result;
+                      this.selectedFile1 = file;
+                    break;
+            case '2': this.previewImg2 = e.target.result;
+                      this.selectedFile2 = file;
+                    break;
+            case '3': this.previewImg3 = e.target.result;
+                      this.selectedFile3 = file;
+                    break;
+            case '4': this.previewImg4 = e.target.result;
+                      this.selectedFile4 = file;
+                    break;
+            case '5': this.previewImg5 = e.target.result;
+                      this.selectedFile5 = file;
+                    break;
+            case '6': this.previewImg6 = e.target.result;
+                      this.selectedFile6 = file;
+                      break;
+            
+          }
+          
         }
       };
       reader.readAsDataURL(file);
     }
   }
-  triggerFileInput(): void {
-    this.fileInput.nativeElement.click();
+  triggerFileInput(event:any): void {
+    console.log(event.target)
+    const numero = event.target?.id.substring(5)
+    console.log(numero)
+    switch(numero){
+      case '1': 
+        this.fileInput1.nativeElement.click();
+      break;
+      case '2': 
+        this.fileInput2.nativeElement.click();
+      break;
+      case '3': 
+        this.fileInput3.nativeElement.click();
+      break;
+      case '4': 
+        this.fileInput4.nativeElement.click();
+      break;
+      case '5': 
+        this.fileInput5.nativeElement.click();
+      break;
+      case '6': 
+        this.fileInput6.nativeElement.click();
+      break;
+    }
+   
+   
   }
-  onSubmit() {
-    console.log('entre')
+  async onSubmit() {
     this.leadForm.markAllAsTouched();
+  
     if (this.leadForm.valid) {
-      this.isLoading = true
-
+      this.isLoading = true;
+  
       const formLead = this.leadForm.value;
-      const formData = new FormData();
       const lead: LeadRegister = {
         categoryId: this.categoryId,
         zipcodeId: formLead.zipcode.id,
         phone: formLead.phone,
         description: formLead.description,
-        images: '',
-
+        imageUrl1:'',
+        imageUrl2:'',
+        imageUrl3:'',
+        imageUrl4:'',
+        imageUrl5:'',
+        imageUrl6:'',
       };
-      if (this.selectedFile) {
-        formData.append('file', this.selectedFile)
-        this.leadService.postUploadsLead(formData).subscribe({
-          next: (response) => {
-            lead.images = response.fileName;
-            this.socketService.sendMessage('create-lead', { lead });
-          },
-          error: (error) => {
-            console.error('Error al subir el archivo:', error);
-          },
-        });
-      }else{
-        this.socketService.sendMessage('create-lead', { lead });
+  
+      
+      const files = [
+        { file: this.selectedFile1, key: 'imageUrl1' },
+        { file: this.selectedFile2, key: 'imageUrl2' },
+        { file: this.selectedFile3, key: 'imageUrl3' },
+        { file: this.selectedFile4, key: 'imageUrl4' },
+        { file: this.selectedFile5, key: 'imageUrl5' },
+        { file: this.selectedFile6, key: 'imageUrl6' },
+      ];
+  
+      
+      for (const fileData of files) {
+        if (fileData.file) {
+          const formData = new FormData();
+          formData.append('file', fileData.file);
+  
+          try {
+            const urlImage = await this.uploadImage(formData);
+            if (urlImage !== 'Error al subir el archivo') {
+              
+              (lead as any)[fileData.key] = urlImage;
+            }
+          } catch (error) {
+            console.error(`Error asignando la URL para ${fileData.key}:`, error);
+          }
+        }
       }
-
-      // peticion a un websocket
-     
+  
+      console.log(lead);
+  
+      // Enviar datos al servidor por WebSocket
+      this.socketService.sendMessage('create-lead', { lead });
     }
-
   }
   
+  async uploadImage(formData: FormData): Promise<string> {
+    try {
+      const response = await this.leadService.postUploadsLead(formData).toPromise();
+      return response!.fileName; 
+    } catch (error) {
+      console.error('Error al subir el archivo:', error);
+      return 'Error al subir el archivo'; // Retorna el mensaje de error.
+    }
+  }
   onCreatedLead(payload: unknown) {
 
     if (!payload) {

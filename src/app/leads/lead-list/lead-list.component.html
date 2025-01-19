@@ -40,9 +40,9 @@
                             <td>{{item.zipcode.name}}</td>
                             <td>{{ item.description | slice:0:10}}... </td>
                             <td>
-                                @if(item.images){
-                                <img [src]="urlUploads+item.images" class="cursor" width="80" height="60" alt="Image"
-                                    (click)="showImage(urlUploads+item.images)" />
+                                @if(item.imageUrl1){
+                                <img [src]="urlUploads+item.imageUrl1" class="cursor" width="80" height="60" alt="Image"
+                                    (click)="showImage(urlUploads+item.imageUrl1)" />
                                 }
                             </td>
                             <td><span><i class="bi bi-search cursor" (click)="leadDetail(item.id!)"></i></span></td>
