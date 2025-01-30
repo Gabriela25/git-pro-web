@@ -26,73 +26,43 @@
                 <div style="margin-bottom: 20px;" class="description">
                     <span><i class="bi bi-card-text"></i> {{lead.description}}</span>
                 </div>
-                
-             
-                    @if(lead.imageUrl1 &&lead.imageUrl2 && lead.imageUrl3 && lead.imageUrl4 && lead.imageUrl5   && lead.imageUrl6   ){
-                    <div class="row">
-                        <div class="col-lg-4">
-                            <img [src]="urlUploads+lead.imageUrl1"
-                            style="width: 200px; height: 120px; object-fit: cover; display: block; margin: 0 auto;"
-                            class="cursor" (click)="showImage(urlUploads+lead.imageUrl1)" />
-                        </div>
-                        <div class="col-lg-4">
-                            <img [src]="urlUploads+lead.imageUrl2"
-                            style="width: 200px; height: 120px; object-fit: cover; display: block; margin: 0 auto;"
-                            class="cursor" (click)="showImage(urlUploads+lead.imageUrl2)" />
-                        </div>
-                        <div class="col-lg-4">
-                            <img [src]="urlUploads+lead.imageUrl3"
-                            style="width: 200px; height: 120px; object-fit: cover; display: block; margin: 0 auto;"
-                            class="cursor" (click)="showImage(urlUploads+lead.imageUrl3)" />
-                        </div>
+                <div class="row">
+                    <div class="col-6 col-md-4 mb-3"
+                        *ngFor="let image of [lead.imageUrl1, lead.imageUrl2, lead.imageUrl3, lead.imageUrl4, lead.imageUrl5, lead.imageUrl6]">
+                        <img [src]="urlUploads + image" class="img-fluid w-100 rounded shadow-sm cursor"
+                            (click)="showImage(urlUploads + image)" style="aspect-ratio: 16/9; object-fit: cover;">
                     </div>
-                    <div class="row">
-                        <div class="col-lg-4">
-                            <img [src]="urlUploads+lead.imageUrl4"
-                            style="width: 200px; height: 120px; object-fit: cover; display: block; margin: 0 auto;"
-                            class="cursor" (click)="showImage(urlUploads+lead.imageUrl4)" />
-                        </div>
-                        <div class="col-lg-4">
-                            <img [src]="urlUploads+lead.imageUrl5"
-                            style="width: 200px; height: 120px; object-fit: cover; display: block; margin: 0 auto;"
-                            class="cursor" (click)="showImage(urlUploads+lead.imageUrl5)" />
-                        </div>
-                        <div class="col-lg-4">
-                            <img [src]="urlUploads+lead.imageUrl6"
-                            style="width: 200px; height: 120px; object-fit: cover; display: block; margin: 0 auto;"
-                            class="cursor" (click)="showImage(urlUploads+lead.imageUrl6)" />
-                        </div>
-                    </div>
-                    }
-                
+                </div>
+
+
                 @if(isPro){
-                    <div class="d-flex justify-content-end mt-3">
-                       
-                        @if(!isNotAcceptOrder){
-                            <button type="button" class="btn btn-primary" (click)="accept()">
-                                Accept
-                             </button>
-                        }
-                        
-                    </div> 
-                    @if(isLoading){       
-                        <div class="d-flex justify-content-center mt-3">
-                            <div class="spinner-border" role="status"> 
-                            </div>
-                        </div>
+                <div class="d-flex justify-content-end mt-3">
+
+                    @if(!isNotAcceptOrder){
+                    <button type="button" class="btn btn-primary" (click)="accept()">
+                        Accept
+                    </button>
                     }
-                    @if(backendMessage){    
-                    <div  class="alert {{alertMessage}} mt-3">
-                        {{ backendMessage }}
-                      </div>
-                    }
-                      
+
+                </div>
+                @if(isLoading){
+                <div class="d-flex justify-content-center mt-3">
+                    <div class="spinner-border" role="status">
+                    </div>
+                </div>
+                }
+                @if(backendMessage){
+                <div class="alert {{alertMessage}} mt-3">
+                    {{ backendMessage }}
+                </div>
+                }
+
                 }
             </div>
-            
-            
+
+
         </div>
-        
+
     </div>
     <div class="col-lg-3">
         <div class="text-center">

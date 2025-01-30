@@ -1,0 +1,14 @@
+.imagen-contenedor {
+    position: absolute;
+    top: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%; /* Asegura que la imagen ocupe todo el ancho disponible */
+    max-width: 200px; /* Tamaño máximo */
+  }
+  
+  .imagen-contenedor img {
+    width: 100%; /* Imagen responsiva */
+    height: auto; /* Mantiene la proporción */
+  }
+  

@@ -1,104 +1,98 @@
-
 {
-    "general":{
-        "save":"Save",
-        "cancel":"Cancel",
-        "add":"Add",
-        "send":"Send",
-        "next":"Next",
-        "select": "Select",
-        "reject": "Reject",
-        "accept":"Accept",
-        "isWhitespace":"The field must have valid characters"
-    },
-    "header":{
-        "profile":"Profile",
-        "logOut": "Log out",
-        "becomeToPro": "Become to pro",
-        "getLeads":"Get Leads",
-        "getOrders":"Get Orders",
-        "payments": "Payments"
-    },
-    "auth":{
-        "login": "Login",
-        "signUp": "Sign up",
-        "loading": "Loading...",
-        "firstName":"First name",
-        "phone":"Phone",
-        "lastName": "Last name",
-        "email": "Email address",
-        "password": "Password",
-        "isEmailRequired": "Email is required",
-        "isEmailValid": "Email is invalid",
-        "isFirstNameRequired": "First name is required",
-        "isLastNameRequired": "Last name is required",
-        "isPasswordRequired": "Password is required",
-        "isPhoneRequired": "Phone is required",
-        "isPhoneMaximum10":"The phone number is 10 digits",
-        "isImagePersonalRequired": "Image is required",
-        "isImageBusinessRequired": "Business image is required",
-        "forgotpassword": "Forgot Password?",
-        "currentPassword": "Current password",
-        "newPassword": "New password",
-        "confirmNewPassword":"Confirm new password",
-        "confirmPassword":"Confirm password",
-        "minimum6Characters":"Minimum 6 characters",
-        "maximum15Characters":"Maximum 15 characters",
-        "atLeastOneUppercaseLetter":"At least one uppercase letter",
-        "oneLowercaseLetterAndOneNumber":"One lowercase letter and one number",
-        "thePasswordsDoNotMatch":"The passwords do not match"
-        
-        
-    },
-    
-    "profile":{
-        "firstName":"First name",
-        "lastName": "Last name",
-        "email": "Email address",
-        "phone":"Phone",
-        "password": "Password",
-        "categories":"Categories",
-        "zipCode":"ZIP Code",
-        "imgProfile":"Image profile",
-        "nameBusiness":"Name business",
-        
-        "webSite": "Web site",
-        "address": "Address",
-        "minimum10Characters": "Minimum 10 characters",
-        "socialMediaLink":"Social media link",
-        "businessFaqs":"Business FAQs",
-        "yourIntroduction":"Your introduction",
-        "credentials":"Credentials",
-        "licenses":"Licenses",
-        "backgroundCheck":"Background check",
-        "professionalLicenses":"Professional licenses",
-        "yearFounded": "Year founded",
-        "numberEmployees":"Number of employees",
-        
-        "isCategoryIdsRequired":"Category is required",
-        
-        "isZipcodeRequired":"Zip code is required",
-        "isAddressRequired":"Address is required",
-        "isImagePersonalRequired":"Image is required",
-        "isNameBusinessRequired": "Business name is required",
-        "isYearFoundedRequired": "The year of foundation is required",
-        "isNumberOfemployeesRequired": "The number of employees is required"
-    },
-  
-  "payment":{
-    "plans":"Payment plans",
-    "reference":"Reference",
-    "amount":"Amount",
-    "isPlanRequired":"Payment plan is required",
-    "isReferenceRequired":"Reference is required",
-    "isAmountRequired":"The amount is required",
-    "amountInvalid":"The amount must be greater than",
-    "notANumber":"The field must be numeric"
-  }, 
-  "lead":{
+  "general": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "add": "Add",
+    "send": "Send",
+    "next": "Next",
+    "select": "Select",
+    "reject": "Reject",
+    "accept": "Accept",
+    "isWhitespace": "The field must have valid characters"
+  },
+  "header": {
+    "profile": "Profile",
+    "logOut": "Log out",
+    "becomeToPro": "Become to pro",
+    "getLeads": "Get Leads",
+    "getOrders": "Get Orders",
+    "payments": "Payments"
+  },
+  "auth": {
+    "login": "Login",
+    "signUp": "Sign up",
+    "loading": "Loading...",
+    "firstName": "First name",
+    "phone": "Phone",
+    "lastName": "Last name",
+    "email": "Email address",
+    "password": "Password",
+    "isEmailRequired": "Email is required",
+    "isEmailValid": "Email is invalid",
+    "isFirstNameRequired": "First name is required",
+    "isLastNameRequired": "Last name is required",
+    "isPasswordRequired": "Password is required",
+    "isPhoneRequired": "Phone is required",
+    "isPhoneMaximum10": "The phone number is 10 digits",
+    "isImagePersonalRequired": "Image is required",
+    "isImageBusinessRequired": "Business image is required",
+    "forgotpassword": "Forgot Password?",
+    "currentPassword": "Current password",
+    "newPassword": "New password",
+    "confirmNewPassword": "Confirm new password",
+    "confirmPassword": "Confirm password",
+    "minimum6Characters": "Minimum 6 characters",
+    "maximum15Characters": "Maximum 15 characters",
+    "atLeastOneUppercaseLetter": "At least one uppercase letter",
+    "oneLowercaseLetterAndOneNumber": "One lowercase letter and one number",
+    "thePasswordsDoNotMatch": "The passwords do not match"
+  },
+  "profile": {
+    "firstName": "First name",
+    "lastName": "Last name",
+    "email": "Email address",
+    "phone": "Phone",
+    "password": "Password",
+    "categories": "Categories",
+    "zipCode": "ZIP Code",
+    "imgProfile": "Image profile",
+    "nameBusiness": "Name business",
+    "webSite": "Web site",
+    "address": "Address",
+    "minimum10Characters": "Minimum 10 characters",
+    "socialMediaLink": "Social media link",
+    "businessFaqs": "Business FAQs",
+    "yourIntroduction": "Your introduction",
+    "credentials": "Credentials",
+    "licenses": "Licenses",
+    "backgroundCheck": "Background check",
+    "professionalLicenses": "Professional licenses",
+    "yearFounded": "Year founded",
+    "numberEmployees": "Number of employees",
+    "isCategoryIdsRequired": "Category is required",
+    "isZipcodeRequired": "Zip code is required",
+    "isAddressRequired": "Address is required",
+    "isImagePersonalRequired": "Image is required",
+    "isNameBusinessRequired": "Business name is required",
+    "isYearFoundedRequired": "The year of foundation is required",
+    "isNumberOfemployeesRequired": "The number of employees is required"
+  },
+  "payment": {
+    "plans": "Payment plans",
+    "reference": "Reference",
+    "amount": "Amount",
+    "isPlanRequired": "Payment plan is required",
+    "isReferenceRequired": "Reference is required",
+    "isAmountRequired": "The amount is required",
+    "amountInvalid": "The amount must be greater than",
+    "notANumber": "The field must be numeric"
+  },
+  "lead": {
+   
     "showDetails": "Show details"
+  },
+
+  "fielIsInvalid":{
+    "fielIsRequired":"The field is required"
   }
-    
-    
 }
-  

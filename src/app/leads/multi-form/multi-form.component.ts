@@ -41,7 +41,7 @@ import { UserService } from '../../services/user.service';
 })
 export default class MultiFormComponent {
 
-  currentStep: number = 0;
+  currentStep: number = 1;
   categoryId: string = '';
   categoryName: string = '';
   zipcodeName: string = '';
@@ -56,12 +56,7 @@ export default class MultiFormComponent {
   selectedFile4: File | null = null;
   selectedFile5: File | null = null;
   selectedFile6: File | null = null;
-  previewImg1: string | ArrayBuffer | null = null;
-  previewImg2: string | ArrayBuffer | null = null;
-  previewImg3: string | ArrayBuffer | null = null;
-  previewImg4: string | ArrayBuffer | null = null;
-  previewImg5: string | ArrayBuffer | null = null;
-  previewImg6: string | ArrayBuffer | null = null;
+
   selectedOption: any;
   isLoading = false;
   backendMessage = '';
@@ -69,6 +64,7 @@ export default class MultiFormComponent {
   alertTimeout: any;
 
   isSelected = false;
+
   @ViewChild('modal') modal!: ModalComponent;
   @ViewChild('fileInput1') fileInput1!: ElementRef<HTMLInputElement>;
   @ViewChild('fileInput2') fileInput2!: ElementRef<HTMLInputElement>;
@@ -76,6 +72,8 @@ export default class MultiFormComponent {
   @ViewChild('fileInput4') fileInput4!: ElementRef<HTMLInputElement>;
   @ViewChild('fileInput5') fileInput5!: ElementRef<HTMLInputElement>;
   @ViewChild('fileInput6') fileInput6!: ElementRef<HTMLInputElement>;
+  previewImages: Record<string, string | ArrayBuffer | null> = {};
+selectedFiles: Record<string, File | null> = {};
   urlUploads: string = environment.urlUploads || '';
 
   title: string = 'Lead';
@@ -85,6 +83,8 @@ export default class MultiFormComponent {
   leadId: string = '';
   phoneUser: string = '';
   isPro: boolean= false;
+  //previews: string[] = Array(6).fill('');
+  isSubmitted: boolean = false;
   constructor(
     private fb: FormBuilder,
     private sanitizer: DomSanitizer,
@@ -99,16 +99,25 @@ export default class MultiFormComponent {
     
   ) {
     this.leadForm = this.fb.group({
-      category: new FormControl('', [Validators.required]),
-      zipcode: new FormControl('', [Validators.required]),
-      phone: new FormControl('', [Validators.required, Validators.minLength(10)]),
-      description: new FormControl('', [Validators.required, Validators.minLength(10)]),
-      imageUrl1: new FormControl(''),
-      imageUrl2: new FormControl(''),
-      imageUrl3: new FormControl(''),
-      imageUrl4: new FormControl(''),
-      imageUrl5: new FormControl(''),
-      imageUrl6: new FormControl('')
+      step1: this.fb.group({
+        category: new FormControl('', [Validators.required]),
+        zipcode: new FormControl('', [Validators.required]),
+      }),
+      step2: this.fb.group({
+       
+        phone: new FormControl('', [Validators.required, Validators.minLength(10)]),
+      }),
+      step3: this.fb.group({
+       
+        description: new FormControl('', [Validators.required, Validators.minLength(10)]),
+        imageUrl1: new FormControl('',[Validators.required]),
+        imageUrl2: new FormControl('',[Validators.required]),
+        imageUrl3: new FormControl('',[Validators.required]),
+        imageUrl4: new FormControl('',[Validators.required]),
+        imageUrl5: new FormControl('',[Validators.required]),
+        imageUrl6: new FormControl('',[Validators.required])
+      }),
+     
     });
   }
 
@@ -124,11 +133,12 @@ export default class MultiFormComponent {
     });
     this.categoriesServices.getAllCategories().subscribe({
       next: (response) => {
-        this.listCategories = response.categories
-        //asignamos el valor inicial de la categoría
-        this.selectedOption = this.listCategories.find(
-          (item) => item.id === this.categoryId
-        );
+        this.listCategories = response.categories;
+        const selectedCategory = this.listCategories.find(item => item.id === this.categoryId);
+        
+        if (selectedCategory) {
+          this.leadForm.get('step1.category')?.setValue(selectedCategory);
+        }
       },
       error: (error) => console.log(error)
     });
@@ -139,11 +149,26 @@ export default class MultiFormComponent {
     this.socketService.getMessage('lead-accepted').subscribe(this.onAcceptedLead.bind(this));
     this.checkUser();
   }
+  areImagesInvalid(): boolean {
+    const step3 = this.leadForm.get('step3');
+    if (!step3) return false;
+  
+    
+    return [1, 2, 3, 4, 5, 6].some(i => {
+      const control = step3.get(`imageUrl${i}`);
+      return control?.errors?.['required'] && (control.dirty || control.touched);
+    });
+  }
+  isDescriptionInvalid(): boolean {
+    const descriptionControl = this.leadForm.get('step3.description');
+    return descriptionControl?.errors?.['required'] && (descriptionControl.dirty || descriptionControl.touched);
+  }
+  
   checkUser(){
     this.userService.getMe().subscribe({
       next: (response) => {
         this.phoneUser = response.user.phone  
-        this.leadForm.get('phone')?.setValue(this.phoneUser);
+        this.leadForm.get('step2.phone')?.setValue(this.phoneUser);
       },
       error: (error) => console.error(error)
     });
@@ -157,14 +182,14 @@ export default class MultiFormComponent {
     const input = event.target as HTMLInputElement;
    
     if(input.checked){
-      this.leadForm.get('phone')?.setValue('');
+      this.leadForm.get('step2.phone')?.setValue('');
     }
     else{
-      this.leadForm.get('phone')?.setValue(this.phoneUser);  
+      this.leadForm.get('step2.phone')?.setValue(this.phoneUser);  
     }
   }
   onSelectionCategory() {
-    const category = this.leadForm.get('category')?.value
+    const category = this.leadForm.get('step1')?.value.category
   
     this.leadService.updateDataLead('categoryId', category.id);
     this.leadService.updateDataLead('categoryName', category.name);
@@ -172,10 +197,10 @@ export default class MultiFormComponent {
   step(step: number) {
     if (step > this.currentStep) {
 
-      if (this.currentStep === 0 && !this.leadForm.controls['zipcode'].valid) {
+      if (this.currentStep === 1 && !this.leadForm.controls['zipcode'].valid) {
         return;
       }
-      if (this.currentStep === 1 && !this.leadForm.controls['phone'].valid) {
+      if (this.currentStep === 2 && !this.leadForm.controls['phone'].valid) {
         return;
       }
     }
@@ -184,18 +209,34 @@ export default class MultiFormComponent {
 
   }
   nextStep() {
-    if (this.currentStep < 2) {
-      this.currentStep++;
+    this.isSubmitted = true;
+    this.leadForm.get('step1')?.markAllAsTouched()
+    if (this.currentStep == 1) {
+      if(this.leadForm.get('step1')?.valid){
+        this.currentStep++;
+      }
     }
-    if (this.leadForm.value.zipcode) {
-      this.zipcodeName = this.leadForm.value.zipcode.name;
+    else if (this.currentStep == 2) {
+      this.leadForm.get('step2')?.markAllAsTouched()
+      if(this.leadForm.get('step2')?.valid){
+        this.currentStep++;
+      }
+
     }
-    if (this.leadForm.value.phone) {
-      this.phone = this.leadForm.value.phone;
+    else{
+      return;
     }
-    if (this.leadForm.value.description) {
+    
+    if (this.leadForm.get('step1')!.value.zipcode) {
+      this.zipcodeName = this.leadForm.get('step1')!.value.zipcode.name;
+    }
+    if (this.leadForm.get('step2')!.value.phone) {
+      this.phone = this.leadForm.get('step2')!.value.phone;
+    }
+    if (this.leadForm.get('step3')!.value.description) {
       this.description = this.leadForm.value.phone.substring(0, 10) + ' ' + '...';
     }
+
   }
 
   prevStep() {
@@ -205,80 +246,50 @@ export default class MultiFormComponent {
   }
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
-    const fileNumber = input.id.substring(9)
-    console.log(input.id)
+    const fileNumber = input.id.replace('fileInput', ''); // Extrae el número (1-6)
+  
     if (input.files && input.files[0]) {
       const file = input.files[0];
-      
       const reader = new FileReader();
-      reader.onload = (e) => {
-        if (e.target?.result) {
-          switch (fileNumber){
-            case '1': this.previewImg1 = e.target.result;
-                      this.selectedFile1 = file;
-                    break;
-            case '2': this.previewImg2 = e.target.result;
-                      this.selectedFile2 = file;
-                    break;
-            case '3': this.previewImg3 = e.target.result;
-                      this.selectedFile3 = file;
-                    break;
-            case '4': this.previewImg4 = e.target.result;
-                      this.selectedFile4 = file;
-                    break;
-            case '5': this.previewImg5 = e.target.result;
-                      this.selectedFile5 = file;
-                    break;
-            case '6': this.previewImg6 = e.target.result;
-                      this.selectedFile6 = file;
-                      break;
-            
-          }
-          
-        }
+  
+      reader.onload = () => {
+        this.previewImages[fileNumber] = reader.result; // Actualiza la vista previa
+        this.selectedFiles[fileNumber] = file;
       };
+  
       reader.readAsDataURL(file);
     }
   }
-  triggerFileInput(event:any): void {
-    console.log(event.target)
-    const numero = event.target?.id.substring(5)
-    console.log(numero)
-    switch(numero){
-      case '1': 
-        this.fileInput1.nativeElement.click();
-      break;
-      case '2': 
-        this.fileInput2.nativeElement.click();
-      break;
-      case '3': 
-        this.fileInput3.nativeElement.click();
-      break;
-      case '4': 
-        this.fileInput4.nativeElement.click();
-      break;
-      case '5': 
-        this.fileInput5.nativeElement.click();
-      break;
-      case '6': 
-        this.fileInput6.nativeElement.click();
-      break;
-    }
-   
-   
+  
+  triggerFileInput(event: Event): void {
+    const target = event.target as HTMLElement;
+    const fileNumber = target.id.replace('icono', '').replace('image', ''); // Extrae el número (1-6)
+  
+    const fileInputs: { [key: string]: ElementRef<HTMLInputElement> } = {
+      '1': this.fileInput1,
+      '2': this.fileInput2,
+      '3': this.fileInput3,
+      '4': this.fileInput4,
+      '5': this.fileInput5,
+      '6': this.fileInput6,
+    };
+  
+    fileInputs[fileNumber]?.nativeElement.click();
   }
   async onSubmit() {
     this.leadForm.markAllAsTouched();
-  
+ 
     if (this.leadForm.valid) {
+
       this.isLoading = true;
   
       const formLead = this.leadForm.value;
+     
       const lead: LeadRegister = {
         categoryId: this.categoryId,
-        zipcodeId: formLead.zipcode.id,
-        phone: formLead.phone,
-        description: formLead.description,
+        zipcodeId: formLead.step1.zipcode.id,
+        phone: formLead.step2.phone,
+        description: formLead.step3.description,
         imageUrl1:'',
         imageUrl2:'',
         imageUrl3:'',

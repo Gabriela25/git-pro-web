@@ -51,42 +51,13 @@
                     <div class="mt-3" class="description">
                         <span><i class="bi bi-card-text"></i> {{order.lead.description}}</span>
                     </div>
-                    @if(order.lead.imageUrl1 && order.lead.imageUrl2 && order.lead.imageUrl3 && order.lead.imageUrl4 && order.lead.imageUrl5   && order.lead.imageUrl6   ){
-                        <div class="row">
-                            <div class="col-lg-4">
-                                <img [src]="urlUploads+order.lead.imageUrl1"
-                                style="width: 200px; height: 120px; object-fit: cover; display: block; margin: 0 auto;"
-                                class="cursor" (click)="showImage(urlUploads+order.lead.imageUrl1)" />
-                            </div>
-                            <div class="col-lg-4">
-                                <img [src]="urlUploads+order.lead.imageUrl2"
-                                style="width: 200px; height: 120px; object-fit: cover; display: block; margin: 0 auto;"
-                                class="cursor" (click)="showImage(urlUploads+order.lead.imageUrl2)" />
-                            </div>
-                            <div class="col-lg-4">
-                                <img [src]="urlUploads+order.lead.imageUrl3"
-                                style="width: 200px; height: 120px; object-fit: cover; display: block; margin: 0 auto;"
-                                class="cursor" (click)="showImage(urlUploads+order.lead.imageUrl3)" />
-                            </div>
+                    <div class="row">
+                        <div class="col-6 col-md-4 mb-3"
+                            *ngFor="let image of [order.lead.imageUrl1, order.lead.imageUrl2, order.lead.imageUrl3, order.lead.imageUrl4, order.lead.imageUrl5, order.lead.imageUrl6]">
+                            <img [src]="urlUploads + image" class="img-fluid w-100 rounded shadow-sm cursor"
+                                (click)="showImage(urlUploads + image)" style="aspect-ratio: 16/9; object-fit: cover;">
                         </div>
-                        <div class="row">
-                            <div class="col-lg-4">
-                                <img [src]="urlUploads+order.lead.imageUrl4"
-                                style="width: 200px; height: 120px; object-fit: cover; display: block; margin: 0 auto;"
-                                class="cursor" (click)="showImage(urlUploads+order.lead.imageUrl4)" />
-                            </div>
-                            <div class="col-lg-4">
-                                <img [src]="urlUploads+order.lead.imageUrl5"
-                                style="width: 200px; height: 120px; object-fit: cover; display: block; margin: 0 auto;"
-                                class="cursor" (click)="showImage(urlUploads+order.lead.imageUrl5)" />
-                            </div>
-                            <div class="col-lg-4">
-                                <img [src]="urlUploads+order.lead.imageUrl6"
-                                style="width: 200px; height: 120px; object-fit: cover; display: block; margin: 0 auto;"
-                                class="cursor" (click)="showImage(urlUploads+order.lead.imageUrl6)" />
-                            </div>
-                        </div>
-                        }
+                    </div>
                     @if(isPro){
                     <div class="d-flex justify-content-end mt-3">
                         <button type="button" class="btn btn-primary" (click)="onSubmit(orderId,0)">
