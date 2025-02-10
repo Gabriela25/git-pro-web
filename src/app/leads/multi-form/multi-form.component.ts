@@ -300,12 +300,12 @@ selectedFiles: Record<string, File | null> = {};
   
       
       const files = [
-        { file: this.selectedFile1, key: 'imageUrl1' },
-        { file: this.selectedFile2, key: 'imageUrl2' },
-        { file: this.selectedFile3, key: 'imageUrl3' },
-        { file: this.selectedFile4, key: 'imageUrl4' },
-        { file: this.selectedFile5, key: 'imageUrl5' },
-        { file: this.selectedFile6, key: 'imageUrl6' },
+        { file: this.selectedFiles[1], key: 'imageUrl1' },
+        { file: this.selectedFiles[2], key: 'imageUrl2' },
+        { file: this.selectedFiles[3], key: 'imageUrl3' },
+        { file: this.selectedFiles[4], key: 'imageUrl4' },
+        { file: this.selectedFiles[5], key: 'imageUrl5' },
+        { file: this.selectedFiles[6], key: 'imageUrl6' },
       ];
   
       
@@ -325,9 +325,6 @@ selectedFiles: Record<string, File | null> = {};
           }
         }
       }
-  
-      console.log(lead);
-  
       // Enviar datos al servidor por WebSocket
       this.socketService.sendMessage('create-lead', { lead });
     }

@@ -1,7 +1,7 @@
 import { Component, ViewChild } from '@angular/core';
 import { HeaderComponent } from '../../shared/header/header.component';
 import { environment } from '../../../environments/environment';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { ModalComponent } from '../../shared/modal/modal.component';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
@@ -109,6 +109,7 @@ export default class DetailLeadComponent {
     private sanitizer: DomSanitizer,
 
     private route: ActivatedRoute,
+    private router: Router,
     private orderService: OrderService,
     private authService: AuthService,
     private statusOrderService: StatusOrderService
@@ -281,6 +282,7 @@ export default class DetailLeadComponent {
     }
     this.alertTimeout = setTimeout(() => {
       this.backendMessage = '';
+      this.router.navigate([`/pro/get-orders`]);
     }, 3000);
   }
 }
