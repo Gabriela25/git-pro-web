@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { HeaderComponent } from '../../shared/header/header.component';
-import { SidebarComponent } from '../../sidebar/sidebar.component';
+
 import { FormComponent } from './form/form.component';
 import { CategoryService } from '../../services/category.service';
 
@@ -9,7 +9,7 @@ import { CategoryService } from '../../services/category.service';
   standalone: true,
   imports: [
     HeaderComponent,
-    SidebarComponent,
+
     FormComponent
   ],
   templateUrl: './categories.component.html',

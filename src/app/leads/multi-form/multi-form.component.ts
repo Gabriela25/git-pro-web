@@ -50,12 +50,7 @@ export default class MultiFormComponent {
   listZipcode: Array<Zipcode> = [];
   listCategories: Array<Category> = [];
   leadForm: FormGroup;
-  selectedFile1: File | null = null;
-  selectedFile2: File | null = null;
-  selectedFile3: File | null = null;
-  selectedFile4: File | null = null;
-  selectedFile5: File | null = null;
-  selectedFile6: File | null = null;
+
 
   selectedOption: any;
   isLoading = false;
@@ -66,14 +61,9 @@ export default class MultiFormComponent {
   isSelected = false;
 
   @ViewChild('modal') modal!: ModalComponent;
-  @ViewChild('fileInput1') fileInput1!: ElementRef<HTMLInputElement>;
-  @ViewChild('fileInput2') fileInput2!: ElementRef<HTMLInputElement>;
-  @ViewChild('fileInput3') fileInput3!: ElementRef<HTMLInputElement>;
-  @ViewChild('fileInput4') fileInput4!: ElementRef<HTMLInputElement>;
-  @ViewChild('fileInput5') fileInput5!: ElementRef<HTMLInputElement>;
-  @ViewChild('fileInput6') fileInput6!: ElementRef<HTMLInputElement>;
+
   previewImages: Record<string, string | ArrayBuffer | null> = {};
-selectedFiles: Record<string, File | null> = {};
+  selectedFiles: Record<string, File | null> = {};
   urlUploads: string = environment.urlUploads || '';
 
   title: string = 'Lead';
@@ -85,6 +75,10 @@ selectedFiles: Record<string, File | null> = {};
   isPro: boolean= false;
   //previews: string[] = Array(6).fill('');
   isSubmitted: boolean = false;
+
+  files: File[] = [];
+  previews: string[] = [];
+  errorMessage: string = '';
   constructor(
     private fb: FormBuilder,
     private sanitizer: DomSanitizer,
@@ -103,26 +97,17 @@ selectedFiles: Record<string, File | null> = {};
         category: new FormControl('', [Validators.required]),
         zipcode: new FormControl('', [Validators.required]),
       }),
-      step2: this.fb.group({
-       
+      step2: this.fb.group({    
         phone: new FormControl('', [Validators.required, Validators.minLength(10)]),
       }),
-      step3: this.fb.group({
-       
+      step3: this.fb.group({      
         description: new FormControl('', [Validators.required, Validators.minLength(10)]),
-        imageUrl1: new FormControl('',[Validators.required]),
-        imageUrl2: new FormControl('',[Validators.required]),
-        imageUrl3: new FormControl('',[Validators.required]),
-        imageUrl4: new FormControl('',[Validators.required]),
-        imageUrl5: new FormControl('',[Validators.required]),
-        imageUrl6: new FormControl('',[Validators.required])
       }),
      
     });
   }
 
   ngOnInit() {
-  
     this.leadService.lead$.subscribe((data: any) => {
       this.categoryName = data.categoryName;
       this.categoryId = data.categoryId;
@@ -135,7 +120,6 @@ selectedFiles: Record<string, File | null> = {};
       next: (response) => {
         this.listCategories = response.categories;
         const selectedCategory = this.listCategories.find(item => item.id === this.categoryId);
-        
         if (selectedCategory) {
           this.leadForm.get('step1.category')?.setValue(selectedCategory);
         }
@@ -149,16 +133,39 @@ selectedFiles: Record<string, File | null> = {};
     this.socketService.getMessage('lead-accepted').subscribe(this.onAcceptedLead.bind(this));
     this.checkUser();
   }
-  areImagesInvalid(): boolean {
-    const step3 = this.leadForm.get('step3');
-    if (!step3) return false;
-  
-    
-    return [1, 2, 3, 4, 5, 6].some(i => {
-      const control = step3.get(`imageUrl${i}`);
-      return control?.errors?.['required'] && (control.dirty || control.touched);
-    });
+
+  onFileSelected1(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (input.files) {
+      const files = Array.from(input.files);
+      
+      if (this.previews.length + files.length > 6) {
+        this.errorMessage = 'You can only upload a maximum of 6 images.';
+        return;
+      }
+
+      this.errorMessage = ''; 
+      
+      files.forEach(file => {
+        this.files.push(file);
+        const reader = new FileReader();
+        reader.onload = (e: any) => {
+          this.previews.push(e.target.result);
+        };
+        reader.readAsDataURL(file);
+      });
+    }
   }
+
+  openFileSelector(fileInput: HTMLInputElement) {
+    fileInput.click();
+  }
+
+  removeImage(index: number) {
+    this.previews.splice(index, 1);
+  }
+
+ 
   isDescriptionInvalid(): boolean {
     const descriptionControl = this.leadForm.get('step3.description');
     return descriptionControl?.errors?.['required'] && (descriptionControl.dirty || descriptionControl.touched);
@@ -244,43 +251,13 @@ selectedFiles: Record<string, File | null> = {};
       this.currentStep--;
     }
   }
-  onFileSelected(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    const fileNumber = input.id.replace('fileInput', ''); // Extrae el número (1-6)
+ 
   
-    if (input.files && input.files[0]) {
-      const file = input.files[0];
-      const reader = new FileReader();
-  
-      reader.onload = () => {
-        this.previewImages[fileNumber] = reader.result; // Actualiza la vista previa
-        this.selectedFiles[fileNumber] = file;
-      };
-  
-      reader.readAsDataURL(file);
-    }
-  }
-  
-  triggerFileInput(event: Event): void {
-    const target = event.target as HTMLElement;
-    const fileNumber = target.id.replace('icono', '').replace('image', ''); // Extrae el número (1-6)
-  
-    const fileInputs: { [key: string]: ElementRef<HTMLInputElement> } = {
-      '1': this.fileInput1,
-      '2': this.fileInput2,
-      '3': this.fileInput3,
-      '4': this.fileInput4,
-      '5': this.fileInput5,
-      '6': this.fileInput6,
-    };
-  
-    fileInputs[fileNumber]?.nativeElement.click();
-  }
+ 
   async onSubmit() {
     this.leadForm.markAllAsTouched();
  
     if (this.leadForm.valid) {
-
       this.isLoading = true;
   
       const formLead = this.leadForm.value;
@@ -300,12 +277,12 @@ selectedFiles: Record<string, File | null> = {};
   
       
       const files = [
-        { file: this.selectedFiles[1], key: 'imageUrl1' },
-        { file: this.selectedFiles[2], key: 'imageUrl2' },
-        { file: this.selectedFiles[3], key: 'imageUrl3' },
-        { file: this.selectedFiles[4], key: 'imageUrl4' },
-        { file: this.selectedFiles[5], key: 'imageUrl5' },
-        { file: this.selectedFiles[6], key: 'imageUrl6' },
+        { file: this.files[0], key: 'imageUrl1' },
+        { file: this.files[1], key: 'imageUrl2' },
+        { file: this.files[2], key: 'imageUrl3' },
+        { file: this.files[3], key: 'imageUrl4' },
+        { file: this.files[4], key: 'imageUrl5' },
+        { file: this.files[5], key: 'imageUrl6' },
       ];
   
       
@@ -313,7 +290,6 @@ selectedFiles: Record<string, File | null> = {};
         if (fileData.file) {
           const formData = new FormData();
           formData.append('file', fileData.file);
-  
           try {
             const urlImage = await this.uploadImage(formData);
             if (urlImage !== 'Error al subir el archivo') {
@@ -336,7 +312,7 @@ selectedFiles: Record<string, File | null> = {};
       return response!.fileName; 
     } catch (error) {
       console.error('Error al subir el archivo:', error);
-      return 'Error al subir el archivo'; // Retorna el mensaje de error.
+      return 'Error al subir el archivo'; 
     }
   }
   onCreatedLead(payload: unknown) {
@@ -357,8 +333,7 @@ selectedFiles: Record<string, File | null> = {};
     this.leadId = leads.id!;
     this.messageLead = this.sanitizer.bypassSecurityTrustHtml(`
         <div>
-           <img src="/assets/check.png"
-                  
+           <img src="/assets/check.png"           
            style="width: 120px; height: 120px; object-fit: cover; display: block; margin: 0 auto;" />
           <h3>Seraching professionals...</h3> 
         </div>
@@ -419,16 +394,14 @@ selectedFiles: Record<string, File | null> = {};
     <div style="text-align: center; margin-bottom: 20px;">
         ${professional.image
         ? `<img src="${this.urlUploads}${professional.image}" 
-                   class="rounded-circle" 
-                   style="width: 80px; height: 80px; object-fit: cover; display: block; margin: 0 auto;" />`
+                   class="rounded-circle img-pro"/>`
         : `<img src="assets/avatar_profile.png" 
-                   class="rounded-circle" 
-                   style="width: 80px; height: 80px; object-fit: cover; display: block; margin: 0 auto;" />`}
-        <span style="display: block; margin-top: 10px; font-size: 18px; font-weight: bold;">
+                   class="rounded-circle img-pro"/>`}
+        <span class="fullname-pro">
             ${professional.fullname}
         </span>
     </div>
-          <div style="margin-top: 10px;">
+          <div class="pt-3">
               <p style="margin: 0; font-size: 14px; line-height: 1.5;">
                   ${professional.introduction}
               </p>

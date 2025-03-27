@@ -63,8 +63,8 @@ export default class PasswordRecoveryComponent {
   handleSuccessfulSubmission(response: any) {
     this.isLoading = false;
     this.alertMessage = 'alert-success';
-    this.message = `<h1>Check your email</h1>
-    <p>  Thanks. If there's an account associated with this email address, we'll send the password reset instructions.</p>`
+    this.message = `<h1 class="text-white">Check your email</h1>
+    <p  class="text-white">  Thanks. If there's an account associated with this email address, we'll send the password reset instructions.</p>`
   }
 
 

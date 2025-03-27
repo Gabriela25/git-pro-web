@@ -26,7 +26,8 @@ export class NewPasswordComponent {
   alertMessage = '';
   alertTimeout: any;
   tokenPassword: string | null = '';
-
+  showPassword: boolean = false;
+  showConfirmPassword: boolean = false;
   constructor(
     private route: ActivatedRoute,
     private authService: AuthService,
@@ -36,55 +37,45 @@ export class NewPasswordComponent {
 
   }
   ngOnInit(): void {
-
-    if (this.tokenPassword) {
+      
       this.tokenPassword = this.route.snapshot.paramMap.get('id');
-      localStorage.setItem('token', this.tokenPassword || '');
+      localStorage.setItem('tokenResetPassword', this.tokenPassword || '');
 
 
-    }
   }
   newPasswordForm = new FormGroup({
 
-    newPassword: new FormControl(
-      '', [Validators.required, Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{6,15}$/)],
-    ),
-    confirmNewPassword: new FormControl('', [Validators.required, Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{6,15}$/)])
-  }, {
-    validators: this.passwordMatchValidator
-
+    newPassword: new FormControl('', [Validators.required, Validators.minLength(6), Validators.maxLength(15)]),
+   
   });
-  passwordMatchValidator(control: AbstractControl): { [key: string]: boolean } | null {
-    const formGroup = control as FormGroup;
-    const password = formGroup.get('newPassword')!.value;
-
-    const confirmPassword = formGroup.get('confirmNewPassword')!.value;
-    const controlConfirmPassword = formGroup.get('confirmNewPassword');
-
-    if (password === confirmPassword) {
-
-      controlConfirmPassword?.setErrors(null)
-      return null;
-    } else {
-
-
-      controlConfirmPassword?.setErrors({ mismatch: true })
-      return { mismatch: true }
+  togglePasswordVisibility(value:string): void {
+   
+    if(value == 'password'){
+      this.showPassword = !this.showPassword;
     }
-
+    else if(value == 'confirmPassword'){
+      this.showConfirmPassword = !this.showConfirmPassword;
+    }
+    
   }
-
   onSubmit() {
     // TODO: Use EventEmitter with form value
     this.isLoading = true;
     const formData = this.newPasswordForm.value;
+    this.newPasswordForm.markAllAsTouched();
     if (this.newPasswordForm.valid) {
       const password: any = {
         password: formData.newPassword || '',
       };
       this.authService.postNewPassword(password).subscribe({
-        next: (response) => this.handleSuccessfulSubmission(response),
-        error: (error) => this.handleError(error)
+        next: (response) => {
+          console.log(response)
+          this.handleSuccessfulSubmission(response)}
+        ,
+        error: (error) => {
+          console.log(error)
+          this.handleError(error)
+        }
       });
     }
 

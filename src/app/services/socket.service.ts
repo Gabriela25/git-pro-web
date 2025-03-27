@@ -10,6 +10,7 @@ export class SocketService {
 
   sendMessage(gateway: string, payload: Object) {
     const token = localStorage.getItem('token') || '';
+  
     const payloadWithToken = {
       ...payload,
       token
@@ -18,7 +19,6 @@ export class SocketService {
   }
 
   getMessage(gateway: string = 'recibir-mensaje') {
-  
     return this.socket.fromEvent<any>(gateway);
   }
 }

@@ -7,17 +7,19 @@ import { Router, NavigationEnd,RouterLink } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { User } from '../../interface/user.interface';
 import { AuthService } from '../../services/auth.service';
-import { Location } from '@angular/common';
+import { CommonModule, Location } from '@angular/common';
 import { Login } from '../../interface/login.interface';
 import { UserService } from '../../services/user.service';
 import { SocketComponent } from '../../shared/socket/socket.component';
 import { SocketService } from '../../services/socket.service';
 import { NoWhitespaceDirective } from '../../shared/directives/no-whitespace';
+import { BoundElementProperty } from '@angular/compiler';
 
 @Component({
   selector: 'app-login',
   standalone: true,
   imports: [
+    CommonModule,
     ReactiveFormsModule,
     TranslateModule,
     RouterLink,
@@ -37,6 +39,7 @@ export default class LoginComponent {
   loginForm!: FormGroup;
   previousUrl: string = '';
   currentUrl: string = '';
+  isSubmitted: boolean= false;
   constructor(
     public router: Router,
     private authService: AuthService,
@@ -64,6 +67,7 @@ export default class LoginComponent {
     this.showPassword = !this.showPassword;
   }
   onSubmit() {
+    this.isSubmitted = true;
     this.loginForm.markAllAsTouched();
     if (this.loginForm.invalid) {
       return;

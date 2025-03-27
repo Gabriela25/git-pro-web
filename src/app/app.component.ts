@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, OnInit, ViewChild } from '@angular/core';
 import { Router, RouterOutlet } from '@angular/router';
 import { collection, Firestore, getDocs } from 'firebase/firestore';
 import { SocketService } from './services/socket.service';
@@ -11,6 +11,9 @@ import { DatePipe } from '@angular/common';
 import { environment } from '../environments/environment';
 import { LeadAcceptedInfo } from './interface/lead-accepted-info';
 import { ProfessionalInfo } from './interface/professional-info';
+import { LeadStatusService } from './services/lead-status.service';
+import { LeadStatus } from './interface/lead-status.interface';
+
 
 
 @Component({
@@ -25,27 +28,28 @@ export class AppComponent {
   title = 'fixi';
   @ViewChild('modalPro') modalPro!: ModalComponent;
   @ViewChild('modalCustomer') modalCustomer!: ModalComponent;
+  @ViewChild('modalProRejected') modalProRejected!: ModalComponent;
+  
   isSelected = false;
-
-
-
   titleModal: string = 'Order';
   messageOrder!: SafeHtml | string;
+  messageProRejected!: SafeHtml | string;
   alertTimeout: any;
   leadId: string = '';
   urlUploads: string = environment.urlUploads;
+  listLeadStatus: Array<LeadStatus> = [];
   constructor(
     private sanitizer: DomSanitizer,
+    private cdr: ChangeDetectorRef,
     private socketService: SocketService,
     private datePipe: DatePipe,
-    public router: Router
+    public  router: Router,
+    private leadStatusService: LeadStatusService
   ) { }
 
   ngOnInit() {
-   
     this.authSocket()
     this.socketService.getMessage('search-pros').subscribe((response) => {
-      this.openModal()
       if (!response) {
         return;
       }
@@ -57,52 +61,67 @@ export class AppComponent {
       if (!('leads' in response)) {
         return;
       }
-
       const { leads } = response;
-
       //const { message , order}= orders;
       this.titleModal = 'You have received an order';
       this.messageOrder = this.sanitizer.bypassSecurityTrustHtml(`
-        <div style="font-family: Arial, sans-serif;">
-          <div style="text-align:center">
-            <img  src="assets/avatar_profile.png" 
-                   class="rounded-circle" 
-                   style="width: 80px; height: 80px; object-fit: cover; display: block; margin: 0 auto;" />
-            <span>${leads.user.firstname} ${leads.user.lastname}</span>
-          </div>
-        <div style="text-align: center;" >
-            <h2 style="margin-bottom: 20px; font-size: 24px; font-weight: bold;">${leads.category.name}</h2>
+        <div class="container" style="font-family: Arial, sans-serif;">
+            <h2 class="mb-4 fw-bold text-center">${leads.category.name}</h2>
+    
+            <div class="mb-2">
+                <span><i class="bi bi-person"></i> ${leads.user.firstname} ${leads.user.lastname}</span>
+            </div>
+            <div class="mb-2">
+                <span><i class="bi bi-calendar"></i> ${this.datePipe.transform(leads.createdAt, 'dd/MM/yyyy')}</span>
+            </div>
+            <div class="mb-2">
+                <span><i class="bi bi-geo-alt-fill"></i> ${leads.zipcode.name}</span>
+            </div>
+            <div class="mb-2">
+                <span><i class="bi bi-telephone"></i> ${leads.phone}</span>
+            </div>
+            <div class="mb-2">
+                <span><i class="bi bi-card-text"></i> ${leads.description}</span>
+            </div>
+          
+           <div class="mb-4">
+                <span> <i class="bi bi-image"></i> Image: </span>
+            </div>
+            <div class="row justify-content-center">
+                ${[leads.imageUrl1, leads.imageUrl2, leads.imageUrl3, leads.imageUrl4, leads.imageUrl5, leads.imageUrl6]
+                    .filter(image => image)
+                    .map(image => `
+                        <div class="col-12 mb-3 text-center">
+                            <img src="${this.urlUploads}${image}" class="img-fluid rounded shadow-sm cursor"
+                                onclick="showImage('${this.urlUploads}${image}')" 
+                                 style="width: 75%; max-width: 500px; aspect-ratio: 16/9; object-fit: cover;">
+                        </div>
+                    `)
+                    .join('')}
+            </div>
         </div>
-        <div style="margin-bottom: 10px;">
-            <span><i class="bi bi-calendar"></i>     ${this.datePipe.transform(leads.createdAt, 'dd/MM/yyyy')}</span> 
-        </div>
-        <div style="margin-bottom: 10px;">
-            <span><i class="bi bi-geo-alt-fill"></i>    ${leads.zipcode.name}</span>
-        </div>
-        <div style="margin-bottom: 10px;">
-            <span><i class="bi bi-telephone"></i>    ${leads.phone}</span>
-        </div>
-        <div style="margin-bottom: 20px;">
-            <span><i class="bi bi-card-text"></i>    ${leads.description} </span>
-        </div>
-        ${leads.imageUrl1
-          ? `<div>
-               <span><i class="bi bi-card-image"></i></span>
-                <img src="${this.urlUploads}${leads.imageUrl1}" 
-                     style="width: 200px; height: 120px; object-fit: cover; display: block; margin: 0 auto;" />
-             </div>`
-          : ''}
-      
-    </div>
-     `);
+    `);
+    
+   
       this.leadId = leads.id;
-      this.openModal()
+      this.openModal();
+      this.cdr.detectChanges();
       // this.startAlertTimer();
     });
-    //this.socketService.getMessage('lead-accepted-info').subscribe(this.onAcceptedOrderInfo);
-    //this.socketService.getMessage('lead-accepted').subscribe(this.onAcceptedPro);
+ 
     this.socketService.getMessage('lead-accepted-info').subscribe((payload) => this.onAcceptedOrderInfo(payload));
     this.socketService.getMessage('lead-accepted').subscribe((payload) => this.onAcceptedPro(payload));
+     // Escuchar la respuesta de socket
+   
+    this.leadStatusService.getAllLeadStatus
+    ().subscribe({
+      next: (response) => {
+        this.listLeadStatus = response.leadStatus;
+        console.log(this.listLeadStatus)
+      },
+      error: (error) => {
+      }
+    });
   
   }
   
@@ -119,27 +138,36 @@ export class AppComponent {
     })
   }*/
   onConfirmAction() {
-    console.log("Confirmación del modal recibida");
     this.socketService.sendMessage('accept-lead', {
-      leadId: this.leadId
+      leadId: this.leadId,
     });
+  }
+  onRejectAction(){
+    this.socketService.sendMessage('reject-lead', {
+      leadId: this.leadId,
+    });
+  }
+  openModal() {
+    this.modalPro.open();
   }
   closeModal() {
     this.modalPro.close();
+  } 
+  openModalProRejected() {
+    this.modalProRejected.open();
   }
-
-  openModal() {
-    this.modalPro.open();
+  closeProRejected() {
+    this.modalProRejected.close();
+  } 
+  openModalCustomer() {
+    this.modalCustomer.open();
+    this.cdr.detectChanges();     
   }
   closeModalCustomer() {
     this.modalCustomer.close();
   }
-
-  openModalCustomer() {
-    this.modalCustomer.open();
-  }
   onOrder(){
-    this.router.navigate(['/pro/get-orders'])
+    this.router.navigate(['/pro/orders'])
   }
   //temporalmente no se va a mostrar
   onAcceptedOrderInfo(payload: unknown) {
@@ -158,52 +186,47 @@ export class AppComponent {
       return;
     }
 
-    const { lead } = payload as { lead: LeadAcceptedInfo };
-
-    if (lead.orderLimitReached) {
-      this.messageOrder = 'This order has reached the limit of professionals';
-      this.openModal();
+    const { lead } = payload as { lead: any };
+    if (lead.leadLimitReached) {    
+      this.messageProRejected = this.sanitizer.bypassSecurityTrustHtml(`
+        <div>
+           <img src="/assets/close.png" style="width: 80px; height: 80px; object-fit: cover; display: block; margin: 0 auto;" />
+          <h5>This order has reached the limit of professionals.</h5>
+        </div>
+      `);
+      this.openModalProRejected();
+     
       return;
-    }
+      }
   }
  
   onAcceptedPro(payload: unknown) {
-    
-
+    console.log('siempre llego tarde')
     if (typeof payload !== 'object') {
       return;
     }
-
     if (!payload) {
       return;
     }
-
     if (!('professional' in payload)) {
       return;
-    }
-    
+    } 
     const { professional } = payload as { professional: ProfessionalInfo };
     this.titleModal = 'The professional has generated a service order';
       this.messageOrder = this.sanitizer.bypassSecurityTrustHtml(`
         <div style="font-family: Arial, sans-serif;">
-          <div style="text-align:center">
+          <div class="text-center">
             <img  src="${this.urlUploads}${professional.image}" 
-                   class="rounded-circle" 
-                   style="width: 80px; height: 80px; object-fit: cover; display: block; margin: 0 auto;" />
+                   class="rounded-circle img-logo-pro"/>
             <h2>${professional.fullname}</h2>
           </div>
-        <div style="text-align: center;" >
-            <p style="margin-bottom: 20px; font-size: 24px; font-weight: bold;">${professional.introduction}</p>
-        </div>
-        
-        
+        <div class="text-center">
+            <p style="">${professional.introduction}</p>
+        </div>     
     </div>
      `);
     this.openModalCustomer()
   } 
-
-
-
   startAlertTimer() {
     if (this.alertTimeout) {
       clearTimeout(this.alertTimeout);
@@ -212,6 +235,7 @@ export class AppComponent {
       this.closeModal()
     }, 3000);
   }
+  
 }
 
 

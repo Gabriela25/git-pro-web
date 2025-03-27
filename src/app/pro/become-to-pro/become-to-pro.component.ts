@@ -4,7 +4,7 @@ import { AbstractControl, FormBuilder, FormControl, FormGroup, FormsModule, Reac
 import { RouterLink } from '@angular/router';
 import { HeaderComponent } from '../../shared/header/header.component';
 import { TranslateModule } from '@ngx-translate/core';
-import { SidebarComponent } from '../../sidebar/sidebar.component';
+
 import { ComunicationService } from '../../services/comunication.service';
 import { AutocompleteComponent } from '../../shared/autocomplete/autocomplete.component';
 import { CategoryService } from '../../services/category.service';
@@ -26,17 +26,18 @@ import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 import { environment } from '../../../environments/environment';
 import { Image } from '../../interface/image.interface';
 import { limit } from 'firebase/firestore';
+import { CommonModule } from '@angular/common';
 @Component({
   selector: 'app-become-to-pro',
   standalone: true,
   imports: [
+    CommonModule,
     ReactiveFormsModule,
     FormsModule,
     TranslateModule,
     HeaderComponent,
     ModalComponent,
     CapitalizeFirstDirective,
-
     NoWhitespaceDirective,
     NgMultiSelectDropDownModule
 

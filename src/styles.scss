@@ -10,6 +10,9 @@ $secondary:$teal;
     --primary: #7e01e0;
     --secondary: #3cd7ac;
 }
+.cursor-pointer{
+    cursor: pointer;
+}
 .container-degradado {
     background: 
         linear-gradient(to right,var(--primary),var(--secondary)); 
@@ -29,3 +32,25 @@ $secondary:$teal;
 }
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+.img-logo-pro{
+    width: 80px; 
+    height: 80px; 
+    object-fit: cover; 
+    display: block; 
+    margin: 0 auto;
+}
+.is-invalid {
+    border-color: #dc3545; 
+  }
+  
+  .error-message {
+    position: fixed;
+    top: 50px;
+    right: 10px;
+    z-index: 1000;
+    background-color: #f8d7da;
+    color: #721c24;
+    padding: 10px;
+    border: 1px solid #f5c6cb;
+    border-radius: 5px;
+  }

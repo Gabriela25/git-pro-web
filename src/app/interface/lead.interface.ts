@@ -1,4 +1,5 @@
 import { Category } from "./category.interface";
+import { LeadRequest } from "./lead-request.interface";
 import { User } from "./user.interface";
 import { Zipcode } from "./zipcode.interface";
 
@@ -19,10 +20,12 @@ export interface Lead {
   imageUrl5:       string;
   imageUrl6:       string;
   qtyPro?:         number;
+  leadRequests:    LeadRequest[]
   createdAt?:      Date;
   updatedAt?:      Date;
   deletedAt?:      null;
   createdBy?:      string;
   updatedBy?:      string;
   deletedBy?:      null;
+ 
 }

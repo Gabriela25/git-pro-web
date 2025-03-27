@@ -107,7 +107,7 @@ export class AuthService {
 
  
   postNewPassword(body: any): Observable<any> {
-    const token = this.getToken();
+    const token = localStorage.getItem('tokenResetPassword')
     if (!token) {
       return throwError(() => new Error('Token not found'))
     }

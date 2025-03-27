@@ -44,21 +44,18 @@ export default class LeadListComponent {
 
   }
   ngOnInit(): void {
- 
     this.checkLeads();
-  
   }
 
   checkLeads(){
-    //ordenamos descendente
+    //ordenamos descendente.
     this.leadService.getLeads().subscribe({
-      next: (response) => {
+      next: (response) => {     
         this.leadList = response.leads.sort((a: any, b: any) => {
           const dateA = new Date(a.createdAt).getTime(); 
           const dateB = new Date(b.createdAt).getTime();
           return dateB - dateA; 
         });
-    
       },
       error: (error) => console.error(error)
     });
@@ -67,11 +64,8 @@ export default class LeadListComponent {
   showImage(urlImage: string){
     this.messageLead = this.sanitizer.bypassSecurityTrustHtml(`
       <div style="font-family: Arial, sans-serif;">
-    
-         <img src=${urlImage}
-                  
-           style="width: 200px; height: 200px; object-fit: cover; display: block; margin: 0 auto;" />
-       
+         <img src=${urlImage}               
+           style="width: 200px; height: 200px; object-fit: cover; display: block; margin: 0 auto;" />  
       </div>
     `);
     this.openModal()

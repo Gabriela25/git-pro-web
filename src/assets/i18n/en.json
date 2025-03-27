@@ -8,20 +8,23 @@
     "select": "Select",
     "reject": "Reject",
     "accept": "Accept",
-    "isWhitespace": "The field must have valid characters"
+    "isWhitespace": "The field must have valid characters",
+    "allow":"Allow",
+    "dontAllow": "Don't allow"
   },
   "header": {
     "profile": "Profile",
     "logOut": "Log out",
     "becomeToPro": "Become to pro",
-    "getLeads": "Get Leads",
-    "getOrders": "Get Orders",
+    "leads": "Leads",
+    "orders": "Orders",
     "payments": "Payments"
   },
   "auth": {
     "login": "Login",
     "signUp": "Sign up",
     "loading": "Loading...",
+    "areYouSureYouWantToLogOut": "Are you sure you want to log out",
     "firstName": "First name",
     "phone": "Phone",
     "lastName": "Last name",

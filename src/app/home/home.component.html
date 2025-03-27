@@ -1,4 +1,14 @@
 <app-header />
+<app-modal #modal [title]="title"
+[rejectButtonText]="'general.dontAllow'| translate"
+(cancelAction)="rejectSubscriptions()"
+[acceptButtonText]="'general.allow'| translate"
+(confirmAction)="subscribeToPushNotifications()"
+>
+<div [innerHTML]="bodyModal"></div>
+</app-modal>
+
+
 <div><div>
     <div id="carouselExampleIndicators" class="carousel slide">
         <div class="carousel-indicators">

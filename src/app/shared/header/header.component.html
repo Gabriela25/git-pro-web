@@ -1,9 +1,15 @@
+<app-modal #modal [title]="title"
+[rejectButtonText]="'general.cancel'| translate"
+[acceptButtonText]="'general.accept'| translate"
+(confirmAction)="acceptLogOut()">
+    <div [innerHTML]="bodyModal"></div>
+</app-modal>
 <nav class="navbar navbar-expand-lg navbar-light bg-primary">
   <div class="container-fluid">
     <a class="navbar-brand" routerLink="/">
       <img src="assets/logo.png" width="75" height="50" class="d-inline-block align-top" alt="Fixi" style="object-fit: cover;">
     </a>
-    
+
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -20,38 +26,41 @@
         </ng-multiselect-dropdown>
       </form>
       <div class="d-flex align-items-center ms-auto">
+        
         @if(isAuthenticated){
           @if(isPro){
+           
             <button type="button" (click)="toggleOnlineStatus()" [class.btn-success]="isOnline"
               [class.btn-danger]="!isOnline"
               class="btn btn-sm rounded-circle d-flex align-items-center justify-content-center p-2 me-2"
               style="width: 25px; height: 25px;">
             </button>
           }
-           
+         
           <!-- Menú desplegable usando la imagen del avatar -->
           <div class="dropdown">
-            <img [src]="imagePersonal || '../../../assets/avatar_profile.png'" alt="User Avatar" width="40" height="40"
-              class="rounded-circle me-2 cursor-pointer" data-bs-toggle="dropdown" aria-expanded="false" style="cursor: pointer;">
+            
+            <img [src]="!imagePersonal ?  '../../../assets/avatar_profile.png' : imagePersonal"  alt="User Avatar" width="40" height="40"
+              class="rounded-circle me-2 cursor-pointer" data-bs-toggle="dropdown" aria-expanded="false">
             <ul class="dropdown-menu text-small">
-              <li><a class="dropdown-item"><i class="bi bi-person-circle"></i> {{ nameUser }}</a></li>
-              <li><a class="dropdown-item"><i class="bi bi-envelope"></i> {{ emailUser }}</a></li>
-              <li><a class="dropdown-item" routerLink="/pro/basic"><i class="bi bi-person"></i> {{'header.profile'|translate}}</a></li>
-              <li><a class="dropdown-item" routerLink="/pro/become-to-pro/"><i class="bi bi-briefcase"></i> {{textPro}}</a></li>
+              <li><a ><i class="bi bi-person-circle"></i> {{ nameUser }}</a></li>
+              <li><a class=""><i class="bi bi-envelope"></i> {{ emailUser }}</a></li>
+              <li><a class="" routerLink="/pro/basic"><i class="bi bi-person"></i> {{'header.profile'|translate}}</a></li>
+              <li><a class="" routerLink="/pro/become-to-pro/"><i class="bi bi-briefcase"></i> {{textPro}}</a></li>
              
               @if(!isPro){
-                <li><a class="dropdown-item" routerLink="/leads/list"><i class="bi bi-list-ul"></i> My Leads</a></li>
-                <li><a class="dropdown-item" routerLink="/pro/get-orders/"><i class="bi bi-card-checklist"></i> My Orders</a></li>
+                <li><a class="" routerLink="/leads/list"><i class="bi bi-list-ul"></i>  {{'header.leads'|translate}}</a></li>
+                <li><a class="" routerLink="/leads/orders/"><i class="bi bi-card-checklist"></i> {{'header.orders'|translate}}</a></li>
               }
               @else {
-                <li><a class="dropdown-item" routerLink="/pro/get-leads/"><i class="bi bi-list-ul"></i> {{'header.getLeads'|translate}}</a></li>
-                <li><a class="dropdown-item" routerLink="/pro/get-orders/"><i class="bi bi-card-checklist"></i> {{'header.getOrders'|translate}}</a></li>
-                <li><a class="dropdown-item" routerLink="/pro/payments/"><i class="bi bi-clipboard2-check"></i> {{'header.payments'|translate}}</a></li>
+                <li><a class="" routerLink="/pro/leads/"><i class="bi bi-list-ul"></i> {{'header.leads'|translate}}</a></li>
+                <li><a class="" routerLink="/pro/orders/"><i class="bi bi-card-checklist"></i> {{'header.orders'|translate}}</a></li>
+                <li><a class="" routerLink="/pro/payments/"><i class="bi bi-clipboard2-check"></i> {{'header.payments'|translate}}</a></li>
               }   
               <li>
                 <hr class="dropdown-divider">
               </li>
-              <li><a class="dropdown-item" href="#" (click)="signOut()"><i class="bi bi-box-arrow-right"></i> {{'header.logOut'|translate}}</a></li>
+              <li><a class="cursor-pointer"  (click)="signOut($event)"><i class="bi bi-box-arrow-right"></i> {{'header.logOut'|translate}}</a></li>
             </ul>
           </div>
         }

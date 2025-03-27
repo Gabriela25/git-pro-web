@@ -1,0 +1,10 @@
+.description {
+    word-wrap: break-word;
+    overflow-wrap: break-word; 
+    white-space: pre-wrap; 
+    max-height: 100px; 
+    overflow-y: auto; 
+}
+.cursor{
+    cursor: pointer;
+}

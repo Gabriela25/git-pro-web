@@ -15,10 +15,8 @@
             <div>
                 <h2 class="text-center">Dear user, you have no leads issued.</h2>
             </div>
-            
             }
             @else{
-          
             <div class="table-responsive">
                 <table class="table table-striped ">
                     <thead>
@@ -33,7 +31,7 @@
                     </thead>
                     <tbody>
                         @for (item of leadList; track item; let i = $index) {
-                        <tr class="center-content">
+                        <tr class="center-content cursor-pointer" (click)="leadDetail(item.id!)">
                             <td>{{i+1}}</td>
                             <td>{{ item.createdAt | date: 'yyyy/MM/dd' }}</td>
                             <td>{{item.category.name}}</td>
@@ -41,24 +39,16 @@
                             <td>{{ item.description | slice:0:10}}... </td>
                             <td>
                                 @if(item.imageUrl1){
-                                <img [src]="urlUploads+item.imageUrl1" class="cursor" width="80" height="60" alt="Image"
+                                <img [src]="urlUploads+item.imageUrl1" class="cursor-pointer" width="80" height="60" alt="Image"
                                     (click)="showImage(urlUploads+item.imageUrl1)" />
                                 }
                             </td>
-                            <td><span><i class="bi bi-search cursor" (click)="leadDetail(item.id!)"></i></span></td>
                         </tr>
-
-                        }
-
-
-
-
+                    }
                 </table>
             </div>
             }
         </div>
     </div>
-    <div class="col-lg-3">
-
-    </div>
+    <div class="col-lg-3"></div>
 </div>

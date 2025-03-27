@@ -13,177 +13,163 @@
                     <div class="col-12 col-lg-6">
                         <label for="firstName" class="form-label fw-bold">{{'auth.firstName' | translate}}</label>
                         <input type="text" class="form-control" placeholder="" id="firstName"
-                            formControlName="firstName" appCapitalizeFirst noWhitespace/>
+                            formControlName="firstName" appCapitalizeFirst noWhitespace  
+                            [ngClass]="{'is-invalid': signUpForm.get('firstName')?.invalid && (signUpForm.get('firstName')?.dirty || signUpForm.get('firstName')?.touched)}"     
+                            />
                         @if(signUpForm.get('firstName')?.invalid && (signUpForm.get('firstName')?.dirty ||
                         signUpForm.get('firstName')?.touched )){
-                        <div class="alert alert-danger mt-2 mt-2">
+                        <div>
                             @if(signUpForm.get('firstName')?.errors?.['required']){
-                            <span>
+                            <small class="form-text text-danger">
                                 {{'auth.isFirstNameRequired' | translate}}
-                            </span>
+                            </small>
                             }
                             @else if(signUpForm.get('firstName')?.errors?.['noWhitespace']){
-                            <span>
+                            <small class="form-text text-danger">
                                 {{'general.isWhitespace' | translate}}
-                            </span>
+                            </small>
                             }
                         </div>
                         }
                     </div>
                     <div class="col-12 col-lg-6">
                         <label for="lastName" class="form-label fw-bold">{{'auth.lastName' | translate}}</label>
-                        <input type="text" class="form-control" placeholder="" id="lastName"
-                            formControlName="lastName" appCapitalizeFirst noWhitespace/>
+                        <input type="text" class="form-control" placeholder="" id="lastName" formControlName="lastName"
+                            appCapitalizeFirst noWhitespace 
+                            [ngClass]="{'is-invalid': signUpForm.get('lastName')?.invalid && (signUpForm.get('lastName')?.dirty || signUpForm.get('lastName')?.touched)}"     
+                            />
                         @if(signUpForm.get('lastName')?.invalid && (signUpForm.get('lastName')?.dirty ||
                         signUpForm.get('lastName')?.touched )){
-                        <div class="alert alert-danger mt-2">
+                        <div>
                             @if(signUpForm.get('lastName')?.errors?.['required']){
-                            <span>
+                            <small class="form-text text-danger">
                                 {{'auth.isLastNameRequired' | translate}}
-                            </span>
+                            </small>
                             }
                             @else if(signUpForm.get('lastName')?.errors?.['noWhitespace']){
-                            <span>
+                            <small class="form-text text-danger">
                                 {{'general.isWhitespace' | translate}}
-                            </span>
+                            </small>
                             }
                         </div>
                         }
                     </div>
-
-
-
                 </div>
                 <div class="mb-3">
                     <label for="phone" class="form-label fw-bold">{{'auth.phone' | translate}}</label>
                     <input type="tel" class="form-control" id="phone" placeholder="(123) 4567890" mask="(000) 000-0000"
-                        formControlName="phone" />
+                        formControlName="phone" 
+                        [ngClass]="{'is-invalid': signUpForm.get('phone')?.invalid && (signUpForm.get('phone')?.dirty || signUpForm.get('phone')?.touched)}"    
+                        />
                     @if(signUpForm.get('phone')?.invalid && (signUpForm.get('phone')?.dirty ||
                     signUpForm.get('phone')?.touched )){
-                    <div class="alert alert-danger mt-2">
+                    <div>
                         @if(signUpForm.get('phone')?.errors?.['required']){
-                        <span>
+                        <small class="form-text text-danger">
                             {{'auth.isPhoneRequired' | translate}}
-                        </span>
+                        </small>
                         }
                         @if(signUpForm.get('phone')?.errors?.['minlength']){
-                        <span>
+                        <small class="form-text text-danger">
                             {{'auth.isPhoneMaximum10' | translate}}
-                        </span>
+                        </small>
                         }
                     </div>
                     }
                 </div>
                 <div class="mb-3">
                     <label for="email" class="form-label fw-bold">{{'auth.email' | translate}}</label>
-                    <input type="email" class="form-control" id="email" placeholder="Email" formControlName="email" noWhitespace/>
+                    <input type="email" class="form-control" id="email" placeholder="Email" formControlName="email"
+                        noWhitespace 
+                        [ngClass]="{'is-invalid': signUpForm.get('phone')?.invalid && (signUpForm.get('phone')?.dirty || signUpForm.get('phone')?.touched)}"    
+                        />
                     @if(signUpForm.get('email')?.invalid && (signUpForm.get('email')?.dirty ||
                     signUpForm.get('email')?.touched )){
-                    <div class="alert alert-danger mt-2">
+                    <div>
                         @if(signUpForm.get('email')?.errors?.['required']){
-                        <span>
+                        <small class="form-text text-danger">
                             {{'auth.isEmailRequired' | translate}}
-                        </span>
+                        </small>
                         }
                         @else if(signUpForm.get('email')?.errors?.['noWhitespace']){
-                            <span>
-                                {{'general.isWhitespace' | translate}}
-                            </span>
-                            }
-                        @else if(signUpForm.get('email')?.errors?.['email']){
-                        <span>
-                            {{'auth.isEmailValid' | translate}}
-                        </span>
+                        <small class="form-text text-danger">
+                            {{'general.isWhitespace' | translate}}
+                        </small>
                         }
-                        
+                        @else if(signUpForm.get('email')?.errors?.['email']){
+                        <small class="form-text text-danger">
+                            {{'auth.isEmailValid' | translate}}
+                        </small>
+                        }
                     </div>
                     }
-
                 </div>
                 <div class="mb-3">
                     <label for="password" class="form-label fw-bold">
-                      {{ 'auth.password' | translate }}
+                        {{ 'auth.password' | translate }}
                     </label>
                     <div class="input-group">
-                      <input 
-                        [type]="showPassword ? 'text' : 'password'" 
-                        class="form-control" 
-                        id="password" 
-                        placeholder="Password" 
-                        formControlName="password" 
-                        maxlength="15"
-                      />
-                      <button 
-                        type="button" 
-                        class="btn btn-outline-secondary" 
-                        (click)="togglePasswordVisibility('password')" 
-                        aria-label="Toggle password visibility"
-                      >
-                        <i [class]="showPassword ? 'bi bi-eye-slash' : 'bi bi-eye'"></i>
-                      </button>
+                        <input [type]="showPassword ? 'text' : 'password'" class="form-control" id="password"
+                            placeholder="Password" formControlName="password" maxlength="15" 
+                            [ngClass]="{'is-invalid': signUpForm.get('password')?.invalid && (signUpForm.get('password')?.dirty || signUpForm.get('password')?.touched)}" />
+                        <button type="button" class="btn btn-outline-secondary"
+                            (click)="togglePasswordVisibility('password')" aria-label="Toggle password visibility">
+                            <i [class]="showPassword ? 'bi bi-eye-slash' : 'bi bi-eye'"></i>
+                        </button>
                     </div>
-                    
                     @if(signUpForm.get('password')?.invalid && (signUpForm.get('password')?.dirty ||
                     signUpForm.get('password')?.touched )){
-                    <div class="alert alert-danger mt-2">
+                    <div>
                         @if(signUpForm.get('password')?.errors?.['required']){
-                        <span>
+                        <small class="form-text text-danger">
                             {{'auth.isPasswordRequired' | translate}}
-                        </span>
+                        </small>
                         }
                         @else if(signUpForm.get('password')?.errors?.['minlength']){
-                        <span>
+                        <small class="form-text text-danger">
                             {{'auth.minimum6Characters' | translate}}
-                        </span>
+                        </small>
                         }
                         @else if(signUpForm.get('password')?.errors?.['maxlength']){
-                        <span>
+                        <small class="form-text text-danger">
                             {{'auth.maximum15Characters' | translate}}
-                        </span>
+                        </small>
                         }
                     </div>
                     }
                 </div>
-                           
                 <div class="mb-3">
 
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="" id="isTerm" formControlName="isTerm">
+                        <input class="form-check-input" type="checkbox" value="" id="isTerm" formControlName="isTerm"
+                        [ngClass]="{'is-invalid': signUpForm.get('isTerm')?.invalid && (signUpForm.get('isTerm')?.dirty || signUpForm.get('isTerm')?.touched)}" 
+                        >
                         <label class="form-check-label" for="isTerm">
                             <a href="http://" class="link-underline-opacity-0 link-secondary">I accept terms and
                                 conditions</a>
                         </label>
                         @if(signUpForm.get('isTerm')?.invalid && (signUpForm.get('isTerm')?.dirty ||
                         signUpForm.get('isTerm')?.touched )){
-                        <div class="alert alert-danger mt-2">
+                        <div>
                             @if(signUpForm.get('isTerm')?.errors?.['required']){
-                            <span>
+                            <small class="form-text text-danger">
                                 You must accept the terms and conditions
-                            </span>
+                            </small>
                             }
-                           
-                           
-                            
                         </div>
                         }
                     </div>
                 </div>
-
-
                 <div class="d-grid mt-3">
                     <button class="btn btn-primary" type="submit" [disabled]="isLoading">
-                       
-                    @if(!isLoading){
-                        <span class="sr-only">{{'auth.signUp'| translate}}</span>
-
-                    }
-                    @else{
-                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true">  </span>
-                        <span class="sr-only">{{'auth.loading'| translate}}</span>
-                    }
-                   
+                        @if(!isLoading){
+                        <small class="sr-only">{{'auth.signUp'| translate}}</small>
+                        }
+                        @else{
+                        <small class="spinner-border spinner-border-sm" role="status" aria-hidden="true"> </small>
+                        <small class="sr-only">{{'auth.loading'| translate}}</small>
+                        }
                     </button>
-                        
                     <div class="mt-3 d-flex justify-content-center">
                         <a routerLink="/auth/login" aria-current="page"
                             class="link-underline-opacity-0 link-secondary">{{'auth.login' | translate}}</a>
@@ -197,7 +183,7 @@
                 </div>
                 }
             </form>
-            
+
             @if(backendMessage){
             <div class="alert {{alertMessage}} mt-3">
                 {{ backendMessage }}

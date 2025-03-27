@@ -15,11 +15,13 @@ import { AuthService } from '../../services/auth.service';
 import { User } from '../../interface/user.interface';
 import { CapitalizeFirstDirective } from '../../shared/directives/capitalize-first.directive';
 import { NoWhitespaceDirective } from '../../shared/directives/no-whitespace';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-sign-up',
   standalone: true,
   imports: [
+    CommonModule,
     ReactiveFormsModule,
     TranslateModule,
     RouterLink,
@@ -27,8 +29,6 @@ import { NoWhitespaceDirective } from '../../shared/directives/no-whitespace';
     CapitalizeFirstDirective,
     NoWhitespaceDirective
   ],
-
-
   templateUrl: './sign-up.component.html',
   styleUrl: './sign-up.component.css'
 })
@@ -40,17 +40,15 @@ export default class SignUpComponent implements OnInit {
   backendMessage = '';
   alertMessage = '';
   alertTimeout: any;
-
   isBrowser: boolean = true;
   signUpForm!: FormGroup;
   showPassword: boolean = false;
   showConfirmPassword: boolean = false;
+  isSubmitted: boolean = false;
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-
     private platformService: PlatformService,
-
     private authService: AuthService
   ) {
     this.initializeSignUpForm();
@@ -62,7 +60,7 @@ export default class SignUpComponent implements OnInit {
     });
   }
   togglePasswordVisibility(value:string): void {
-    console.log(value)
+   
     if(value == 'password'){
       this.showPassword = !this.showPassword;
     }
@@ -88,6 +86,7 @@ export default class SignUpComponent implements OnInit {
   
   onSubmit() {
     // TODO: Use EventEmitter with form value
+    this.isSubmitted = true;
     this.signUpForm.markAllAsTouched();
     if (this.signUpForm.invalid) {
       return;

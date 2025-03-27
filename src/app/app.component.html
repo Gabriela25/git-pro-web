@@ -6,9 +6,18 @@
   [message]="messageOrder"
   [isSelected]="isSelected"
   [rejectButtonText]="'general.reject'| translate"
+  (cancelAction)="onRejectAction()"
   [acceptButtonText]="'general.accept'| translate"
   (confirmAction)="onConfirmAction()">
   <div [innerHTML]="messageOrder"></div>
+</app-modal>
+<app-modal
+  #modalProRejected
+  [title]="titleModal"
+  [message]="messageProRejected"
+  [isSelected]="isSelected"
+  >
+  <div [innerHTML]="messageProRejected"></div>
 </app-modal>
 <app-modal
   #modalCustomer

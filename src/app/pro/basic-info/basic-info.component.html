@@ -1,18 +1,17 @@
 <app-header></app-header>
-
+<app-modal #modal [title]="title"
+[rejectButtonText]="'general.cancel'| translate"
+>
+    <div [innerHTML]="bodyModal"></div>
+</app-modal>
 <div class="container-fluid">
     <div class="row">
-        <div class="col-lg-3">       
+        <div class="col-lg-3">
         </div>
         <div class="col-lg-6 p-4 col-12">
             <div class="card container-box">
-              
-                    <h5 class="card-header bg-primary text-light">Profile</h5>
-                    
-            
+                <h5 class="card-header bg-primary text-light">Profile</h5>
                 <div class="card-body">
-
-                   
                     <form [formGroup]="basicInfoForm" (ngSubmit)="onSubmit()" autocomplete="off">
                         <div class="fade-in">
                             <div class="row mb-3">
@@ -20,15 +19,18 @@
                                     <label for="firstName" class="form-label fw-bold">{{'profile.firstName' |
                                         translate}}</label>
                                     <input type="text" class="form-control" placeholder="" id="firstName"
-                                        formControlName="firstname" value="{{user.firstname}}" appCapitalizeFirst noWhitespace />
+                                        formControlName="firstname" value="{{user.firstname}}" appCapitalizeFirst
+                                        noWhitespace 
+                                        [ngClass]="{'is-invalid': basicInfoForm.get('firstName')?.invalid && (basicInfoForm.get('firstName')?.dirty || basicInfoForm.get('firstName')?.touched)}"     
+                                        />
                                     @if(basicInfoForm.get('firstname')?.invalid &&
                                     (basicInfoForm.get('firstname')?.dirty || basicInfoForm.get('firstname')?.touched
                                     )){
-                                    <div class="alert alert-danger mt-2 mt-2">
+                                    <div>
                                         @if(basicInfoForm.get('firstname')?.errors?.['required']){
-                                        <span>
+                                        <small class="form-text text-danger">
                                             {{'auth.isFirstNameRequired' | translate}}
-                                        </span>
+                                        </small>
                                         }
                                     </div>
                                     }
@@ -37,14 +39,17 @@
                                     <label for="lastName" class="form-label fw-bold">{{'profile.lastName' |
                                         translate}}</label>
                                     <input type="text" class="form-control" placeholder="" id="lastName"
-                                        formControlName="lastname" appCapitalizeFirst/>
+                                        formControlName="lastname" appCapitalizeFirst 
+                                        noWhitespace 
+                                        [ngClass]="{'is-invalid': basicInfoForm.get('lastname')?.invalid && (basicInfoForm.get('lastname')?.dirty || basicInfoForm.get('lastname')?.touched)}"     
+                                        />
                                     @if(basicInfoForm.get('lastname')?.invalid && (basicInfoForm.get('lastname')?.dirty
                                     || basicInfoForm.get('lastname')?.touched )){
                                     <div class="alert alert-danger mt-2">
                                         @if(basicInfoForm.get('lastname')?.errors?.['required']){
-                                        <span>
+                                        <small class="form-text text-danger">
                                             {{'auth.isLastNameRequired' | translate}}
-                                        </span>
+                                        </small>
                                         }
                                     </div>
                                     }
@@ -54,66 +59,77 @@
                                 <div class="mb-3">
                                     <label for="phone" class="form-label fw-bold">{{'profile.phone' |
                                         translate}}</label>
-                                    <input type="tel" class="form-control" id="phone" formControlName="phone" 
-                                    placeholder="(123) 4567890" mask="(000) 000-0000" />
-                                        @if(basicInfoForm.get('phone')?.invalid &&
-                                        (basicInfoForm.get('phone')?.dirty || basicInfoForm.get('phone')?.touched
-                                        )){
-                                        <div class="alert alert-danger mt-2 mt-2">
-                                            @if(basicInfoForm.get('phone')?.errors?.['required']){
-                                            <span>
-                                                {{'auth.isPhoneRequired' | translate}}
-                                            </span>
-                                            }
-                                            @else if(basicInfoForm.get('phone')?.errors?.['pattern']){
-                                                <span>
-                                                    {{'auth.isPhoneMaximum10' | translate}}
-                                                </span>
-                                                }
-                                        </div>
+                                    <input type="tel" class="form-control" id="phone" formControlName="phone"
+                                        placeholder="(123) 4567890" mask="(000) 000-0000"
+                                        noWhitespace 
+                                        [ngClass]="{'is-invalid': basicInfoForm.get('phone')?.invalid && (basicInfoForm.get('phone')?.dirty || basicInfoForm.get('phone')?.touched)}"     
+                                        />
+                                    @if(basicInfoForm.get('phone')?.invalid &&
+                                    (basicInfoForm.get('phone')?.dirty || basicInfoForm.get('phone')?.touched
+                                    )){
+                                    <div>
+                                        @if(basicInfoForm.get('phone')?.errors?.['required']){
+                                        <small class="form-text text-danger">
+                                            {{'auth.isPhoneRequired' | translate}}
+                                        </small>
                                         }
+                                        @else if(basicInfoForm.get('phone')?.errors?.['pattern']){
+                                        <small class="form-text text-danger">
+                                            {{'auth.isPhoneMaximum10' | translate}}
+                                        </small>
+                                        }
+                                    </div>
+                                    }
                                 </div>
                             </div>
                             <div class="form-group">
                                 <div class="mb-3">
                                     <label for="email" class="form-label fw-bold">{{'profile.email' |
                                         translate}}</label>
-                                    <input type="email" class="form-control" id="email" formControlName="email"/>
+                                    <input type="email" class="form-control" id="email" formControlName="email" 
+                                    noWhitespace 
+                                    [ngClass]="{'is-invalid': basicInfoForm.get('email')?.invalid && (basicInfoForm.get('email')?.dirty || basicInfoForm.get('email')?.touched)}" 
+                                    />
                                     @if(basicInfoForm.get('email')?.invalid &&
-                                        (basicInfoForm.get('email')?.dirty || basicInfoForm.get('email')?.touched
-                                        )){
-                                        <div class="alert alert-danger mt-2 mt-2">
-                                            @if(basicInfoForm.get('email')?.errors?.['required']){
-                                            <span>
-                                                {{'auth.isEmailRequired' | translate}}
-                                            </span>
-                                            }
-                                        </div>
+                                    (basicInfoForm.get('email')?.dirty || basicInfoForm.get('email')?.touched
+                                    )){
+                                    <div>
+                                        @if(basicInfoForm.get('email')?.errors?.['required']){
+                                        <small class="form-text text-danger">
+                                            {{'auth.isEmailRequired' | translate}}
+                                        </small>
                                         }
+                                    </div>
+                                    }
                                 </div>
                             </div>
-
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="" id="allowNotifications"  [formControl]="allowNotificationsControl">
+                                <label class="form-check-label" for="allowNotifications">
+                                    Allow notifications
+                                </label>
+                              </div>
                             <div class="d-flex justify-content-end mt-3">
                                 <button type="submit" class="btn btn-primary mt-3">{{'general.save'|translate}}</button>
                             </div>
                         </div>
                     </form>
-                 
-                    @if(isLoading){       
-                        <div class="d-flex justify-content-center mt-3">
-                            <div class="spinner-border" role="status"> 
-                            </div>
+
+                    @if(isLoading){
+                    <div class="d-flex justify-content-center mt-3">
+                        <div class="spinner-border" role="status">
                         </div>
+                    </div>
                     }
-                    @if(backendMessage){    
-                    <div  class="alert {{alertMessage}} mt-3">
+                    @if(backendMessage){
+                    <div class="alert {{alertMessage}} mt-3">
                         {{ backendMessage }}
-                      </div>
-                    } 
+                    </div>
+                    }
                 </div>
             </div>
         </div>
-        <div class="col-lg-3">       
+        <div class="col-lg-3">
         </div>
     </div>
 </div>

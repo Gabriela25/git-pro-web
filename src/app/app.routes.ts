@@ -1,9 +1,9 @@
 import { Routes } from '@angular/router';
 
-import { SidebarComponent } from './sidebar/sidebar.component';
 import { CategoriesComponent } from './pro/categories/categories.component';
 import { VerifyAccountComponent } from './auth/verify-account/verify-account.component';
 import { NewPasswordComponent } from './auth/new-password/new-password.component';
+import { authGuard } from './auth.guard';
 
 
 
@@ -18,16 +18,15 @@ export const routes: Routes = [
     }, 
     {
         path:'pro',
-        loadChildren:()=>import('./pro/pro.routes')
+        loadChildren:()=>import('./pro/pro.routes'),
+        canActivate: [authGuard]
     },
     {
         path:'leads',
-        loadChildren:()=>import('./leads/leads.routes')
+        loadChildren:()=>import('./leads/leads.routes'),
+        canActivate: [authGuard]
     },
-    {
-        path:'sidebar',
-        component:SidebarComponent
-    },
+   
    
    
 

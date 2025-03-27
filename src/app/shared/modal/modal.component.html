@@ -1,22 +1,20 @@
-
-<div *ngIf="isOpen" class="backdrop"></div>
-<div *ngIf="isOpen" class="modal" [class.show]="isOpen" [style.display]="isOpen ? 'block' : 'none'" role="dialog">
+<div class="backdrop" [hidden]="!isOpen"></div>
+<div class="modal" [class.show]="isOpen" [hidden]="!isOpen" role="dialog">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
-      <div class="modal-header bg-primary">
+      <div class="modal-header bg-secondary">
         <h5 class="modal-title text-white">{{ title }}</h5>
         <button type="button" class="btn-close" aria-label="Close" (click)="close()"></button>
       </div>
-      <div class="modal-body">
+      <div class="modal-body" style="max-height: 50vh; overflow-y: auto;">
         <ng-content></ng-content>
       </div>
       <div class="modal-footer">
         @if(rejectButtonText){
-          
-          <button type="button" class="btn btn-secondary" (click)="reject()">{{ rejectButtonText }}</button>
+          <button type="button" class="btn btn-outline-secondary" (click)="reject()">{{ rejectButtonText }}</button>
         }
         @if(acceptButtonText){
-          <button type="button" class="btn btn-primary" (click)="accept()">{{ acceptButtonText }}</button>
+          <button type="button" class="btn btn-outline-primary" (click)="accept()">{{ acceptButtonText }}</button>
         }
       </div>
     </div>

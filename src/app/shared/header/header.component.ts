@@ -20,14 +20,16 @@ import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 import { Category } from '../../interface/category.interface';
 import { CategoryService } from '../../services/category.service';
 import { LeadService } from '../../services/lead.service';
+import { ServiceWorkersService } from '../../services/service-workers.service';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 @Component({
   selector: 'app-header',
   standalone: true,
   imports: [
     RouterLink,
     TranslateModule,
-    NgMultiSelectDropDownModule
-    //NotificationComponent
+    NgMultiSelectDropDownModule,
+    ModalComponent
   ],
   templateUrl: './header.component.html',
   styleUrl: './header.component.css'
@@ -49,6 +51,7 @@ export class HeaderComponent implements OnInit {
   isOnline: boolean = true;
   isPro: boolean = false;
   textPro: string = '';
+  title: string = '';
   urlUploads: string = environment.urlUploads
   @ViewChild('modal') modal!: ModalComponent;
   @ViewChild('profilePicModal') profilePicModal!: ElementRef;
@@ -59,17 +62,21 @@ export class HeaderComponent implements OnInit {
   selectedItems: any = [];
   dropdownSettings: any = {};
   listCategories: Array<Category> = [];
+  bodyModal!: SafeHtml | string;
   constructor(
     private trans: TranslateService,
     private router: Router,
+    private sanitizer: DomSanitizer,
+    private cdr: ChangeDetectorRef,
     private userService: UserService,
     private categoryService: CategoryService,
     private authService : AuthService,
-    private leadService: LeadService
+    private leadService: LeadService,
+    private serviceWorkersService: ServiceWorkersService
   ) {
     this.trans.addLangs(['es', 'en']);
     this.isAuthenticated = this.authService.isAuthenticated()
-
+    console.log(this.isAuthenticated )
   }
   ngOnInit() {
     this.trans.get('header.becomeToPro').subscribe((res: string) => {
@@ -83,12 +90,18 @@ export class HeaderComponent implements OnInit {
         if (data.imagePersonal) {
           this.imagePersonal = `${this.urlUploads}${data.imagePersonal}`; 
         }
+        else {
+          this.imagePersonal = "";
+        }      
         this.isOnline = data.available; 
         this.isPro = data.isPro || false; 
         if(this.isPro){
-          this.textPro  = 'Professional info';
-       
+          this.textPro  = 'Professional info';       
         }
+        else{
+          this.textPro  = 'Become to pro';   
+        }
+        this.cdr.detectChanges();
       }
     });
    
@@ -110,7 +123,6 @@ export class HeaderComponent implements OnInit {
   }
 
   onItemSelect(item: any) {
-    console.log('entre',item)
     if(this.authService.isAuthenticated()){
       this.router.navigate(['/leads/multi']);
       this.leadService.updateDataLead('categoryId',item.id);
@@ -143,33 +155,20 @@ export class HeaderComponent implements OnInit {
     };
 
     this.userService.putMe(user).subscribe({
-      next: (response) => {
-        
+      next: (response) => {  
         this.authService.updateUser('available', response.user.profile?.available);
       },
       error: (error) => {
-
       }
     });
-
-
   }
   switchLanguage(languaje: string) {
     this.trans.use(languaje);
   }
-  /*openModal() {
-    this.modal.open();
-  }*/
-  signOut() {
-    this.isAuthenticated = false;
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-
-    this.authService.authStatus = authStatus.notAuthenticated;
+  signOut(event: Event) {
+    event.preventDefault();
+    this.modalLogOut();
   }
-
-  
-
   
   close() {
 
@@ -182,6 +181,40 @@ export class HeaderComponent implements OnInit {
     this.alertTimeout = setTimeout(() => {
       this.backendMessage = '';
     }, 3000);
+  }
+  modalLogOut() {
+    console.log('entre para abrir el modal')
+    this.bodyModal = this.sanitizer.bypassSecurityTrustHtml(`
+      <div>
+        <div class="text-center"></div>
+        <h5 class="p-3 text-center">Are you sure you want to log out?</h5>
+      </div>
+    `);
+    this.openModal();
+  }
+  closeModal() {
+    this.modal.close();
+  }
+  ngAfterViewInit() {
+    if (!this.modal) {
+      console.error('ModalComponent is not initialized');
+    }
+  }
+
+  openModal() {
+    if (this.modal) {
+      this.modal.open();
+    } else {
+      console.error('Modal is undefined');
+    }
+  }
+  
+  acceptLogOut(){
+    this.isAuthenticated = false;
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    this.authService.authStatus = authStatus.notAuthenticated
+    this.router.navigate(['/']);
   }
 
 }
