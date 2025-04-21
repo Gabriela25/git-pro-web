@@ -9,11 +9,11 @@ export const  routes: Routes = [
         loadComponent:() => import('./multi-form/multi-form.component'),
     },
     {
-        path:'list',
-        loadComponent:() => import('./lead-list/lead-list.component'),
+        path:'leads',
+        loadComponent:() => import('./leads/leads.component'),
     },
     {
-        path:'detail/:id',
+        path:'lead/detail/:id',
         loadComponent:() => import('./lead-detail/lead-detail.component'),
     }
     ,

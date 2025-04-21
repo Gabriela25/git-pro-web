@@ -30,6 +30,7 @@ export const appConfig: ApplicationConfig = {
       NgMultiSelectDropDownModule.forRoot(),
       AppModule,
       HttpClient,
+      
       TranslateModule.forRoot({
         defaultLanguage:'en',
         loader: {
@@ -65,7 +66,8 @@ export const appConfig: ApplicationConfig = {
     provideStorage(() => getStorage()),
     provideEnvironmentNgxMask(),
     
-    { provide: LocationStrategy, useClass: HashLocationStrategy }
+    { provide: LocationStrategy, useClass: HashLocationStrategy },
+    
   ]
 };
 

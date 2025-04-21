@@ -8,15 +8,32 @@
         <img src="./../../../assets/logo.png" width="300" alt="Logo" class="d-none d-lg-block">
       </a>
     </div>
+
     <div class="col-12 col-lg-6 p-3 p-lg-5 text-light-emphasis bg-white rounded container-box">
+      <app-floating-alert [alertMessage]="alertMessage" [backendMessage]="backendMessage"/>
       <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" autocomplete="off">
         <div class="mb-3">
           <label for="email" class="form-label fw-bold">{{'auth.email' | translate}}</label>
           <input type="email" class="form-control" id="email" placeholder="Email" formControlName="email" noWhitespace
             [ngClass]="{'is-invalid': loginForm.get('email')?.invalid && (loginForm.get('email')?.dirty || loginForm.get('email')?.touched)}" />
+          @if(loginForm.get('email')?.invalid &&
+          (loginForm.get('email')?.dirty || loginForm.get('email')?.touched
+          )){
+          <div>
+            @if(loginForm.get('email')?.errors?.['required']){
+            <small class="form-text text-danger">
+              {{'auth.isEmailRequired' | translate}}
+            </small>
+            }
+            @if (loginForm.get('email')?.errors?.['email']) {
+            <small class="form-text text-danger">{{ 'auth.isEmailValid' | translate }}</small>
+            }
+          </div>
+          }
 
         </div>
-        <div class="mb-3">
+
+        <div>
           <label for="password" class="form-label fw-bold">
             {{ 'auth.password' | translate }}
           </label>
@@ -24,58 +41,27 @@
             <input [type]="showPassword ? 'text' : 'password'" class="form-control" id="password" placeholder="Password"
               formControlName="password"
               [ngClass]="{'is-invalid': loginForm.get('password')?.invalid && (loginForm.get('password')?.dirty || loginForm.get('password')?.touched)}" />
+
             <button type="button" class="btn btn-outline-secondary" (click)="togglePasswordVisibility()"
               aria-label="Toggle password visibility">
               <i [class]="showPassword ? 'bi bi-eye-slash' : 'bi bi-eye'"></i>
             </button>
           </div>
-        </div>
-        @if (isSubmitted && loginForm.get('email')?.errors?.['required'] &&
-        loginForm.get('password')?.errors?.['required']) {
-        <div class="alert alert-danger mt-2 error-message">
-          <small>{{ 'fielIsInvalid.fielIsRequired' | translate }}</small>
-        </div>
-        }
-        @else {
-          @if (loginForm.get('email')?.invalid && !loginForm.get('email')?.errors?.['required'] &&
-          (loginForm.get('email')?.dirty || loginForm.get('email')?.touched)) {
-          <div class="alert alert-danger mt-2 error-message">
-            @if (loginForm.get('email')?.errors?.['email']) {
-            <small>{{ 'auth.isEmailValid' | translate }}</small>
-            }
-            @else if (loginForm.get('email')?.errors?.['noWhitespace']) {
-            <small>{{ 'general.isWhitespace' | translate }}</small>
-            }
-          </div>
-          }
-
           @if (loginForm.get('password')?.invalid && !loginForm.get('password')?.errors?.['required'] &&
           (loginForm.get('password')?.dirty || loginForm.get('password')?.touched)) {
-          <div class="alert alert-danger mt-2 error-message">
+          <div>
             @if (loginForm.get('password')?.errors?.['minlength']) {
-            <small>{{ 'auth.minimum6Characters' | translate }}</small>
+            <small class="form-text text-danger">{{ 'auth.minimum6Characters' | translate }}</small>
             }
-          </div>
-          }
-
-
-          @if (isSubmitted && loginForm.get('email')?.errors?.['required']) {
-          <div class="alert alert-danger mt-2 error-message">
-            <small>{{ 'auth.isEmailRequired' | translate }}</small>
           </div>
           }
 
           @if (isSubmitted && loginForm.get('password')?.errors?.['required']) {
-          <div class="alert alert-danger mt-2 error-message">
-            <small>{{ 'auth.isPasswordRequired' | translate }}</small>
+          <div>
+            <small class="form-text text-danger">{{ 'auth.isPasswordRequired' | translate }}</small>
           </div>
           }
-
-        }
-
-
-
-
+        </div>
         <div class="mb-3 d-flex justify-content-end">
           <a routerLink="/auth/password-recovery"
             class="link-underline-opacity-0 link-secondary">{{'auth.forgotpassword' | translate}}</a>
@@ -99,11 +85,7 @@
         </div>
       </form>
 
-      @if(backendMessage) {
-      <div class="alert {{alertMessage}} mt-3">
-        {{ backendMessage }}
-      </div>
-      }
+
     </div>
     <div class="col-lg-1 d-none d-lg-block">
 

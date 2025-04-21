@@ -12,11 +12,11 @@
             <div class="mb-3 mt-3">
                 <label for="statusFilter">Filter by Status:</label>
                 <select id="statusFilter" class="form-select" [(ngModel)]="selectedStatus" (change)="filterLeads()">
-                  <option value="">All</option>
-                  <option *ngFor="let status of uniqueStatuses" [value]="status">{{ status }}</option>
+                    <option value="">All</option>
+                    <option *ngFor="let status of uniqueStatuses" [value]="status">{{ status }}</option>
                 </select>
             </div>
-              
+
             <div class="card  container-box">
                 <div class="card-header">
                     <ul class="nav nav-tabs card-header-tabs">
@@ -34,55 +34,65 @@
 
                     @if(currentStep === 1){
                     <div class="fade-in">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th scope="col">#</th>
-                                    <th scope="col">Date</th>
-                                    <th scope="col">Status</th>
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">Date</th>
+                                        <th scope="col">Status</th>
 
-                                    <th scope="col">Category</th>
-                                    <th scope="col">Zipcode</th>
-                                    <th scope="col">Description </th>
-                                    <th scope="col">Image</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @for (item of filteredLeads; track item; let i = $index) {
-                                  <tr class="cursor-pointer" (click)="leadDetail(item.id!)">
-                                    <th scope="row">{{ i + 1 }}</th>
-                                    <td>{{ item.createdAt | date: 'dd/MM/yyyy' }}</td>
-                                      @if(item.leadRequests.length >0){
+                                        <th scope="col">Category</th>
+                                        <th scope="col">Zipcode</th>
+                                        <th scope="col">Description </th>
+                                        <th scope="col">Image</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @for (lead of (filteredLeads | paginate: { itemsPerPage: pageSize, currentPage: page
+                                    }) ; track lead.id; let i = $index) {
+
+                                    <tr class="cursor-pointer" (click)="leadDetail(lead.id!)">
+                                        <th scope="row">{{ i + 1 }}</th>
+                                        <td>{{ lead.createdAt | date: 'dd/MM/yyyy' }}</td>
+                                        @if(lead.leadRequests.length >0){
                                         <td class="align-middle">
-                                            <span class="badge rounded-pill" [ngClass]="getBadgeClass(item.leadRequests[0]?.leadStatus?.name)">
-                                              {{ item.leadRequests[0]?.leadStatus?.name }}
+                                            <span class="badge rounded-pill"
+                                                [ngClass]="getBadgeClass(lead.leadRequests[0]?.leadStatus?.name)">
+                                                {{ lead.leadRequests[0]?.leadStatus?.name }}
                                             </span>
-                                          </td>
-                                      }
-                                      @else {
+                                        </td>
+                                        }
+                                        @else {
                                         <td></td>
-                                      }  
-                                        
-                                   
-                                    <td>{{ item.category.name }}</td>
-                                    <td>{{ item.zipcode.name }}</td>
-                                    <td>{{ item.description | slice: 0:10 }}...</td>
-                                    <td>
-                                      @if (item.imageUrl1) {
-                                        <img [src]="urlUploads+item.imageUrl1" class="cursor-pointer" width="80" height="60"
-                                             alt="Image" (click)="showImage(urlUploads+item.imageUrl1)" />
-                                      }
-                                    </td>
-                                  </tr>
-                                }
-                              </tbody>
-                        </table>
+                                        }
+
+
+                                        <td>{{ lead.category.name }}</td>
+                                        <td>{{ lead.zipcode.name }}</td>
+                                        <td>{{ lead.description | slice: 0:10 }}...</td>
+                                        <td>
+                                            @if (lead.imageUrl1) {
+                                            <img [src]="urlUploads+lead.imageUrl1" class="cursor-pointer" width="80"
+                                                height="60" alt="Image"
+                                                (click)="showImage(urlUploads+lead.imageUrl1)" />
+                                            }
+                                        </td>
+                                    </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="d-flex justify-content-end">
+                            <pagination-controls (pageChange)="page = $event" previousLabel="Previous" nextLabel="Next">
+                            </pagination-controls>
+                        </div>
                     </div>
                     }
                     @if(currentStep === 2){
                     @if(listMyLeads.length===0){
                     <div class="p-3 d-flex justify-content-end">
-                        <button class="btn btn-primary" routerLink="/leads/multi"><i class="bi bi-plus-circle"></i>
+                        <button class="btn btn-primary" routerLink="/client/multi"><i class="bi bi-plus-circle"></i>
                             Lead</button>
                     </div>
                     <div>
@@ -92,41 +102,48 @@
                     }
                     @else{
                     <div class="p-3 d-flex justify-content-end">
-                        <button class="btn btn-primary" routerLink="/leads/multi"><i class="bi bi-plus-circle"></i>
+                        <button class="btn btn-primary" routerLink="/client/multi"><i class="bi bi-plus-circle"></i>
                             Lead</button>
                     </div>
                     <div class="fade-in">
-                        <table class="table">
-                            <thead>
-                                <tr >
-                                    <th scope="col">#</th>
-                                    <th scope="col">Date</th>
-                                    <th scope="col">Category</th>
-                                    <th scope="col">Zipcode</th>
-                                    <th scope="col">Description </th>
-                                    <th scope="col">Image</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @for (item of listMyLeads; track item; let i = $index) {
-                                <tr class="cursor-pointer align-middle" (click)="leadDetail(item.id!)">
-                                    <th scope="row">{{i+1}}</th>
-                                    <td>{{ item.createdAt | date: 'dd/MM/yyyy' }}</td>
-                                    
-                                    <td>{{ item.category.name}}</td>
-                                    <td>{{ item.zipcode.name}}</td>
-                                    <td>{{ item.description | slice:0:10}}... </td>
-                                    <td>
-                                        @if(item.imageUrl1){
-                                        <img [src]="urlUploads+item.imageUrl1" class="cursor" width="80" height="60"
-                                            alt="Image" (click)="showImage(urlUploads+item.imageUrl1)" />
-                                        }
-                                    </td>   
-                                </tr>
-                                }
-                            </tbody>
-                        </table>
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">Date</th>
+                                        <th scope="col">Category</th>
+                                        <th scope="col">Zipcode</th>
+                                        <th scope="col">Description </th>
+                                        <th scope="col">Image</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @for (lead of (listMyLeads | paginate: { itemsPerPage: pageSize, currentPage: page
+                                    }) ; track lead.id; let i = $index) {
 
+                                    <tr class="cursor-pointer align-middle" (click)="leadDetail(lead.id!)">
+                                        <th scope="row">{{i+1}}</th>
+                                        <td>{{ lead.createdAt | date: 'dd/MM/yyyy' }}</td>
+
+                                        <td>{{ lead.category.name}}</td>
+                                        <td>{{ lead.zipcode.name}}</td>
+                                        <td>{{ lead.description | slice:0:10}}... </td>
+                                        <td>
+                                            @if(lead.imageUrl1){
+                                            <img [src]="urlUploads+lead.imageUrl1" class="cursor" width="80" height="60"
+                                                alt="Image" (click)="showImage(urlUploads+lead.imageUrl1)" />
+                                            }
+                                        </td>
+                                    </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="d-flex justify-content-end">
+                            <pagination-controls (pageChange)="page = $event" previousLabel="Previous" nextLabel="Next">
+                            </pagination-controls>
+                        </div>
                     </div>
                     }
 

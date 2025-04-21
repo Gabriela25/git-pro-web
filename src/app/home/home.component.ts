@@ -117,7 +117,7 @@ export default class HomeComponent {
   }*/
   navigateToServices(item: Category) {
     if (this.authService.isAuthenticated()) {
-      this.router.navigate(['/leads/multi']);
+      this.router.navigate(['/client/multi']);
       this.leadService.updateDataLead('categoryId', item.id);
       this.leadService.updateDataLead('categoryName', item.name);
     }

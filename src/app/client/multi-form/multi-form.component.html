@@ -1,0 +1,198 @@
+<app-header />
+<app-modal #modal [title]="title" [message]="messageLead" [isSelected]="isSelected"
+  [rejectButtonText]="'general.cancel'| translate" [acceptButtonText]="'lead.showDetails'| translate"
+  (confirmAction)="onConfirmAction()">
+  <div [innerHTML]="messageLead"></div>
+</app-modal>
+
+
+<div class="row mt-5">
+  <div class="col-lg-3">
+
+  </div>
+  <div class="col-lg-6 col-12 p-4">
+
+    <div class="container mt-5 container-box p-3 p-lg-5">
+
+      <div class="progress-indicator">
+        <div class="step" (click)="step(1)">
+          <div class="step-label">Zipcode</div>
+
+          <div class="circle" [ngClass]="{'active': currentStep >= 1}">1</div>
+          <div class="step-desc">{{this.zipcodeName}}</div>
+        </div>
+        <div class="line" [ngClass]="{'active': currentStep >= 2}"></div>
+        <div class="step" (click)="step(2)">
+          <div class="step-label">Phone</div>
+          <div class="circle" [ngClass]="{'active': currentStep >= 2}">2</div>
+          <div class="step-desc">{{this.phone}}</div>
+        </div>
+        <div class="line" [ngClass]="{'active': currentStep >= 3}"></div>
+        <div class="step" (click)="step(3)">
+          <div class="step-label">Description</div>
+          <div class="circle" [ngClass]="{'active': currentStep >= 3}">3</div>
+          <div class="step-desc">{{this.description}}</div>
+        </div>
+      </div>
+      <div class="d-flex justify-content-center">
+        <h1><strong>{{categoryName}}</strong></h1>
+      </div>
+      <form [formGroup]="leadForm">
+        <app-floating-alert [alertMessage]="alertMessage" [backendMessage]="backendMessage" />
+        <div class="mb-3">
+          <div formGroupName="step1">
+            <label for="category" class="form-label">{{'multiForm.category' |translate}} <small>*</small></label>
+            <select class="form-select" aria-label="select" id="category" (change)="onSelectionCategory();"
+              formControlName="category" required=""
+              [ngClass]="{'is-invalid': leadForm.get('step1.category')?.invalid && (leadForm.get('step1.category')?.dirty || leadForm.get('step1.category')?.touched)}">
+              @if(leadForm.get('step1.category')?.invalid && (leadForm.get('step1.category')?.dirty ||
+              leadForm.get('step1.category')?.touched )){
+                @if(leadForm.get('step1.category')?.errors?.['required']){
+                <div>
+                  <small class="form-text text-danger">
+                    {{ 'multiForm.isCategoryRequired' | translate }}
+                  </small>
+                </div>
+                }
+              }
+              @for (item of listCategories; track item)  {
+                <option [ngValue]="item">{{item.name}}</option>
+                }
+              
+            </select>
+            <!-- Step 1 -->
+            @if(currentStep === 1){
+
+            <div class="mt-3">
+              <label for="zipcode" class="form-label">{{'multiForm.zipCode' |translate}} <small>*</small></label>
+              <select class="form-select" aria-label="select" id="zipcode" formControlName="zipcode" required=""
+                [ngClass]="{'is-invalid': leadForm.get('step1.zipcode')?.invalid && (leadForm.get('step1.zipcode')?.dirty || leadForm.get('step1.zipcode')?.touched)}">
+                @for (item of listZipcode; track item) {
+                <option [ngValue]="item">{{item.name}}</option>
+                }
+              </select>
+              @if(leadForm.get('step1.zipcode')?.invalid && (leadForm.get('step1.zipcode')?.dirty ||
+              leadForm.get('step1.zipcode')?.touched )){
+                @if(leadForm.get('step1.zipcode')?.errors?.['required']){
+                <div>
+                  <small class="form-text text-danger">
+                    {{ 'multiForm.isZipcodeRequired' | translate }}
+                  </small>
+                </div>
+                }
+              }
+            </div>
+            <div class="d-flex justify-content-end mt-3">
+              <button type="button" class="btn btn-primary" (click)="nextStep()">{{'general.next' | translate}}</button>
+            </div>
+            }
+          </div>
+        </div>
+        <!-- end Step 1 -->
+
+        @if(currentStep === 2){
+        <!-- Step 2 -->
+        <div formGroupName="step2">
+
+          <div class="mb-3">
+            <label for="phone" class="form-label">{{'multiForm.phone' |translate}} </label>
+            <input type="tel" class="form-control" id="phone" formControlName="phone" placeholder="(123) 4567890"
+              mask="(000) 000-0000" required=""
+              [ngClass]="{'is-invalid': leadForm.get('step2.phone')?.invalid && (leadForm.get('step2.phone')?.dirty || leadForm.get('step2.phone')?.touched)}" />
+
+              @if(leadForm.get('step2.phone')?.invalid && (leadForm.get('step2.phone')?.dirty ||
+              leadForm.get('step2.phone')?.touched )){
+                @if(leadForm.get('step2.phone')?.errors?.['required']){
+                <div>
+                  <small class="form-text text-danger">
+                    {{ 'multiForm.isPhoneRequired' | translate }}
+                  </small>
+                </div>
+                }
+              }
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="phoneNew" (change)="phoneNew($event)" />
+            <label class="form-check-label" for="phoneNew">
+              I want another phone number
+            </label>
+
+          </div>
+
+          <div class="d-flex justify-content-between mt-3">
+            <button type="button" class="btn btn-outline-primary" (click)="prevStep()">Previous</button>
+            <button type="button" class="btn btn-primary" (click)="nextStep()">{{'general.next' | translate}}</button>
+          </div>
+
+        </div>
+        <!-- end Step 2 -->
+        }
+        <!-- Step 3 -->
+        @if(currentStep === 3){
+        <div formGroupName="step3">
+
+          <div class="mb-3">
+            <label for="description" class="form-label">Description</label>
+            <textarea id="description" rows="6" class="form-control" style="width: 100%; resize: none;"
+              formControlName="description" required=""
+              [ngClass]="{'is-invalid': leadForm.get('step3.description')?.invalid && (leadForm.get('step3.description')?.dirty || leadForm.get('step3.description')?.touched)}">
+              </textarea>
+
+              @if(leadForm.get('step3.description')?.invalid && (leadForm.get('step3.description')?.dirty ||
+              leadForm.get('step3.description')?.touched )){
+                @if(leadForm.get('step3.description')?.errors?.['required']){
+                <div>
+                  <small class="form-text text-danger">
+                    {{ 'multiForm.isDescriptionRequired' | translate }}
+                  </small>
+                </div>
+                }
+              }
+          </div>
+          <div class="form-group">
+            <label for="fileInput" class="form-label mt-2">Add images about the issue </label>
+
+            <div class="upload-container">
+              <input #fileInput type="file" multiple (change)="onFileSelected1($event)" class="hidden"
+                accept="image/*" />
+              <button (click)="openFileSelector(fileInput)" class="btn btn-primary">
+                Add images
+              </button>
+              <p class="error-message" *ngIf="errorMessage">{{ errorMessage }}</p>
+              <div class="preview-container" *ngIf="previews.length">
+                <div *ngFor="let img of previews; let i = index" class="preview-item">
+                  <img [src]="img" alt="Vista previa" class="preview-img" />
+                  <button class="remove-btn" (click)="removeImage(i)">X</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div *ngIf="isDescriptionInvalid()" class="alert alert-danger mt-2 error-message">
+            <small class="form-text text-danger">
+              {{ 'fielIsInvalid.fielIsRequired' | translate }}
+            </small>
+          </div>
+          <div class="d-flex justify-content-between mt-3">
+            <button type="button" class="btn btn-outline-primary" (click)="prevStep()">Previous</button>
+            <button type="button" class="btn btn-primary" (click)="onSubmit()">{{'general.send' | translate}}</button>
+          </div>
+
+          @if(isLoading){
+          <div class="d-flex justify-content-center mt-3">
+            <div class="spinner-blead" role="status">
+            </div>
+          </div>
+          }
+
+        </div>
+        }
+        <!-- Step 3 -->
+      </form>
+    </div>
+
+  </div>
+
+  <div class="col-lg-3">
+
+  </div>
+</div>

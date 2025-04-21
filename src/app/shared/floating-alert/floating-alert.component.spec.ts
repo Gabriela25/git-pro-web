@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import  LeadListComponent  from './lead-list.component';
+import { FloatingAlertComponent } from './floating-alert.component';
 
-describe('LeadListComponent', () => {
-  let component: LeadListComponent;
-  let fixture: ComponentFixture<LeadListComponent>;
+describe('FloatingAlertComponent', () => {
+  let component: FloatingAlertComponent;
+  let fixture: ComponentFixture<FloatingAlertComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [LeadListComponent]
+      imports: [FloatingAlertComponent]
     })
     .compileComponents();
     
-    fixture = TestBed.createComponent(LeadListComponent);
+    fixture = TestBed.createComponent(FloatingAlertComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

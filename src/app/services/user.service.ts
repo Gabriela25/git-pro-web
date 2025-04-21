@@ -44,30 +44,21 @@ export class UserService {
     //const headers= this.authHeadersService.getHeaders();
     return this._http.put<{user:User}>(`${this.apiUrlBackend}/users/me`,body, {...headers});
   }
-  uploadLicense(body:Image): Observable<{images:Image[]}>{
+  postLicenses(body:any): Observable<{images:Image[]}>{
     const headers= this.authHeadersService.getHeaders();
 
     return this._http.post<{images:Image[]}>(`${this.apiUrlBackend}/users/licenses`,body, {...headers});
+  }
+  deletedLicenses(imageId:string): Observable<{message:string}>{
+    const headers= this.authHeadersService.getHeaders();
+
+    return this._http.delete<{message:string}>(`${this.apiUrlBackend}/users/licenses/${imageId}`, {...headers});
   }
   getLicense(profileId:string): Observable<{images:Image[]}>{
     const headers= this.authHeadersService.getHeaders();
     return this._http.get<{images:Image[]}>(`${this.apiUrlBackend}/users/licenses/${profileId}`, {...headers});
   }
-  /*(fileData: FormData, field: string): Observable<{ user: User }> {
-      console.log('antes de la peticion')
-      const token = this.authService.getToken();
-       console.log(fileData)
-      // Usa HttpHeaders para construir los encabezados correctamente
-      const headers = new HttpHeaders({
-        Authorization: `Bearer ${token}`
-      });
-    
-      return this._http.post<{ user: User }>(
-        `${this.apiUrlBackend}/pro/uploads/${field}`,
-        fileData,
-        { headers }
-      );
-    }*/
+
 }
  
 

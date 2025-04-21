@@ -33,7 +33,7 @@ export class UploadsService {
     };
     return this._http.post<{uploads:any}>(`${this.apiUrlBackend}/pro/uploads/`,body, uploadOptions);
   }
-  postUploadsMulti(body: FormData): Observable<{files:any}>{
+  /*postUploadsMulti(body: FormData): Observable<{files:any}>{
     console.log(body)
     const token = this.authService.getToken();
     const uploadOptions = {
@@ -42,5 +42,16 @@ export class UploadsService {
       }
     };
     return this._http.post<{files:any}>(`${this.apiUrlBackend}/pro/uploads/multi`,body, uploadOptions);
+  }*/
+
+  postUploadsImageAll(body: FormData): Observable<{ fileName: string }> {
+    const token = this.authService.getToken();
+    const uploadOptions = {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    };
+   const headers= this.authHeadersService.getHeaders();
+    return this._http.post<{ fileName: string }>(`${this.apiUrlBackend}/images/uploads/all/`, body,uploadOptions);
   }
 }

@@ -16,6 +16,7 @@ import { User } from '../../interface/user.interface';
 import { CapitalizeFirstDirective } from '../../shared/directives/capitalize-first.directive';
 import { NoWhitespaceDirective } from '../../shared/directives/no-whitespace';
 import { CommonModule } from '@angular/common';
+import { FloatingAlertComponent } from '../../shared/floating-alert/floating-alert.component';
 
 @Component({
   selector: 'app-sign-up',
@@ -27,7 +28,8 @@ import { CommonModule } from '@angular/common';
     RouterLink,
     NgxMaskDirective,
     CapitalizeFirstDirective,
-    NoWhitespaceDirective
+    NoWhitespaceDirective,
+    FloatingAlertComponent
   ],
   templateUrl: './sign-up.component.html',
   styleUrl: './sign-up.component.css'
@@ -117,16 +119,9 @@ export default class SignUpComponent implements OnInit {
     this.alertMessage = 'alert-danger';
     this.backendMessage = error.error.message || 'An error occurred';
     this.isLoading = false;
-    this.startAlertTimer();
+    
   }
-  startAlertTimer() {
-    if (this.alertTimeout) {
-      clearTimeout(this.alertTimeout);
-    }
-    this.alertTimeout = setTimeout(() => {
-      this.backendMessage = '';
-    }, 3000);
-  }
+ 
   signOut() {
 
   }

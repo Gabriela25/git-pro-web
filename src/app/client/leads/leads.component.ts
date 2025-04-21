@@ -1,38 +1,37 @@
 
 import { Component, ViewChild } from '@angular/core';
-
-import { HeaderComponent } from '../../shared/header/header.component';
-
-
+import { NgxPaginationModule } from 'ngx-pagination';
 import { CommonModule } from '@angular/common';
-import { environment } from '../../../environments/environment';
-import { ModalComponent } from '../../shared/modal/modal.component';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { Router, RouterLink } from '@angular/router';
-
+import { environment } from '../../../environments/environment';
+import { HeaderComponent } from '../../shared/header/header.component';
 import { LeadService } from '../../services/lead.service';
 import { Lead } from '../../interface/lead.interface';
-import { UserService } from '../../services/user.service';
+import { ModalComponent } from '../../shared/modal/modal.component';
 
 
 
 @Component({
-  selector: 'app-lead-list',
+  selector: 'app-leads',
   standalone: true,
   imports: [
     CommonModule,
     RouterLink,
+    NgxPaginationModule,
     HeaderComponent,
     ModalComponent
   ],
-  templateUrl: './lead-list.component.html',
-  styleUrl: './lead-list.component.css'
+  templateUrl: './leads.component.html',
+  styleUrl: './leads.component.css'
 })
 export default class LeadListComponent {
   leadList: Array<Lead> =[];
   urlUploads: string = environment.urlUploads;
   messageLead!: SafeHtml | string;
   title: string ='';
+  page: number = 1;
+  pageSize: number = 10;
   @ViewChild('modal') modal!: ModalComponent;
  
   constructor(
@@ -77,6 +76,6 @@ export default class LeadListComponent {
     this.modal.open();
   }
   leadDetail(id:string){
-    this.router.navigate([`/leads/detail/${id}`]);
+    this.router.navigate([`/client/lead/detail/${id}`]);
   }
 }

@@ -10,6 +10,7 @@
         </div>
         <div class="col-lg-6 p-4 col-12">
             <div class="card container-box">
+                <app-floating-alert [alertMessage]="alertMessage" [backendMessage]="backendMessage"/>
                 <h5 class="card-header bg-primary text-light">Profile</h5>
                 <div class="card-body">
                     <form [formGroup]="basicInfoForm" (ngSubmit)="onSubmit()" autocomplete="off">
@@ -45,7 +46,7 @@
                                         />
                                     @if(basicInfoForm.get('lastname')?.invalid && (basicInfoForm.get('lastname')?.dirty
                                     || basicInfoForm.get('lastname')?.touched )){
-                                    <div class="alert alert-danger mt-2">
+                                    <div>
                                         @if(basicInfoForm.get('lastname')?.errors?.['required']){
                                         <small class="form-text text-danger">
                                             {{'auth.isLastNameRequired' | translate}}
@@ -121,11 +122,7 @@
                         </div>
                     </div>
                     }
-                    @if(backendMessage){
-                    <div class="alert {{alertMessage}} mt-3">
-                        {{ backendMessage }}
-                    </div>
-                    }
+                   
                 </div>
             </div>
         </div>

@@ -20,6 +20,7 @@ import { AuthService } from '../../services/auth.service';
 import { LeadRegister } from '../../interface/lead-register.interface';
 import { LeadService } from '../../services/lead.service';
 import { UserService } from '../../services/user.service';
+import { FloatingAlertComponent } from '../../shared/floating-alert/floating-alert.component';
 
 
 
@@ -33,7 +34,8 @@ import { UserService } from '../../services/user.service';
     FormsModule,
     HeaderComponent,
     NgxMaskDirective,
-    ModalComponent
+    ModalComponent,
+    FloatingAlertComponent
 
   ],
   templateUrl: './multi-form.component.html',
@@ -50,8 +52,6 @@ export default class MultiFormComponent {
   listZipcode: Array<Zipcode> = [];
   listCategories: Array<Category> = [];
   leadForm: FormGroup;
-
-
   selectedOption: any;
   isLoading = false;
   backendMessage = '';
@@ -255,6 +255,7 @@ export default class MultiFormComponent {
   
  
   async onSubmit() {
+    
     this.leadForm.markAllAsTouched();
  
     if (this.leadForm.valid) {
@@ -287,6 +288,7 @@ export default class MultiFormComponent {
   
       
       for (const fileData of files) {
+        
         if (fileData.file) {
           const formData = new FormData();
           formData.append('file', fileData.file);
@@ -316,15 +318,12 @@ export default class MultiFormComponent {
     }
   }
   onCreatedLead(payload: unknown) {
-
     if (!payload) {
       return;
     }
-
     if (typeof payload !== 'object') {
       return;
     }
-
     if (!('leads' in payload)) {
       return;
     }
@@ -363,10 +362,10 @@ export default class MultiFormComponent {
     }
     this.alertTimeout = setTimeout(() => {
       if(this.isPro){
-        this.router.navigate(['/pro/get-leads'])
+        this.router.navigate(['/pro/leads'])
       }
       else{
-        this.router.navigate(['/leads/list'])
+        this.router.navigate(['/client/leads'])
       }
       //this.backendMessage = '';
     }, 1000);

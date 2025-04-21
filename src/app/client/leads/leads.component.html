@@ -9,7 +9,7 @@
         <div class="container mt-5 container-box p-5">
             <h1 class="text-center bg-primary text-white p-2">Leads</h1>
             <div class="p-3 d-flex justify-content-end">
-                <button class="btn btn-primary" routerLink="/leads/multi"><i class="bi bi-plus-circle"></i> Lead</button>
+                <button class="btn btn-primary" routerLink="/client/multi"><i class="bi bi-plus-circle"></i> Lead</button>
             </div>
             @if(leadList.length===0){
             <div>
@@ -18,7 +18,7 @@
             }
             @else{
             <div class="table-responsive">
-                <table class="table table-striped ">
+                <table class="table table-hover">
                     <thead>
                         <tr>
                             <th scope="col">#</th>
@@ -30,22 +30,26 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @for (item of leadList; track item; let i = $index) {
-                        <tr class="center-content cursor-pointer" (click)="leadDetail(item.id!)">
+                        @for (lead of (leadList | paginate: { itemsPerPage: pageSize, currentPage: page }) ; track lead.id; let i = $index) {
+                        <tr class="center-content cursor-pointer" (click)="leadDetail(lead.id!)">
                             <td>{{i+1}}</td>
-                            <td>{{ item.createdAt | date: 'yyyy/MM/dd' }}</td>
-                            <td>{{item.category.name}}</td>
-                            <td>{{item.zipcode.name}}</td>
-                            <td>{{ item.description | slice:0:10}}... </td>
+                            <td>{{ lead.createdAt | date: 'yyyy/MM/dd' }}</td>
+                            <td>{{lead.category.name}}</td>
+                            <td>{{lead.zipcode.name}}</td>
+                            <td>{{ lead.description | slice:0:10}}... </td>
                             <td>
-                                @if(item.imageUrl1){
-                                <img [src]="urlUploads+item.imageUrl1" class="cursor-pointer" width="80" height="60" alt="Image"
-                                    (click)="showImage(urlUploads+item.imageUrl1)" />
+                                @if(lead.imageUrl1){
+                                <img [src]="urlUploads+lead.imageUrl1" class="cursor-pointer" width="80" height="60" alt="Image"
+                                    (click)="showImage(urlUploads+lead.imageUrl1)" />
                                 }
                             </td>
                         </tr>
                     }
                 </table>
+                <div class="d-flex justify-content-end">
+                    <pagination-controls (pageChange)="page = $event" previousLabel="Previous" nextLabel="Next">
+                    </pagination-controls>
+                </div>
             </div>
             }
         </div>

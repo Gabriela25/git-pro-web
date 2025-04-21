@@ -3,21 +3,18 @@ import { Router, RouterLink } from '@angular/router';
 import { HeaderComponent } from '../../shared/header/header.component';
 import { CommonModule } from '@angular/common';
 import { ModalComponent } from '../../shared/modal/modal.component';
-import { Lead } from '../../interface/lead.interface';
 import { environment } from '../../../environments/environment';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
-import { LeadService } from '../../services/lead.service';
+import { AuthService } from '../../services/auth.service';
+import { NgxPaginationModule } from 'ngx-pagination';
 import { OrderService } from '../../services/order.service';
 import { Order } from '../../interface/order.interface';
-import { AuthService } from '../../services/auth.service';
-import { OrderStatusService } from '../../services/order-status.service';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
-
 @Component({
   selector: 'app-orders',
   standalone: true,
   imports: [
     CommonModule,
+    NgxPaginationModule,
     HeaderComponent,
     ModalComponent
   ],
@@ -31,7 +28,9 @@ export default class GetOrdersComponent {
   title: string = '';
   @ViewChild('modal') modal!: ModalComponent;
   isPro: boolean = false;
- 
+  page: number = 1;
+  pageSize: number = 10;
+
   constructor(
     private sanitizer: DomSanitizer,
     private router: Router,
@@ -57,7 +56,7 @@ export default class GetOrdersComponent {
       this.orderService.getOrderUser().subscribe({
         next: (response) => {
          
-         
+         console.log(response.orders)
           this.orders = response.orders.sort((a: any, b: any) => {
             const dateA = new Date(a.createdAt).getTime();
             const dateB = new Date(b.createdAt).getTime();

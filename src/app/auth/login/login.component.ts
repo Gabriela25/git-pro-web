@@ -14,6 +14,7 @@ import { SocketComponent } from '../../shared/socket/socket.component';
 import { SocketService } from '../../services/socket.service';
 import { NoWhitespaceDirective } from '../../shared/directives/no-whitespace';
 import { BoundElementProperty } from '@angular/compiler';
+import { FloatingAlertComponent } from '../../shared/floating-alert/floating-alert.component';
 
 @Component({
   selector: 'app-login',
@@ -23,7 +24,8 @@ import { BoundElementProperty } from '@angular/compiler';
     ReactiveFormsModule,
     TranslateModule,
     RouterLink,
-    NoWhitespaceDirective
+    NoWhitespaceDirective,
+    FloatingAlertComponent
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
@@ -56,12 +58,7 @@ export default class LoginComponent {
       email: new FormControl('', [Validators.required, Validators.email]),
       password: new FormControl('', [Validators.required, Validators.minLength(6)]),
     });
-    /*this.router.events.pipe(
-      filter((event) => event instanceof NavigationEnd)
-    ).subscribe((event: NavigationEnd) => {
-      this.previousUrl = this.currentUrl;
-      this.currentUrl = event.url;
-    });*/
+    
   }
   togglePasswordVisibility(): void {
     this.showPassword = !this.showPassword;
@@ -142,14 +139,8 @@ export default class LoginComponent {
     this.alertMessage = 'alert-danger';
     this.backendMessage = error.error.message || 'An error occurred';
     this.isLoading = false;
-    this.startAlertTimer();
+    
   }
-  startAlertTimer() {
-    if (this.alertTimeout) {
-      clearTimeout(this.alertTimeout);
-    }
-    this.alertTimeout = setTimeout(() => {
-      this.backendMessage = '';
-    }, 3000);
-  }
+ 
+  
 }

@@ -22,8 +22,8 @@ export const routes: Routes = [
         canActivate: [authGuard]
     },
     {
-        path:'leads',
-        loadChildren:()=>import('./leads/leads.routes'),
+        path:'client',
+        loadChildren:()=>import('./client/client.routes'),
         canActivate: [authGuard]
     },
    

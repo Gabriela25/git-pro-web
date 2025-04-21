@@ -16,6 +16,7 @@ import { FormsModule } from '@angular/forms';
 import { LeadStatusService } from '../../services/lead-status.service';
 import { error } from 'console';
 import { LeadStatus } from '../../interface/lead-status.interface';
+import { NgxPaginationModule } from 'ngx-pagination';
 
 
 
@@ -26,6 +27,7 @@ import { LeadStatus } from '../../interface/lead-status.interface';
     CommonModule,
     RouterLink,
     FormsModule,
+    NgxPaginationModule,
     HeaderComponent,
     ModalComponent
   ],
@@ -42,12 +44,12 @@ export default class GetLeadsComponent {
   image!: SafeHtml | string;
   title: string ='';
 
-  filteredLeads: any[] = []; // Lista filtrada
-  selectedStatus: string = ''; // Estado seleccionado
-  uniqueStatuses: string[] = []; // Lista de estados únicos
-
+  filteredLeads: any[] = []; 
+  selectedStatus: string = ''; 
+  uniqueStatuses: string[] = []; 
   @ViewChild('modal') modal!: ModalComponent;
-
+  page: number = 1;
+  pageSize: number = 10;
   constructor(
     private sanitizer: DomSanitizer,
     private router: Router,
@@ -78,7 +80,7 @@ export default class GetLeadsComponent {
   loadInitialData() {
     this.leadService.getLeadAllByPro().subscribe({
       next: (response) =>{
-        console.log(response.leads)
+        
         this.leads =  response.leads.sort((a: any, b: any) => {
           const dateA = new Date(a.createdAt).getTime(); 
           const dateB = new Date(b.createdAt).getTime();
@@ -137,7 +139,8 @@ export default class GetLeadsComponent {
     this.modal.open();
   }
   leadDetail(id:string){
-    this.router.navigate([`leads/detail/${id}`]);
+    
+    this.router.navigate([`/client/lead/detail/${id}`]);
   }
   /*orderDetail(id:string){
     this.router.navigate([`/orders/detail/${id}`]);

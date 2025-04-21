@@ -55,13 +55,14 @@ export class LeadService {
 
 
   postUploadsLead(body: FormData): Observable<{ fileName: string }> {
+    console.log(body)
     const token = this.authService.getToken();
     const uploadOptions = {
       headers: {
         'Authorization': `Bearer ${token}`
       }
     };
-    return this._http.post<{ fileName: string }>(`${this.apiUrlBackend}/pro/uploads/all/`, body, uploadOptions);
+    return this._http.post<{ fileName: string }>(`${this.apiUrlBackend}/images/uploads/all/`, body, uploadOptions);
   }
 
 

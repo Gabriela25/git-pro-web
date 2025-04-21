@@ -204,6 +204,13 @@
                                     }
                                 </tbody>
                             </table>
+                            <div class="d-flex justify-content-end">
+                                <pagination-controls 
+                                (pageChange)="page = $event" 
+                                previousLabel="Previous" 
+                                nextLabel="Next">
+                              </pagination-controls>
+                            </div>
                         </div>
                     </div>
 

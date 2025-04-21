@@ -88,10 +88,10 @@
     display: none;
   }
   
-  .error-message {
+  /*.error-message {
     color: red;
     font-size: 14px;
-  }
+  }*/
   
   .preview-container {
     margin-top: 15px;

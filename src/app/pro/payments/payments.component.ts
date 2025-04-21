@@ -8,6 +8,7 @@ import { Service } from '../../interface/service.interface';
 import { Payment } from '../../interface/payment.interface';
 import { PaymentService } from '../../services/payment.service';
 import { CommonModule, DatePipe } from '@angular/common';
+import { NgxPaginationModule } from 'ngx-pagination';
 
 @Component({
   selector: 'app-payments',
@@ -16,6 +17,7 @@ import { CommonModule, DatePipe } from '@angular/common';
     ReactiveFormsModule,
     TranslateModule,
     CommonModule, 
+    NgxPaginationModule,
     HeaderComponent,
   ],
   providers: [DatePipe], 
@@ -45,7 +47,8 @@ export default class PaymentsComponent {
     { key: 'zelle', value: 'Zelle' },
     { key: 'paypal', value: 'Paypal' }
   ];
-
+  page: number = 1;
+  pageSize: number = 5;
   constructor(
     private fb: FormBuilder,
     private datePipe: DatePipe,

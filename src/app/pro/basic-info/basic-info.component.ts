@@ -16,6 +16,7 @@ import { ServiceWorkersService } from '../../services/service-workers.service';
 import { Notification } from '../../interface/notification.interface';
 import { ModalComponent } from '../../shared/modal/modal.component';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { FloatingAlertComponent } from '../../shared/floating-alert/floating-alert.component';
 
 @Component({
   selector: 'app-basic-info',
@@ -28,7 +29,8 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
     HeaderComponent,
     CapitalizeFirstDirective,
     NoWhitespaceDirective,
-    ModalComponent
+    ModalComponent,
+    FloatingAlertComponent
   ],
   templateUrl: './basic-info.component.html',
   styleUrl: './basic-info.component.css'
@@ -111,7 +113,6 @@ export default class BasicInfoComponent implements OnInit {
       error: (error) => console.error(error)
     });
     this.allowNotificationsControl.valueChanges.subscribe(value => {
-      console.log("Checkbox cambiado:", value);
       this.onCheckboxChange(value!);
     });
 
@@ -126,7 +127,6 @@ export default class BasicInfoComponent implements OnInit {
     this.serviceWorkersService.getStatusByUser().subscribe({
       next: (response) => {
         this.notification = response.notification;
-        console.log(this.notification)
         this.getPushNavigatorStatus();
       },
       error: (error) => {
@@ -171,10 +171,6 @@ export default class BasicInfoComponent implements OnInit {
   }
 
   getPushNavigatorStatus() {
-
-
-    console.log('statusWindowNotification: ', this.statusWindowNotification)
-
     if (this.statusWindowNotification) {
 
       if (this.statusWindowNotification === 'denied' || this.statusWindowNotification === 'default') {
@@ -194,8 +190,7 @@ export default class BasicInfoComponent implements OnInit {
     }
   }
   onCheckboxChange(isChecked: boolean) {
-    console.log(this.statusWindowNotification)
-    console.log(this.notification)
+   
     if (isChecked) {
       if (this.statusWindowNotification === 'default' && this.notification.userId === "") {
 
@@ -290,23 +285,15 @@ export default class BasicInfoComponent implements OnInit {
     this.alertMessage = 'alert-success';
     this.backendMessage = response.message || 'Profile updated successfully';
     this.isLoading = false;
-    this.startAlertTimer();
   }
 
   handleError(error: any) {
     this.alertMessage = 'alert-danger';
     this.backendMessage = error.error.message || 'An error occurred';
     this.isLoading = false;
-    this.startAlertTimer();
+   
   }
-  startAlertTimer() {
-    if (this.alertTimeout) {
-      clearTimeout(this.alertTimeout);
-    }
-    this.alertTimeout = setTimeout(() => {
-      this.backendMessage = '';
-    }, 3000);
-  }
+  
 
 
 }

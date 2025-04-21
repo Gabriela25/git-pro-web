@@ -17,7 +17,6 @@
     </div>
 </app-modal>
 <div class="container-fluid">
-
     <div class="row">
         <div class="col-lg-3">
         </div>
@@ -41,6 +40,7 @@
             <div class="card container-box">
                 <h5 class="card-header bg-primary text-light">Personal Form</h5>
                 <div class="card-body">
+                    <app-floating-alert [alertMessage]="alertMessage" [backendMessage]="backendMessage" />
                     <form [formGroup]="proPersonalForm" (ngSubmit)="onSubmit()" autocomplete="off">
                         <div>
                             <div class="form-group">
@@ -59,7 +59,7 @@
 
                                         <input type="file" class="form-control" id="imagePersonal" #fileInputPersonal
                                             (change)="onFileSelected($event)" style="display: none;"
-                                            [ngClass]="{'is-invalid': proPersonalForm.get('imagePersonal')?.invalid && (proPersonalForm.get('imagePersonal')?.dirty || proPersonalForm.get('imagePersonal')?.touched)}">
+                                            [ngClass]="{'is-invalid': proPersonalForm.get('imagePersonal')?.invalid && (proPersonalForm.get('imagePersonal')?.dirty || proPersonalForm.get('imagePersonal')?.touched)}" />
                                         @if(proPersonalForm.get('imagePersonal')?.invalid &&
                                         (proPersonalForm.get('imagePersonal')?.dirty ||
                                         proPersonalForm.get('imagePersonal')?.touched )){
@@ -99,27 +99,29 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <div class="mb-3">
-                                    <label for="lincenses" class="form-label fw-bold">{{'profile.licenses' |
-                                        translate}}</label>
-                                    <input type="file" class="form-control" id="license" name="licenses"
-                                        formControlName="licenses" multiple (change)="onFileChange($event)"
-                                        aria-describedby="licensesHelp" accept="image/*" />
+                                <label for="fileInput" class="form-label mt-2">Add images about the issue </label>
+                                <div class="upload-container">
+                                    <input #fileInput type="file" multiple (change)="onFileSelected1($event)"
+                                        class="d-none" accept="image/*" />
+                                    <button type="button" (click)="openFileSelector(fileInput)" class="btn btn-primary">
+                                        Add licenses
+                                    </button>
+                                    <p class="error-message" *ngIf="errorMessage">{{ errorMessage }}</p>
+                                    <div class="row mt-3">
+                                        <div class="col-6 col-md-4 mb-3" *ngFor="let img of previews; let i = index">
+                                            <button class="remove-btn" (click)="removeImage(i)">X</button>
+                                            <img [src]="img" alt="Vista previa" class="preview-img" />
+                                        </div>
+                                        <div class="col-6 col-md-4 mb-3"
+                                            *ngFor="let image of listImages; let i = index">
+                                            <button class="remove-btn" (click)="removeExistingImage(i)">X</button>
+                                            <img [src]="urlUploads + image.name" class="preview-img" />
 
-                                    <div id="licensesHelp" class="form-text">Upload all licenses in jpg, jpeg or png
-                                        format.</div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                            @if( listImages && listImages.length>0){
-                            <div>
-                                <ul>
-                                    @for(item of listImages; track item; let i = $index) {
-                                    <li>{{item.name}}</li>
-                                    }
-                                </ul>
-                            </div>
-                            }
-                            <div class="form-group">
+                            <div class="form-group mt-3">
                                 <div class="mb-3">
                                     <label for="zipcode" class="form-label fw-bold">{{'profile.zipCode' |
                                         translate}}</label>
@@ -213,11 +215,6 @@
                             </div>
                         </div>
                         }
-                        @if(backendMessage){
-                        <div class="alert {{alertMessage}} mt-3">
-                            {{ backendMessage }}
-                        </div>
-                        }
                     </form>
                 </div>
             </div>
@@ -225,15 +222,14 @@
             <!-- Formulario Business -->
             @if(isNext){
             <div class="card container-box">
-
                 <h5 class="card-header bg-primary text-light">Business Form</h5>
                 <div class="card-body">
+                    <app-floating-alert [alertMessage]="alertMessage" [backendMessage]="backendMessage" />
                     <form [formGroup]="proBusinessForm" (ngSubmit)="onSubmit()" autocomplete="off">
                         <div class="fade-in">
                             <div class="form-group">
                                 <label for="imageBusiness" class="form-label fw-bold">Business image</label>
                                 <div class="form-group text-center position-relative">
-
                                     <div class="position-relative d-inline-block">
                                         <img [src]="previewImgBusiness || imageBusiness || 'assets/avatar_profile.png'"
                                             alt="Image Business" class="rounded-circle mb-3" width="100" height="100"
@@ -258,7 +254,6 @@
                                     </div>
                                     }
                                 </div>
-
                             </div>
                             <div class="form-group">
                                 <div class="mb-3">
@@ -276,10 +271,8 @@
                                             {{'profile.isNameBusinessRequired' | translate}}
                                         </small>
                                         }
-
                                     </div>
                                     }
-
                                 </div>
                             </div>
                             <div class="form-group">
@@ -298,7 +291,6 @@
                                             {{'profile.isYearFoundedRequired' | translate}}
                                         </small>
                                         }
-
                                     </div>
                                     }
                                 </div>
@@ -320,7 +312,6 @@
                                             {{'profile.isNumberOfemployeesRequired' | translate}}
                                         </small>
                                         }
-
                                     </div>
                                     }
                                 </div>
@@ -339,11 +330,6 @@
                             </div>
                         </div>
                         }
-                        @if(backendMessage){
-                        <div class="alert {{alertMessage}} mt-3">
-                            {{ backendMessage }}
-                        </div>
-                        }
                     </form>
                 </div>
             </div>
@@ -351,6 +337,5 @@
         </div>
         <div class="col-lg-3">
         </div>
-
     </div>
 </div>

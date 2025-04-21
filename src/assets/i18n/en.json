@@ -95,6 +95,17 @@
     "showDetails": "Show details"
   },
 
+  "multiForm":{
+    "category": "Category",
+    "isCategoryRequired": "Category is required",
+    "zipCode": "Zipcode",
+    "isZipcodeRequired": "Zipcode is required",
+    "phone": "Phone",
+    "isPhoneRequired": "Phone is required",
+    "description": "Description", 
+    "isDescriptionRequired":"Description is required "
+  },
+
   "fielIsInvalid":{
     "fielIsRequired":"The field is required"
   }
