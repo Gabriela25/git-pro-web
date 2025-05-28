@@ -32,7 +32,7 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 ng build --output-path=docs/ --base-href /git-pro-web/
 
 ## build de produccion:
- ng build --configuration=production
+ `ng build --configuration=production`
 
 ## se copian los archivos de browser en la raiz de docs
 git add *

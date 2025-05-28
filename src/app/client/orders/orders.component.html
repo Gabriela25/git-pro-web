@@ -31,9 +31,9 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @for (order of (orders | paginate: { itemsPerPage: pageSize, currentPage: page }) ; track order.id; let i = $index) {
+                        @for (order of orders ; track order; let i = $index) {
                         <tr class="center-content cursor-pointer" (click)="orderDetail(order.id!)">
-                            <td>{{i+1}}</td>
+                            <td>{{ i + 1 + (page - 1) * limit }}</td>
                             <td>{{ order.createdAt | date: 'yyyy/MM/dd' }}</td>
                             <td>{{order.orderStatus.name}}</td>
                             <td>{{order.lead.category.name}}</td>
@@ -51,8 +51,8 @@
                         }
                 </table>
                 <div class="d-flex justify-content-end">
-                    <pagination-controls (pageChange)="page = $event" previousLabel="Previous" nextLabel="Next">
-                    </pagination-controls>
+                    <app-pagination [page]="page" [lastPage]="lastPage"
+                        (pageChange)="onPageChange($event)"></app-pagination>
                 </div>
             </div>
             }

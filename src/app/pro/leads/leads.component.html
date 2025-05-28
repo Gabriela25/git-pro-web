@@ -49,11 +49,10 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @for (lead of (filteredLeads | paginate: { itemsPerPage: pageSize, currentPage: page
-                                    }) ; track lead.id; let i = $index) {
+                                    @for (lead of filteredLeads; track lead.id; let i = $index) {
 
                                     <tr class="cursor-pointer" (click)="leadDetail(lead.id!)">
-                                        <th scope="row">{{ i + 1 }}</th>
+                                        <th scope="row">{{ i + 1 + (page - 1) * limit }}</th>
                                         <td>{{ lead.createdAt | date: 'dd/MM/yyyy' }}</td>
                                         @if(lead.leadRequests.length >0){
                                         <td class="align-middle">
@@ -84,13 +83,13 @@
                             </table>
                         </div>
                         <div class="d-flex justify-content-end">
-                            <pagination-controls (pageChange)="page = $event" previousLabel="Previous" nextLabel="Next">
-                            </pagination-controls>
+                            <app-pagination [page]="page" [lastPage]="lastPage"
+                                (pageChange)="onPageChange($event)"></app-pagination>
                         </div>
                     </div>
                     }
                     @if(currentStep === 2){
-                    @if(listMyLeads.length===0){
+                    @if(myLeads.length===0){
                     <div class="p-3 d-flex justify-content-end">
                         <button class="btn btn-primary" routerLink="/client/multi"><i class="bi bi-plus-circle"></i>
                             Lead</button>
@@ -119,11 +118,10 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @for (lead of (listMyLeads | paginate: { itemsPerPage: pageSize, currentPage: page
-                                    }) ; track lead.id; let i = $index) {
+                                    @for (lead of myLeads ; track lead.id; let i = $index) {
 
                                     <tr class="cursor-pointer align-middle" (click)="leadDetail(lead.id!)">
-                                        <th scope="row">{{i+1}}</th>
+                                        <th scope="row">{{ i + 1 + (page - 1) * limit }}</th>
                                         <td>{{ lead.createdAt | date: 'dd/MM/yyyy' }}</td>
 
                                         <td>{{ lead.category.name}}</td>
@@ -140,9 +138,10 @@
                                 </tbody>
                             </table>
                         </div>
+                       
                         <div class="d-flex justify-content-end">
-                            <pagination-controls (pageChange)="page = $event" previousLabel="Previous" nextLabel="Next">
-                            </pagination-controls>
+                            <app-pagination [page]="page" [lastPage]="lastPage"
+                                (pageChange)="onPageChange($event)"></app-pagination>
                         </div>
                     </div>
                     }

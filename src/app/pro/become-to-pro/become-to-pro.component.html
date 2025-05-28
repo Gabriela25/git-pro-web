@@ -279,7 +279,7 @@
                                 <div class="mb-3">
                                     <label for="yearFounded" class="form-label fw-bold">{{'profile.yearFounded' |
                                         translate}}</label>
-                                    <input type="tel" class="form-control" id="yearFounded"
+                                    <input type="number" class="form-control" id="yearFounded"
                                         formControlName="yearFounded" (keypress)="validateNumber($event)"
                                         [ngClass]="{'is-invalid': proBusinessForm.get('yearFounded')?.invalid && (proBusinessForm.get('yearFounded')?.dirty || proBusinessForm.get('yearFounded')?.touched)}" />
                                     @if(proBusinessForm.get('yearFounded')?.invalid &&
@@ -300,7 +300,7 @@
                                     <label for="numberOfemployees"
                                         class="form-label fw-bold">{{'profile.numberEmployees'
                                         | translate}}</label>
-                                    <input type="tel" class="form-control" id="numberOfemployees"
+                                    <input type="number" class="form-control" id="numberOfemployees"
                                         formControlName="numberOfemployees" (keypress)="validateNumber($event)"
                                         [ngClass]="{'is-invalid': proBusinessForm.get('numberOfemployees')?.invalid && (proBusinessForm.get('numberOfemployees')?.dirty || proBusinessForm.get('numberOfemployees')?.touched)}" />
                                     @if(proBusinessForm.get('numberOfemployees')?.invalid &&

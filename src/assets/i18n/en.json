@@ -5,6 +5,7 @@
     "add": "Add",
     "send": "Send",
     "next": "Next",
+    "previous":"Previous",
     "select": "Select",
     "reject": "Reject",
     "accept": "Accept",

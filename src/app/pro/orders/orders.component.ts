@@ -9,6 +9,7 @@ import { AuthService } from '../../services/auth.service';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { OrderService } from '../../services/order.service';
 import { Order } from '../../interface/order.interface';
+import { PaginationComponent } from '../../shared/pagination/pagination.component';
 @Component({
   selector: 'app-orders',
   standalone: true,
@@ -16,7 +17,8 @@ import { Order } from '../../interface/order.interface';
     CommonModule,
     NgxPaginationModule,
     HeaderComponent,
-    ModalComponent
+    ModalComponent,
+    PaginationComponent
   ],
   templateUrl: './orders.component.html',
   styleUrl: './orders.component.css'
@@ -28,9 +30,12 @@ export default class GetOrdersComponent {
   title: string = '';
   @ViewChild('modal') modal!: ModalComponent;
   isPro: boolean = false;
+  
+  total: number = 0;
   page: number = 1;
-  pageSize: number = 10;
-
+  limit: number = 10;
+  lastPage: number = 1;
+  
   constructor(
     private sanitizer: DomSanitizer,
     private router: Router,
@@ -40,47 +45,27 @@ export default class GetOrdersComponent {
 
   }
   ngOnInit(): void {
-    this.authService.user$.subscribe((data: any) => {
-      
-      if (data) {
-        this.isPro = data.isPro || false;
-      }
-    });
-    this.checkOrders();
+
+    this.getOrders(this.page);
     
   }
-  checkOrders() {
-    //ordenamos descendente
-    if (this.isPro) {
-      
-      this.orderService.getOrderUser().subscribe({
+  getOrders(page: number) {
+  
+      this.page = page;
+      this.orderService.getOrderUser(this.page, this.limit).subscribe({
         next: (response) => {
          
-         console.log(response.orders)
-          this.orders = response.orders.sort((a: any, b: any) => {
-            const dateA = new Date(a.createdAt).getTime();
-            const dateB = new Date(b.createdAt).getTime();
-            return dateB - dateA;
-          });
+         
+          this.orders = response.orders;
+          this.total = response.total;
+          this.page = response.page;
+          this.limit = response.limit;
+          this.lastPage = Math.ceil(this.total / this.limit);
 
         },
         error: (error) => console.error(error)
       });
-    }else{
-      
-      this.orderService.getOrderUserCustomer().subscribe({
-        next: (response) => {
-          
-          this.orders = response.orders.sort((a: any, b: any) => {
-            const dateA = new Date(a.createdAt).getTime();
-            const dateB = new Date(b.createdAt).getTime();
-            return dateB - dateA;
-          });
-          
-        },
-        error: (error) => console.error(error)
-      });
-    }
+   
   }
 
   showImage(urlImage: string) {
@@ -102,5 +87,7 @@ export default class GetOrdersComponent {
     this.router.navigate([`/pro/orders/detail/${id}`]);
   }
 
-
+  onPageChange(newPage: number) {
+    this.getOrders(newPage);
+  }
 }

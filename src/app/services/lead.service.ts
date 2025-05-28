@@ -24,16 +24,54 @@ export class LeadService {
   }
 
   //lista de leads del cliente, que aun no son ordenes
-  getLeads(): Observable<{ leads: Lead[] }> {
+  getLeads(page: number = 1, limit: number = 10): Observable<{
+    
+    leads: Lead[];
+    total: number;
+    page: number;
+    limit: number;
+    lastPage: number;
+  }> {
     const headers = this.authHeadersService.getHeaders();
-    return this._http.get<{ leads: Lead[] }>(`${this.apiUrlBackend}/leads`, headers);
-
+   
+    return this._http.get<{
+      leads: Lead[];
+      total: number;
+      page: number;
+      limit: number;
+      lastPage: number;
+    }>(`${this.apiUrlBackend}/leads`, {
+      ...headers,
+      params: {
+        page: page.toString(),
+        limit: limit.toString(),
+      }
+    });
   }
-  //obtiene la lista de los leads al que el usuario pro puede acceder.
-  getLeadAllByPro(): Observable<{ leads: Lead[] }> {
+
+
+  getLeadAllByPro(page: number = 1, limit: number = 10): Observable<{
+    leads: Lead[];
+    total: number;
+    page: number;
+    limit: number;
+    lastPage: number;
+  }> {
     const headers = this.authHeadersService.getHeaders();
 
-    return this._http.get<{ leads: Lead[] }>(`${this.apiUrlBackend}/leads/pro`,headers);
+    return this._http.get<{
+      leads: Lead[];
+      total: number;
+      page: number;
+      limit: number;
+      lastPage: number;
+    }>(`${this.apiUrlBackend}/leads/pro`, {
+      ...headers,
+      params: {
+        page: page.toString(),
+        limit: limit.toString(),
+      }
+    });
   }
   getLeadDetail(id: string): Observable<{ lead: Lead }> {
     const headers = this.authHeadersService.getHeaders();

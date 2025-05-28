@@ -32,16 +32,54 @@ export class OrderService {
     
   }
   
-  getOrderUser():Observable<{orders:Order[]}>{
-    const hearders = this.authHeadersService.getHeaders();
-    return this._http.get<{orders:Order[]}>(`${this.apiUrlBackend}/orders/user/`,  hearders);
-    
-  }
+   getOrderUser(page: number = 1, limit: number = 10): Observable<{
+      orders: Order[];
+      total: number;
+      page: number;
+      limit: number;
+      lastPage: number;
+    }> {
+      const headers = this.authHeadersService.getHeaders();
   
-  getOrderUserCustomer():Observable<{orders:Order[]}>{
-    const hearders = this.authHeadersService.getHeaders();
-    return this._http.get<{orders:Order[]}>(`${this.apiUrlBackend}/orders/user/customer`,  hearders);
-  }  
+      return this._http.get<{
+        orders: Order[];
+        total: number;
+        page: number;
+        limit: number;
+        lastPage: number;
+      }>(`${this.apiUrlBackend}/orders/user/`, {
+        ...headers,
+        params: {
+          page: page.toString(),
+          limit: limit.toString(),
+        }
+      });
+    }
+  
+   getOrderUserCustomer(page: number = 1, limit: number = 10): Observable<{
+      orders: Order[];
+      total: number;
+      page: number;
+      limit: number;
+      lastPage: number;
+    }> {
+      const headers = this.authHeadersService.getHeaders();
+  
+      return this._http.get<{
+        orders: Order[];
+        total: number;
+        page: number;
+        limit: number;
+        lastPage: number;
+      }>(`${this.apiUrlBackend}/orders/user/client`, {
+        ...headers,
+        params: {
+          page: page.toString(),
+          limit: limit.toString(),
+        }
+      });
+    }
+  
   getOrderDetail(id: string ):Observable<{order:Order}>{
     const hearders = this.authHeadersService.getHeaders();
     return this._http.get<{order:Order}>(`${this.apiUrlBackend}/orders/detail/${id}`,  hearders);

@@ -9,9 +9,10 @@
         <div class="container mt-5 container-box p-5">
             <h1 class="text-center bg-primary text-white p-2">Leads</h1>
             <div class="p-3 d-flex justify-content-end">
-                <button class="btn btn-primary" routerLink="/client/multi"><i class="bi bi-plus-circle"></i> Lead</button>
+                <button class="btn btn-primary" routerLink="/client/multi"><i class="bi bi-plus-circle"></i>
+                    Lead</button>
             </div>
-            @if(leadList.length===0){
+            @if(leads.length===0){
             <div>
                 <h2 class="text-center">Dear user, you have no leads issued.</h2>
             </div>
@@ -30,26 +31,27 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @for (lead of (leadList | paginate: { itemsPerPage: pageSize, currentPage: page }) ; track lead.id; let i = $index) {
+                        @for (lead of leads ; track lead.id; let i = $index) {
                         <tr class="center-content cursor-pointer" (click)="leadDetail(lead.id!)">
-                            <td>{{i+1}}</td>
+                            <td>{{ i + 1 + (page - 1) * limit }}</td>
                             <td>{{ lead.createdAt | date: 'yyyy/MM/dd' }}</td>
                             <td>{{lead.category.name}}</td>
                             <td>{{lead.zipcode.name}}</td>
-                            <td>{{ lead.description | slice:0:10}}... </td>
+                            <td>{{lead.description | slice:0:10}}... </td>
                             <td>
                                 @if(lead.imageUrl1){
-                                <img [src]="urlUploads+lead.imageUrl1" class="cursor-pointer" width="80" height="60" alt="Image"
-                                    (click)="showImage(urlUploads+lead.imageUrl1)" />
+                                <img [src]="urlUploads+lead.imageUrl1" class="cursor-pointer" width="80" height="60"
+                                    alt="Image" (click)="showImage(urlUploads+lead.imageUrl1)" />
                                 }
                             </td>
                         </tr>
-                    }
+                        }
                 </table>
                 <div class="d-flex justify-content-end">
-                    <pagination-controls (pageChange)="page = $event" previousLabel="Previous" nextLabel="Next">
-                    </pagination-controls>
+                    <app-pagination [page]="page" [lastPage]="lastPage"
+                        (pageChange)="onPageChange($event)"></app-pagination>
                 </div>
+
             </div>
             }
         </div>

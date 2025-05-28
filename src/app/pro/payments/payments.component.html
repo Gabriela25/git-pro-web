@@ -15,13 +15,12 @@
                             <a class="nav-link" [class.active]="currentStep === 2" (click)="goToStep(2)">Payment
                                 history</a>
                         </li>
-
-
                     </ul>
                 </div>
                 <div class="card-body">
 
                     @if(currentStep === 1){
+                    <app-floating-alert [alertMessage]="alertMessage" [backendMessage]="backendMessage" />    
                     <form [formGroup]="paymentForm" (ngSubmit)="onSubmit()" autocomplete="off">
                         <div class="fade-in">
                             <div class="form-group">
@@ -141,17 +140,10 @@
                                         }
 
                                     </div>
-
                                 </div>
 
                             </div>
-
-
                             <div class="d-flex justify-content-end mt-3">
-
-
-
-
                                 <button type="submit" class="btn btn-primary"
                                     [disabled]="!paymentForm.valid">{{'general.save' | translate}}</button>
                             </div>
@@ -162,11 +154,7 @@
                             </div>
                         </div>
                         }
-                        @if(backendMessage){
-                        <div class="alert {{alertMessage}} mt-3">
-                            {{ backendMessage }}
-                        </div>
-                        }
+                        
                     </form>
                     }
                     @if(currentStep === 2){

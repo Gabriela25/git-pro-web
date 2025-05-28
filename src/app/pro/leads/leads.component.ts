@@ -17,6 +17,7 @@ import { LeadStatusService } from '../../services/lead-status.service';
 import { error } from 'console';
 import { LeadStatus } from '../../interface/lead-status.interface';
 import { NgxPaginationModule } from 'ngx-pagination';
+import { PaginationComponent } from '../../shared/pagination/pagination.component';
 
 
 
@@ -29,46 +30,50 @@ import { NgxPaginationModule } from 'ngx-pagination';
     FormsModule,
     NgxPaginationModule,
     HeaderComponent,
-    ModalComponent
+    ModalComponent,
+    PaginationComponent
   ],
   templateUrl: './leads.component.html',
   styleUrl: './leads.component.css'
 })
 export default class GetLeadsComponent {
-  urlUploads:string = environment.urlUploads;
+  urlUploads: string = environment.urlUploads;
   currentStep: number = 1;
   leads: Array<Lead> = [];
-  listMyLeads:  Array<Lead> = [];
-  leadStatus: Array <LeadStatus> = [];
+  myLeads: Array<Lead> = [];
+  leadStatus: Array<LeadStatus> = [];
   weeks: number = 0;
   image!: SafeHtml | string;
-  title: string ='';
+  title: string = '';
 
-  filteredLeads: any[] = []; 
-  selectedStatus: string = ''; 
-  uniqueStatuses: string[] = []; 
+  filteredLeads: any[] = [];
+  selectedStatus: string = '';
+  uniqueStatuses: string[] = [];
   @ViewChild('modal') modal!: ModalComponent;
+
+  total: number = 0;
   page: number = 1;
-  pageSize: number = 10;
+  limit: number =10;
+  lastPage: number = 1;
   constructor(
     private sanitizer: DomSanitizer,
     private router: Router,
     private leadService: LeadService,
-    private leadStatusService : LeadStatusService
-  ) {}
+    private leadStatusService: LeadStatusService
+  ) { }
 
   ngOnInit(): void {
-    this.selectedStatus = 'Pending'; 
-    this.loadInitialData();
-   
-    
+    this.selectedStatus = 'Pending';
+    this.loadInitialData(this.page);
+
+
   }
   getUniqueStatuses() {
     this.uniqueStatuses = [...new Set(this.leadStatus.map(item => item.name))];
   }
-  
+
   filterLeads() {
-    
+
     if (this.selectedStatus) {
       this.filteredLeads = this.leads.filter(lead =>
         lead.leadRequests[0]?.leadStatus?.name === this.selectedStatus
@@ -77,39 +82,37 @@ export default class GetLeadsComponent {
       this.filteredLeads = [...this.leads];
     }
   }
-  loadInitialData() {
-    this.leadService.getLeadAllByPro().subscribe({
-      next: (response) =>{
+  loadInitialData(page: number) {
+    this.page = page;
+    this.leadService.getLeadAllByPro(this.page,this.limit).subscribe({
+      next: (response) => {
         
-        this.leads =  response.leads.sort((a: any, b: any) => {
-          const dateA = new Date(a.createdAt).getTime(); 
-          const dateB = new Date(b.createdAt).getTime();
-          return dateB - dateA; 
-        });
+        this.leads = response.leads;
+        this.total = response.total;
+        this.page = response.page;
+        this.limit = response.limit;
+        this.lastPage = Math.ceil(this.total / this.limit);
         this.filterLeads()
       },
       error: (error) => console.error(error)
     });
-    this.leadService.getLeads().subscribe({
+    this.leadService.getLeads(this.page,this.limit).subscribe({
       next: (response) => {
+
+        this.myLeads = response.leads
         
-        this.listMyLeads = response.leads.sort((a: any, b: any) => {
-          const dateA = new Date(a.createdAt).getTime(); 
-          const dateB = new Date(b.createdAt).getTime();
-          return dateB - dateA; 
-        });
       },
       error: (error) => {
         console.log(error);
       }
     });
     this.leadStatusService.getAllLeadStatus().subscribe({
-      next: (response) =>{
+      next: (response) => {
         this.leadStatus = response.leadStatus;
         this.getUniqueStatuses();
-       
+
       },
-      error: (error) =>{}
+      error: (error) => { }
     })
   }
 
@@ -120,10 +123,10 @@ export default class GetLeadsComponent {
   }
 
   goToStep(step: number) {
-    this.currentStep = step;  
+    this.currentStep = step;
   }
-  
-  showImage(urlImage: string){
+
+  showImage(urlImage: string) {
     this.image = this.sanitizer.bypassSecurityTrustHtml(`
       <div style="font-family: Arial, sans-serif;">
          <img src=${urlImage}           
@@ -132,32 +135,36 @@ export default class GetLeadsComponent {
     `);
     this.openModal()
   }
-  closeModal(){
+  closeModal() {
     this.modal.close();
   }
   openModal() {
     this.modal.open();
   }
-  leadDetail(id:string){
-    
+  leadDetail(id: string) {
+
     this.router.navigate([`/client/lead/detail/${id}`]);
   }
   /*orderDetail(id:string){
     this.router.navigate([`/orders/detail/${id}`]);
   }*/
 
-    getBadgeClass(status: string): string {
-      switch (status) {
-        case 'Pending':
-          return 'text-bg-warning';
-        case 'Accepted':
-          return 'text-bg-success';
-        case 'Rejected':
-          return 'text-bg-danger'; 
-        case 'Expired':
-          return 'text-bg-light'; 
-        default:
-          return 'text-bg-secondary'; 
-      }
+  getBadgeClass(status: string): string {
+    switch (status) {
+      case 'Pending':
+        return 'text-bg-warning';
+      case 'Accepted':
+        return 'text-bg-success';
+      case 'Rejected':
+        return 'text-bg-danger';
+      case 'Expired':
+        return 'text-bg-light';
+      default:
+        return 'text-bg-secondary';
     }
+  }
+
+  onPageChange(newPage: number) {
+    this.loadInitialData(newPage);
+  }
 }

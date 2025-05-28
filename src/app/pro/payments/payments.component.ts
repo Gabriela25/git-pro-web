@@ -9,6 +9,7 @@ import { Payment } from '../../interface/payment.interface';
 import { PaymentService } from '../../services/payment.service';
 import { CommonModule, DatePipe } from '@angular/common';
 import { NgxPaginationModule } from 'ngx-pagination';
+import { FloatingAlertComponent } from '../../shared/floating-alert/floating-alert.component';
 
 @Component({
   selector: 'app-payments',
@@ -19,6 +20,7 @@ import { NgxPaginationModule } from 'ngx-pagination';
     CommonModule, 
     NgxPaginationModule,
     HeaderComponent,
+    FloatingAlertComponent
   ],
   providers: [DatePipe], 
   templateUrl: './payments.component.html',
@@ -178,24 +180,15 @@ export default class PaymentsComponent {
     this.alertMessage = 'alert-success';
     this.backendMessage = response.message || 'Profile updated successfully';
     this.isLoading = false;
-    this.startAlertTimer();
+   
   }
 
   handleError(error: any) {
     this.alertMessage = 'alert-danger';
     this.backendMessage = error.error.message || 'An error occurred';
     this.isLoading = false;
-    this.startAlertTimer();
+   
   }
 
-  startAlertTimer() {
-    if (this.alertTimeout) {
-      clearTimeout(this.alertTimeout);
-    }
-    this.alertTimeout = setTimeout(() => {
-      this.backendMessage = '';
-      this.paymentForm.reset();
-      this.weeks = 0;
-    }, 3000);
-  }
+  
 }

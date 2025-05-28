@@ -9,6 +9,7 @@ import { OrderService } from '../../services/order.service';
 import { Order } from '../../interface/order.interface';
 import { AuthService } from '../../services/auth.service';
 import { ModalComponent } from '../../shared/modal/modal.component';
+import { PaginationComponent } from '../../shared/pagination/pagination.component';
 @Component({
   selector: 'app-orders',
   standalone: true,
@@ -16,7 +17,8 @@ import { ModalComponent } from '../../shared/modal/modal.component';
     CommonModule,
     NgxPaginationModule,
     HeaderComponent,
-    ModalComponent
+    ModalComponent,
+    PaginationComponent
   ],
   templateUrl: './orders.component.html',
   styleUrl: './orders.component.css'
@@ -28,8 +30,10 @@ export default class GetOrdersComponent {
   title: string = '';
 
   isPro: boolean = false;
-  page: number = 1;
-  pageSize: number = 10;
+  total:number = 0;
+  page:number = 1;
+  limit:number = 10;
+  lastPage:number = 1;
   @ViewChild('modal') modal!: ModalComponent;
   constructor(
     private sanitizer: DomSanitizer,
@@ -46,19 +50,23 @@ export default class GetOrdersComponent {
         this.isPro = data.isPro || false;
       }
     });
-    this.checkOrders();
+    this.getOrders(this.page);
 
   }
-  checkOrders() {
+  getOrders(page: number) {
+    this.page = page;
     //ordenamos descendente
     this.orderService.getOrderUserCustomer().subscribe({
       next: (response) => {
+       console.log('cantidad',this.orders)
+        this.orders = response.orders;
+        console.log('cantidad',response)
+        this.total = response.total;
+        this.page = response.page;
+        this.limit = response.limit;
+        this.lastPage = Math.ceil(this.total / this.limit);
 
-        this.orders = response.orders.sort((a: any, b: any) => {
-          const dateA = new Date(a.createdAt).getTime();
-          const dateB = new Date(b.createdAt).getTime();
-          return dateB - dateA;
-        });
+       
 
       },
       error: (error) => console.error(error)
@@ -84,6 +92,9 @@ export default class GetOrdersComponent {
   orderDetail(id: string) {
     this.router.navigate([`/leads/orders/order/detail/${id}`]);
   }
-
+  
+  onPageChange(newPage: number) {
+    this.getOrders(newPage);
+  }
 
 }
