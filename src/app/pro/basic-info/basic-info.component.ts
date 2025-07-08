@@ -17,6 +17,7 @@ import { Notification } from '../../interface/notification.interface';
 import { ModalComponent } from '../../shared/modal/modal.component';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { FloatingAlertComponent } from '../../shared/floating-alert/floating-alert.component';
+import { UploadsService } from '../../services/uploads.service';
 
 @Component({
   selector: 'app-basic-info',
@@ -63,7 +64,7 @@ export default class BasicInfoComponent implements OnInit {
       imagePersonal: '',
       introduction: '',
       isBusiness: false,
-      available: true
+    
     }
   }
 
@@ -110,7 +111,7 @@ export default class BasicInfoComponent implements OnInit {
         console.log(response)
         this.populateUser(response.user)
       },
-      error: (error) => console.error(error)
+      error: (error) => this.handleError(error)
     });
     this.allowNotificationsControl.valueChanges.subscribe(value => {
       this.onCheckboxChange(value!);
@@ -129,13 +130,13 @@ export default class BasicInfoComponent implements OnInit {
         this.notification = response.notification;
         this.getPushNavigatorStatus();
       },
-      error: (error) => {
-      }
+      error: (error) => this.handleError(error)
     });
   }
 
 
   onSubmit() {
+    this.isLoading = true;
     this.basicInfoForm.markAllAsTouched();
     if (this.basicInfoForm.invalid) {
       return;
@@ -158,9 +159,10 @@ export default class BasicInfoComponent implements OnInit {
           isBusiness: false
         }
       };
-      this.userService.putMe(user).subscribe({
+      this.userService.updateMe(user).subscribe({
         next: (response) => {
-          this.handleSuccessfulSubmission(response)
+          console.log(response);
+          this.handleSuccessfulSubmission(response.message)
 
           this.authService.updateUser('name', `${response.user.firstname}  ${response.user.lastname}`);
           this.authService.updateUser('email', `${response.user.email} `);
@@ -177,20 +179,20 @@ export default class BasicInfoComponent implements OnInit {
         this.allowNotificationsControl.setValue(false);
       }
       else if (this.statusWindowNotification === 'granted') {
-        this.serviceWorkersService.getSubscriptionActive(). then(subscription => {  
+        this.serviceWorkersService.getSubscriptionActive().then(subscription => {
           if (subscription === 'subscribed') {
             this.allowNotificationsControl.setValue(true);
-          } 
-          else{
+          }
+          else {
             this.allowNotificationsControl.setValue(false);
-          }      
-       
+          }
+
         })
       }
     }
   }
   onCheckboxChange(isChecked: boolean) {
-   
+
     if (isChecked) {
       if (this.statusWindowNotification === 'default' && this.notification.userId === "") {
 
@@ -215,7 +217,7 @@ export default class BasicInfoComponent implements OnInit {
 
       }
       else if (this.statusWindowNotification === 'granted') {
-        this.serviceWorkersService.getSubscriptionActive(). then(subscription => {  
+        this.serviceWorkersService.getSubscriptionActive().then(subscription => {
           if (subscription != 'subscribed') {
             this.serviceWorkersService.removeNotification(this.notification.id!).subscribe({
               next: (response) => {
@@ -224,11 +226,11 @@ export default class BasicInfoComponent implements OnInit {
                 }
               },
               error: (error) => {
-    
+
               }
             })
-          } 
-       
+          }
+
         })
       }
 
@@ -240,9 +242,7 @@ export default class BasicInfoComponent implements OnInit {
       next: (response) => {
         console.log("Notificación push suscrita con éxito:", response);
       },
-      error: (error) => {
-        console.error("Error al suscribirse a notificaciones push:", error);
-      }
+      error: (error) => this.handleError(error)
     });
   }
 
@@ -281,19 +281,25 @@ export default class BasicInfoComponent implements OnInit {
   openModal() {
     this.modal.open();
   }
-  handleSuccessfulSubmission(response: any) {
-    this.alertMessage = 'alert-success';
-    this.backendMessage = response.message || 'Profile updated successfully';
-    this.isLoading = false;
-  }
 
-  handleError(error: any) {
-    this.alertMessage = 'alert-danger';
-    this.backendMessage = error.error.message || 'An error occurred';
+
+  handleSuccessfulSubmission(message: string) {
     this.isLoading = false;
-   
+    this.backendMessage = '';
+    setTimeout(() => {
+      this.alertMessage = 'alert-success';
+      this.backendMessage = message || 'Client updated successfully';
+    });
   }
-  
+  handleError(error: any) {
+    this.isLoading = false;
+    this.backendMessage = '';
+    setTimeout(() => {
+      this.alertMessage = 'alert-danger';
+      this.backendMessage = error.error.message || 'An error occurred';
+    });
+
+  }
 
 
 }

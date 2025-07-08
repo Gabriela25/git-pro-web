@@ -15,6 +15,7 @@ import { ServiceWorkersService } from '../services/service-workers.service';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { TranslateModule } from '@ngx-translate/core';
 import { Notification } from '../interface/notification.interface';
+import { FloatingAlertComponent } from "../shared/floating-alert/floating-alert.component";
 
 @Component({
   selector: 'app-home',
@@ -24,9 +25,9 @@ import { Notification } from '../interface/notification.interface';
     TranslateModule,
     HeaderComponent,
     FooterComponent,
-    ModalComponent
-
-  ],
+    ModalComponent,
+    FloatingAlertComponent
+],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
 })
@@ -51,10 +52,8 @@ export default class HomeComponent {
     permission: '',
     device: ''
   }
-  //sanitizer: any;
-  /*selectServices(idService : number){
-    console.log(idService)
-  }*/
+  alertMessage: string = '';
+  backendMessage: string = '';
   constructor(
     private router: Router,
     private sanitizer: DomSanitizer,
@@ -72,8 +71,7 @@ export default class HomeComponent {
         this.listCategories = response.categories;
 
       },
-      error: (error) => {
-      }
+      error: (error) => this.handleError(error)
     });
     //si el usuario esta autenticado
     if (this.authService.isAuthenticated()) {
@@ -117,6 +115,7 @@ export default class HomeComponent {
   }*/
   navigateToServices(item: Category) {
     if (this.authService.isAuthenticated()) {
+      console.log('entre')
       this.router.navigate(['/client/multi']);
       this.leadService.updateDataLead('categoryId', item.id);
       this.leadService.updateDataLead('categoryName', item.name);
@@ -175,6 +174,14 @@ export default class HomeComponent {
         }, 1000);
       }*/
     }
+
+  }
+
+  handleError(error: any) {
+    setTimeout(() => {
+      this.alertMessage = 'alert-danger';
+      this.backendMessage = error.error.message || 'An error occurred';
+    });
 
   }
 

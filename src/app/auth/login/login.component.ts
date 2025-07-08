@@ -113,7 +113,7 @@ export default class LoginComponent {
               if (profile?.imagePersonal) {
                 userData.imagePersonal = profile.imagePersonal;
               }
-              userData.available = profile?.available || false;
+              //userData.available = profile?.available || false;
 
               localStorage.setItem('user', JSON.stringify(userData));
              
@@ -135,11 +135,15 @@ export default class LoginComponent {
   }
 
 
+  
   handleError(error: any) {
-    this.alertMessage = 'alert-danger';
-    this.backendMessage = error.error.message || 'An error occurred';
     this.isLoading = false;
-    
+    this.backendMessage = '';
+    setTimeout(() => {
+      this.alertMessage = 'alert-danger';
+      this.backendMessage = 'An error has occurred, please check your email and password.';
+    });
+
   }
  
   

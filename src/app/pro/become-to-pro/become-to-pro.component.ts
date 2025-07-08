@@ -1,89 +1,78 @@
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { FormGroup, FormBuilder, Validators, FormControl, ValidatorFn, AbstractControl, ValidationErrors, FormsModule } from '@angular/forms';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
-import { Component, ElementRef, OnInit, Renderer2, TemplateRef, ViewChild } from '@angular/core';
-import { AbstractControl, FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
-import { RouterLink } from '@angular/router';
-import { HeaderComponent } from '../../shared/header/header.component';
-import { TranslateModule } from '@ngx-translate/core';
-
-import { ComunicationService } from '../../services/comunication.service';
-import { AutocompleteComponent } from '../../shared/autocomplete/autocomplete.component';
 import { CategoryService } from '../../services/category.service';
-import { ModalComponent } from '../../shared/modal/modal.component';
-import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
-import { NgxMaskDirective } from 'ngx-mask';
 import { ZipcodeService } from '../../services/zipcode.service';
+
+import { ModalComponent } from '../../shared/modal/modal.component';
 import { Category } from '../../interface/category.interface';
 import { Zipcode } from '../../interface/zipcode.interface';
+import { Image } from '../../interface/image.interface';
+import { FloatingAlertComponent } from '../../shared/floating-alert/floating-alert.component';
+import { ProPersonalFormComponent } from './pro-personal-form/pro-personal-form.component';
+import { ProBusinessFormComponent } from "./pro-business-form/pro-business-form.component";
+import { HeaderComponent } from "../../shared/header/header.component";
+import { CommonModule } from '@angular/common';
+import e from 'express';
+import { UserService } from '../../services/user.service';
 import { User } from '../../interface/user.interface';
 import { Profile } from '../../interface/profile.interface';
-import { UserService } from '../../services/user.service';
-import { AuthService } from '../../services/auth.service';
 import { UploadsService } from '../../services/uploads.service';
-import { SocketComponent } from "../../shared/socket/socket.component";
-import { CapitalizeFirstDirective } from '../../shared/directives/capitalize-first.directive';
-import { NoWhitespaceDirective } from '../../shared/directives/no-whitespace';
-import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
-import { environment } from '../../../environments/environment';
-import { Image } from '../../interface/image.interface';
-import { limit } from 'firebase/firestore';
-import { CommonModule } from '@angular/common';
-import { FloatingAlertComponent } from '../../shared/floating-alert/floating-alert.component';
+import { firstValueFrom } from 'rxjs';
+
+
 @Component({
   selector: 'app-become-to-pro',
+  templateUrl: './become-to-pro.component.html',
+  styleUrl: './become-to-pro.component.css',
   standalone: true,
   imports: [
     CommonModule,
-    ReactiveFormsModule,
-    FormsModule,
+    FloatingAlertComponent,
+    ProPersonalFormComponent,
     TranslateModule,
+    ProBusinessFormComponent,
+    FormsModule,
     HeaderComponent,
-    ModalComponent,
-    CapitalizeFirstDirective,
-    NoWhitespaceDirective,
-    NgMultiSelectDropDownModule,
-    FloatingAlertComponent
-
-  ],
-  templateUrl: './become-to-pro.component.html',
-  styleUrl: './become-to-pro.component.css'
+    ModalComponent
+  ]
 })
 export default class BecomeToProComponent implements OnInit {
   @ViewChild('modal') modal!: ModalComponent;
 
-  value: boolean = false;
-  licenses: boolean = false;
+  proPersonalForm!: FormGroup;
+  proBusinessForm!: FormGroup;
+
+  isSelectOption: 'isPersonal' | 'isBusiness' = 'isPersonal';
+  showOptsPro = true;
+  isNext = false;
+  currentStep = 1;
+  alertMessage = '';
+  backendMessage = '';
+  isLoading = false;
+  onSelect: boolean = false;
+  isUserProPersonal: boolean = false;
+  showBusinessTab: boolean = false;
+  isDisabled: boolean = false;
+
+  listCategories: Category[] = [];
+  listZipcode: Zipcode[] = [];
+  dropdownSettings = {};
+
+
+  previewImgPersonal: string | ArrayBuffer | null = 'assets/avatar_profile.png';
   selectedFilePersonal: File | null = null;
 
-  listCategories: Array<Category> = [];
-  listServicesPro: Array<any> = [];
-  listZipcode: Array<Zipcode> = [];
-  isLoading = false;
-  backendMessage = '';
-  alertMessage = '';
-  alertTimeout: any;
-  token: string = '';
-  proPersonalForm: FormGroup;
-  proBusinessForm: FormGroup;
-  currentStep: number = 1;
-  isSelectOption: string = 'isPersonal';
-  showOptsPro: boolean = true;
-  showBusinessTab: boolean = false;
-  onSelect: boolean = false;
-  profileForm!: FormGroup;
-
-  imagePersonal: string = '';
-  imageBusiness: string = '';
-  isUserProPersonal: boolean = false;
-  previewImgPersonal: string | ArrayBuffer | null = null;
-  previewImgBusiness: string | ArrayBuffer | null = null;
-  isBusiness: boolean = false;
-  isNext: boolean = false;
-  isDisabled: boolean = false;
-  previewImg: string | ArrayBuffer | null = null;
-  @ViewChild('fileInputPersonal') fileInputPersonal!: ElementRef<HTMLInputElement>;
-  @ViewChild('fileInputBusiness') fileInputBusiness!: ElementRef<HTMLInputElement>;
+  previewImgBusiness: string | ArrayBuffer | null = 'assets/avatar_profile.png';
   selectedFileBusiness: File | null = null;
-  base64Image: string | null = null;
+
+  filesLicences: File[] = [];
+  previews: string[] = [];
+  listImages: Image[] = [];
+  imagesToDelete: Image[] = [];
+  errorMessage = '';
+  imageBusiness: string = '';
   user: User = {
     id: '',
     firstname: '',
@@ -101,105 +90,21 @@ export default class BecomeToProComponent implements OnInit {
       isBusiness: false
     }
   }
-  dropdownList: any = [];
-  selectedItems: any = [];
-  dropdownSettings: any = {};
-  urlUploads = environment.urlUploads;
-  listImages: Array<Image> =[];
-  filesLicences: File[] = [];
-  previews: string[] = [];
-  errorMessage: string = '';
-  imagesToDelete :Array<Image> =[]
   constructor(
     private fb: FormBuilder,
+    private translate: TranslateService,
     private categoryService: CategoryService,
     private zipCodeService: ZipcodeService,
     private userService: UserService,
-    private uploadsService: UploadsService,
-    private authService: AuthService
-  ) {
-    this.proPersonalForm = this.initializeProPersonalForm();
-    this.proBusinessForm = this.initializeProBusinessForm();
+    private uploadsService:UploadsService
+  ) { }
 
-  }
   ngOnInit(): void {
+    this.initForms();
     this.loadInitialData();
     this.checkUserProfile();
 
 
-    this.dropdownSettings = {
-      singleSelection: false,
-      idField: 'id',
-      textField: 'name',
-      selectAllText: 'Select All',
-      unSelectAllText: 'UnSelect All',
-      itemsShowLimit: 4,
-      allowSearchFilter: true,
-      limitSelection:3
-    };
-
-
-  }
-  onItemSelect(item: any) {
-
-  }
-  onSelectAll(items: any) {
-
-  }
-  initializeProPersonalForm(): FormGroup {
-    return this.fb.group({
-      categories: new FormControl([], [Validators.required]),
-      licenses: new FormControl(null,),
-      zipcode: new FormControl('', [Validators.required]),
-      address: new FormControl('', [Validators.required, Validators.minLength(10)]),
-      imagePersonal: new FormControl('', [Validators.required]),
-      introduction: new FormControl('')
-    });
-  }
-
-
-  initializeProBusinessForm(): FormGroup {
-    return this.fb.group({
-      nameBusiness: new FormControl('', [Validators.required]),
-      yearFounded: new FormControl('', [Validators.required, Validators.pattern(/^[0-9]*$/)]),
-      numberOfemployees: new FormControl('', [Validators.required, Validators.pattern(/^[0-9]*$/)]),
-      imageBusiness: new FormControl('', [Validators.required]),
-    });
-  }
-  validateNumber(event: KeyboardEvent): void {
-    const charCode = event.keyCode ? event.keyCode : event.which;
-    if ((charCode < 48 || charCode > 57) && charCode !== 8 && charCode !== 9) {
-      event.preventDefault();
-    }
-  }
-  loadInitialData() {
-    this.categoryService.getAllCategories().subscribe({
-      next: (response) => this.listCategories = response.categories,
-      error: (error) => console.error(error)
-    });
-    this.zipCodeService.getAllZipcodes().subscribe({
-      next: (response) => this.listZipcode = response.zipcodes,
-      error: (error) => console.error(error)
-    });
-
-  }
-  initializeUser(): User {
-    return {
-      id: '',
-      firstname: '',
-      lastname: '',
-      email: '',
-      phone: '',
-      profile: {
-        id: '',
-        categories: [],
-        zipcodeId: '',
-        address: '',
-        imagePersonal: '',
-        introduction: '',
-        isBusiness: false
-      }
-    };
   }
   checkUserProfile() {
     this.userService.getMe().subscribe({
@@ -215,373 +120,445 @@ export default class BecomeToProComponent implements OnInit {
     if (this.user.profile) {
       //asignamos si el perfil es personal o business
       this.isUserProPersonal = this.user.profile.isBusiness!;
-    
-      this.imagePersonal = `${this.urlUploads}${this.user.profile.imagePersonal}`;
+
+      //this.imagePersonal = `${this.urlUploads}${this.user.profile.imagePersonal}`;
 
       this.proPersonalForm.patchValue({
         categories: this.user.profile.categories,
-        zipcode:this.user.profile.zipcodeId,
-        address:this.user.profile.address,
-        imagePersonal: `${this.urlUploads}${this.user.profile.imagePersonal}`,
+        zipcode: this.user.profile.zipcodeId,
+        address: this.user.profile.address,
+        //imagePersonal: `${this.urlUploads}${this.user.profile.imagePersonal}`,
         introduction: this.user.profile.introduction
       });
       if (this.user.profile.isBusiness) {
         this.isSelectOption = 'isBusiness';
         this.isDisabled = true;
 
-        this.imageBusiness = `${this.urlUploads}${this.user.profile.imageBusiness}`;
+        //this.imageBusiness = `${this.urlUploads}${this.user.profile.imageBusiness}`;
         this.proBusinessForm.patchValue({
-          imageBusiness : `${this.urlUploads}${this.user.profile.imageBusiness}`,
+          //imageBusiness : `${this.urlUploads}${this.user.profile.imageBusiness}`,
           nameBusiness: this.user.profile.nameBusiness,
           yearFounded: this.user.profile.yearFounded,
           numberOfemployees: this.user.profile.numberOfemployees
         });
       }
-      this.checkLicences(this.user.profile.id!)
-    } else {
-      this.openModalOnPageLoad();
+
+    }
+  }
+  ngAfterViewInit(): void {
+
+    if (this.showOptsPro) {
+      setTimeout(() => {
+        this.openModalOnPageLoad();
+
+      }, 0);
     }
   }
   openModalOnPageLoad() {
+
     if (this.modal) {
       this.modal.open();
     }
   }
-  checkLicences(profileId:string){
-    this.userService.getLicense(profileId).subscribe({
-      next: (response) => {
-       
-        this.listImages = response.images
-      },
-      error: (error) => console.error(error)
+
+  initForms(): void {
+    this.proPersonalForm = this.fb.group({
+      categories: new FormControl([], [Validators.required]),
+      zipcode: new FormControl('', [Validators.required]),
+      address: new FormControl('', [Validators.required, Validators.minLength(10)]),
+      imagePersonal: new FormControl(null, [Validators.required]),
+      introduction: new FormControl(''),
+      licenses: new FormControl([], [this.licenseConditionalValidator()])
     });
+
+    this.proBusinessForm = this.fb.group({
+      nameBusiness: new FormControl('', [Validators.required]),
+      yearFounded: new FormControl('', [Validators.required, Validators.pattern(/^\d{4}$/)]),
+      numberOfemployees: new FormControl('', [Validators.required, Validators.pattern(/^\d+$/)]),
+      imageBusiness: new FormControl(null, [Validators.required])
+    });
+    this.proPersonalForm.get('licenses')?.setValidators(this.licenseConditionalValidator());
+    this.proPersonalForm.get('licenses')?.updateValueAndValidity()
+
   }
+  onAccept() { }
+  loadInitialData(): void {
+    this.categoryService.getAllCategories().subscribe({
+      next: (response) => {
+        this.listCategories = response.categories;
+        // Disparar validación por si dependiera de categorías
+        this.proPersonalForm.get('licenses')?.updateValueAndValidity();
+      },
+      error: console.error
+    });
+
+    this.zipCodeService.getAllZipcodes().subscribe({
+      next: (response) => this.listZipcode = response.zipcodes,
+      error: console.error
+    });
+    this.openModalOnPageLoad();
+  }
+
+  // Validador condicional para licencias (obligatorio si alguna categoría requiere licencia)
+  licenseConditionalValidator(): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      const categories: Category[] = this.proPersonalForm?.get('categories')?.value || [];
+      const licenses = control.value || [];
+
+      const requiresLicense = categories.some(cat => cat.licenseRequired === true);
+      if (requiresLicense && (!licenses || licenses.length === 0)) {
+        return { licensesRequired: true };
+      }
+      return null;
+    };
+  }
+
+  // Recepción del array de licencias emitido desde el hijo
+  onLicensesChangedFromChild(licenses: any[]) {
+
+    this.proPersonalForm.get('licenses')?.setValue(licenses);
+    this.proPersonalForm.get('licenses')?.updateValueAndValidity();
+  }
+
   onRadioChange(event: Event) {
     this.onSelect = true;
     const target = event.target as HTMLInputElement;
-    this.isSelectOption = target.value;
-    if (this.isSelectOption === 'isBusiness') {
-      this.isUserProPersonal = false;
-      this.showBusinessTab = this.isSelectOption === 'isBusiness';
-    }
-    else {
+
+    this.isSelectOption = target.value as 'isPersonal' | 'isBusiness';
+
+    if (this.isSelectOption === 'isPersonal') {
       this.isUserProPersonal = true;
-      //this.currentStep = 1;
+      this.showBusinessTab = false;
+      this.currentStep = 1;
+
+
+      this.proPersonalForm.get('licences')?.updateValueAndValidity();
+      this.proPersonalForm.get('categories')?.updateValueAndValidity();
+    } else {
+      this.isUserProPersonal = false;
+      this.showBusinessTab = true;
+      this.currentStep = 2;
+
+
     }
   }
-  onAccept() {
-    console.log('clieck del boton')
+  onFileSelectedPersonal(file: File): void {
+    this.selectedFilePersonal = file;
 
-    console.log(this.showBusinessTab)
+    this.proPersonalForm.get('imagePersonal')?.setValue(file);
+
+    const reader = new FileReader();
+    reader.onload = e => {
+
+      this.previewImgPersonal = e.target?.result || null;
+    };
+    reader.readAsDataURL(file);
+
+    this.proPersonalForm.get('imagePersonal')?.markAsTouched();
+    this.proPersonalForm.get('imagePersonal')?.updateValueAndValidity();
   }
 
-  onFileSelected(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    if (input.files && input.files[0]) {
-      const file = input.files[0];
+  onFileSelectedBusiness(file: File): void {
+    this.selectedFileBusiness = file;
+    this.proBusinessForm.get('imageBusiness')?.setValue(file);
 
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        if (e.target?.result) {
-          const base64String = reader.result as string;
-          //base64 para vista previa de la imagen
-          if (input.id == 'imagePersonal') {
-            this.previewImgPersonal = e.target.result;
-            //se setea el base64, para el campo del formulario
-            this.proPersonalForm.get('imagePersonal')?.setValue(base64String);
-            this.selectedFilePersonal = file;
-          }
-          else {
-            this.previewImgBusiness = e.target.result;
-            //se setea el base64, para el campo del formulario
-            this.proBusinessForm.get('imageBusiness')?.setValue(base64String);
-            this.selectedFileBusiness = file;
-          }
+    const reader = new FileReader();
+    reader.onload = e => {
+      this.previewImgBusiness = e.target?.result || null;
+    };
+    reader.readAsDataURL(file);
 
-        }
-      };
-      reader.readAsDataURL(file);
-    }
+    this.proBusinessForm.get('imageBusiness')?.markAsTouched();
+    this.proBusinessForm.get('imageBusiness')?.updateValueAndValidity();
   }
 
-  triggerFileInputP(): void {
-    this.fileInputPersonal.nativeElement.click();
-  }
-  triggerFileInputB(): void {
-    this.fileInputBusiness.nativeElement.click();
-  }
+  // Control de pasos (personal/business)
+  /* nextStep(): void {
+     this.proPersonalForm.markAllAsTouched();
+     this.proPersonalForm.updateValueAndValidity();
  
-  previousStep() {
-    this.isNext = false;
-
-  }
-  nextStep() {
-    this.validatedFormPersonal()
-
-  }
-  validatedFormPersonal() {
+     if (this.proPersonalForm.invalid) {
+       
+       return;
+     }
+ 
+     this.isNext = true;
+     this.currentStep = 2;
+     this.isSelectOption = 'isBusiness';
+   }*/
+  nextStep(): void {
+    // Validar el formulario personal antes de pasar al de negocio
     this.proPersonalForm.markAllAsTouched();
-    if (this.proPersonalForm.invalid) {
+    this.proPersonalForm.updateValueAndValidity();
+
+    if (this.proPersonalForm.invalid || this.isLicenceRequiredForSelectedCategories() === true) {
+      this.isLoading = false;
+
+      if (this.isLicenceRequiredForSelectedCategories() === true) {
+        this.handleError({ error: { message: 'Press the add categories button' } });
+        return;
+      } else {
+        this.handleError({ error: { message: 'Please complete all required fields in your personal profile.' } });
+      }
       return;
     }
     this.isNext = true;
+    this.currentStep = 2;
+    this.isSelectOption = 'isBusiness';
+  }
 
-  }
-  goToStep(step: number) {
-    if (step == 2) {
-      this.validatedFormPersonal()
+  previousStep(): void {
+    this.isNext = false;
+    if (this.currentStep === 2 && this.isSelectOption === 'isBusiness') {
+      this.currentStep = 1;
+      this.isSelectOption = 'isPersonal';
+    } else if (this.currentStep === 1 && this.isSelectOption === 'isPersonal') {
+      this.showOptsPro = true;
     }
-    else if (step == 1) {
-      this.currentStep = step;
-    }
   }
-  async onSubmit() {
+
+
+  // Método submit final
+  /*onSubmit(): void {
     this.proPersonalForm.markAllAsTouched();
-    this.proBusinessForm.markAllAsTouched();
-  
-    const isFirstTime = !this.user.profile || !this.user.profile.id;
-    const isEditingPersonal = this.isSelectOption === 'isPersonal' && !this.isNext;
-    const isEditingBusiness = this.isSelectOption === 'isBusiness' && this.isNext;
-  
-    // Imagenes
-    const nameImage = this.selectedFilePersonal ? await this.uploadImageWithFile(this.selectedFilePersonal) : '';
-    const nameImageBusiness = this.selectedFileBusiness ? await this.uploadImageWithFile(this.selectedFileBusiness) : '';
-  
-    if (isEditingPersonal && this.proPersonalForm.valid) {
-      const profile = this.buildProfile(false, nameImage, '', false);
-      
-      if (isFirstTime) {
-        this.handleProfileSubmit(profile);
-      } else if (!this.proBusinessForm.valid) {
+    this.proPersonalForm.updateValueAndValidity();
+    if (this.isSelectOption === 'isPersonal') {
      
-        if (!nameImage) {
-          profile.imagePersonal = this.user.profile?.imagePersonal;
-         
+
+      if (this.proPersonalForm.invalid) {
+         return;
+      }else{
+        const selectedCategoryIds: string[] = this.proPersonalForm.get('categories')?.value || [];
+
+        const selectedCategories = this.listCategories.filter(cat =>
+          selectedCategoryIds.includes(cat.id)
+        );
+        
+        const categoriesThatRequireLicense = selectedCategories.filter(cat => cat.licenseRequired);
+        const hasLicenseRequired = categoriesThatRequireLicense.length;
+        if( hasLicenseRequired !=this.proPersonalForm.get('licenses')?.value.length){
+         this.handleError({ error: { message: 'Press the add categories button' } });
+          return;
         }
-        this.handleProfileEdit(profile);
+
+        console.log('Datos para enviar:', this.proPersonalForm.value);
+        console.log('Archivo imagen personal:', this.selectedFilePersonal);
+        console.log('Licencias:', this.proPersonalForm.get('licenses')?.value);
+
+        this.alertMessage = this.translate.instant('FORM_SUBMITTED_SUCCESSFULLY');
+        this.backendMessage = '';
+        this.isLoading = true;
+        
+        // Aquí llamarías tu servicio para enviar los datos al backend
       }
-  
-      await this.handleUploadsAndDeletes();
-    }
-  
-    if (isEditingBusiness && this.proBusinessForm.valid) {
-      const profile = this.buildProfile(true, nameImage, nameImageBusiness, isFirstTime);
-  
-      if (!nameImage) profile.imagePersonal = this.user.profile?.imagePersonal;
-      if (!nameImageBusiness) profile.imageBusiness = this.user.profile?.imageBusiness;
-  
-      if (isFirstTime) {
-        this.handleProfileSubmit(profile);
-      } else {
-        this.handleProfileEdit(profile);
-      }
-  
-      await this.handleUploadsAndDeletes();
-      this.isDisabled = true;
-    }
-  
-    this.selectedFilePersonal = null;
-    this.selectedFileBusiness = null;
-  }
-  
-  private async uploadImageWithFile(file: File): Promise<string> {
-    const formData = new FormData();
-    formData.append('file', file);
-    return await this.uploadImage(formData);
-  }
-  
-  private buildProfile(
-    isBusiness: boolean,
-    nameImage: string,
-    nameImageBusiness: string,
-    isFirstTime: boolean
-  ): Profile {
-    const personalValues = this.proPersonalForm.value;
-    const businessValues = this.proBusinessForm.value;
-  
-    return {
-      categories: personalValues.categories.map((c: any) => c.id),
-      zipcodeId: personalValues.zipcode || '',
-      address: personalValues.address || '',
-      imagePersonal: nameImage || '',
-      introduction: personalValues.introduction || '',
-      isBusiness,
-      available: true,
-      ...(isBusiness && {
-        nameBusiness: businessValues.nameBusiness || '',
-        yearFounded: businessValues.yearFounded || '',
-        numberOfemployees: businessValues.numberOfemployees || '',
-        imageBusiness: nameImageBusiness || ''
-      })
-    };
-  }
-  
-  private handleProfileSubmit(profile: Profile) {
-    this.userService.becomeToPro(profile).subscribe({
-      next: (response) => {
-        this.user.profile = response.profile;
-        this.handleSuccessfulSubmission(response);
-        this.authService.updateUser('available', true);
-        this.authService.updateUser('isPro', true);
-        console.log(response.profile.imagePersonal)
-        if (response.profile.imagePersonal) {
-          this.authService.updateUser('imagePersonal', response.profile.imagePersonal);
-        }
-      },
-      error: (error) => this.handleError(error)
-    });
-  }
-  
-  private handleProfileEdit(profile: Profile) {
-    this.userService.putMe({ ...this.user, profile }).subscribe({
-      next: (response) => {
-        if (response.user.profile?.imagePersonal) {
-          this.authService.updateUser('imagePersonal', response.user.profile.imagePersonal);
-        }
-        this.authService.updateUser('available', response.user.profile?.available);
-        this.handleSuccessfulSubmission(response);
-      },
-      error: (error) => this.handleError(error)
-    });
-  }
-  
-  private async handleUploadsAndDeletes() {
-    if (this.imagesToDelete.length > 0) {
-      this.deletedLicenses(this.imagesToDelete);
-    }
-    if (this.filesLicences) {
-      this.uploadLicenses();
-    }
-  }
-  
-  
-  openFileSelector(fileInput: HTMLInputElement) {
-    fileInput.click();
-  }
-  onFileSelected1(event: Event) {
-    const input = event.target as HTMLInputElement;
-    if (input.files) {
-      const files = Array.from(input.files);
     
-      if (this.listImages.length+this.previews.length + files.length > 3) {
-        this.errorMessage = 'You can only upload a maximum of 3 images.';
+    }else if (this.isSelectOption === 'isBusiness') {
+        this.proBusinessForm.markAllAsTouched();
+        this.proBusinessForm.updateValueAndValidity();
+
+        if (this.proBusinessForm.invalid) {
+          return;
+        } else {
+          console.log('Datos para enviar:', this.proBusinessForm.value);
+          console.log('Archivo imagen negocio:', this.selectedFileBusiness);
+
+          this.alertMessage = this.translate.instant('FORM_SUBMITTED_SUCCESSFULLY');
+          this.backendMessage = '';
+          this.isLoading = true;
+
+          // Aquí llamarías tu servicio para enviar los datos al backend
+        }
+      }
+   
+    // Similar lógica para isBusiness si quieres manejarlo aquí
+  }*/
+  onSubmit(): void {
+    this.isLoading = true;
+    
+    if (this.isSelectOption === 'isPersonal') {
+
+      this.proPersonalForm.markAllAsTouched();
+      this.proPersonalForm.updateValueAndValidity(); // Forzar validación
+
+
+      if (this.proPersonalForm.invalid || this.isLicenceRequiredForSelectedCategories() === true) {
+        this.isLoading = false;
+
+        if (this.isLicenceRequiredForSelectedCategories() === true) {
+          this.handleError({ error: { message: 'Press the add categories button' } });
+          return;
+        } else {
+          this.handleError({ error: { message: 'Please complete all required fields in your personal profile.' } });
+        }
         return;
       }
 
-      this.errorMessage = ''; 
-      
-      files.forEach(file => {
-        this.filesLicences.push(file);
-        const reader = new FileReader();
-        reader.onload = (e: any) => {
-          this.previews.push(e.target.result);
-        };
-        reader.readAsDataURL(file);
-      });
-    }
-  }
-  
-  removeImage(index: number) {
-    this.previews.splice(index, 1);
-  }
-  removeExistingImage(index: number) {
-    // Puedes eliminarlas del array o marcarlas para borrar
-    const removed = this.listImages.splice(index, 1);
-    this.imagesToDelete.push(removed[0]); 
-  }
+      // Si el formulario personal es válido, procesar envío
+     
+      this.processPersonalFormSubmission();
 
-  deletedLicenses( imagesToDelete: Image[]) {   
-    for(const imgId of imagesToDelete){
-      this.userService.deletedLicenses(imgId.id!).subscribe({
-        next: (response) => {
-          console.log(response)
-          
-        },
-        error: (error) => {
-          console.error('Error al eliminar el archivo');
-        },
-      })
-    }  
-  }
-  async uploadLicenses(){
-    const files = [
-      { file: this.filesLicences[0], key: 'imageName1' },
-      { file: this.filesLicences[1], key: 'imageName2' },
-      { file: this.filesLicences[2], key: 'imageName3' },
-    ]
-    for (const fileData of files) { 
-      if (fileData.file) {
-        const formData = new FormData();
-        formData.append('file', fileData.file);
-        try {
-          const nameImage = await this.uploadImage(formData);
-         
-          if (nameImage) {
-            const data = {
-              name: nameImage
-            }
-            this.userService.postLicenses(data).subscribe({
-              next: (response) => {
-                console.log(response)   
-              },
-              error: (error) => {
-                console.error('Error al eliminar el archivo');
-              },
-            })
-          }
-        } catch (error) {
-          console.error(`Error asignando la URL para ${fileData.key}:`, error);
+    } else if (this.isSelectOption === 'isBusiness') {
+      // Caso: Se envía el perfil de negocio (que incluye el personal)
+
+      // 1. Marcar y validar el formulario personal
+      this.proPersonalForm.markAllAsTouched();
+      this.proPersonalForm.updateValueAndValidity();
+
+      if (this.proPersonalForm.invalid || this.isLicenceRequiredForSelectedCategories() === true) {
+        this.isLoading = false;
+        this.isLoading = false;
+
+        if (this.isLicenceRequiredForSelectedCategories() === true) {
+          this.handleError({ error: { message: 'Press the add categories button' } });
+          return;
+        } else {
+          this.handleError({ error: { message: 'Please complete all required fields in your personal profile.' } });
         }
+        // Opcional: regresar al paso 1 si el error es en el formulario personal
+        this.currentStep = 1;
+        this.isSelectOption = 'isPersonal';
+        this.isNext = false;
+        return;
       }
+
+      // 2. Marcar y validar el formulario de negocio
+      this.proBusinessForm.markAllAsTouched();
+      this.proBusinessForm.updateValueAndValidity();
+
+      if (this.proBusinessForm.invalid) {
+        this.isLoading = false;
+
+        this.handleError({ error: { message: 'Please complete all required fields in your personal profile.' } });
+        return;
+      }
+
+      // Si ambos formularios son válidos, combinar y procesar envío
+      this.processBusinessFormSubmission();
     }
   }
-  /*uploadImage(file: File, isBusiness: boolean) {
 
-    const formData = new FormData();
-    formData.append('model', 'profile');
-    formData.append('idModel', '');
-    formData.append('field', isBusiness ? 'imageBusiness' : 'imagePersonal');
-    formData.append('file', file);
+  isLicenceRequiredForSelectedCategories(): boolean {
+    const selectedCategoryIds: string[] = this.proPersonalForm.get('categories')?.value || [];
 
-    this.uploadsService.postUploads(formData).subscribe({
+    const selectedCategories = this.listCategories.filter(cat =>
+      selectedCategoryIds.includes(cat.id)
+    );
+
+    const categoriesThatRequireLicense = selectedCategories.filter(cat => cat.licenseRequired);
+    const hasLicenseRequired = categoriesThatRequireLicense.length;
+    if ((hasLicenseRequired != this.proPersonalForm.get('licenses')?.value.length)) {
+
+      return true;
+    }
+    return false;
+  }
+  async  processPersonalFormSubmission(): Promise<void> {
+    const isFirstTime = !this.user.profile || !this.user.profile.id;
+   
+    const combinedData = {
+      ...this.proPersonalForm.value,
+      imagePersonalFile: this.selectedFilePersonal,
+      isPersonalProfile: true,
+      isBusinessProfile: false,
+      licensesDetails: this.proPersonalForm.get('licenses')?.value
+
+
+    };
+     ///;
+    
+     const imagePersonalFile = await this.uploadImageWithFile(combinedData.imagePersonalFile);
+     console.log('Archivo imagen personal:', imagePersonalFile);
+     combinedData.imagePersonal = imagePersonalFile || '';
+   
+    //delete combinedData.licenses;
+    const profile = this.buildProfile(combinedData, false, isFirstTime)
+    console.log('Datos COMBINADOS para enviar (Solo Personal):', combinedData);
+    this.userService.becomeToPro(profile).subscribe({
       next: (response) => {
-
-        if (response.uploads.urlImage) {
-          if (this.selectedFilePersonal != null) {
-            this.authService.updateUser('imagePersonal', `${response.uploads.urlImage}`);
-            this.selectedFilePersonal = null
-          }
-        }
+        console.log('Perfil creado o actualizado:', response.profile);
       },
       error: (error) => this.handleError(error)
     });
-  }*/
-  async uploadImage(formData: FormData): Promise<string> {
     
-    try {
-      const response = await this.uploadsService.postUploadsImageAll(formData).toPromise();
-      return response!.fileName; 
-    } catch (error) {
-      console.error('Error al subir el archivo:', error);
-      return 'Error al subir el archivo'; 
-    }
-  }
-  handleSuccessfulSubmission(response: any) {
-    this.alertMessage = 'alert-success';
-    this.backendMessage = response.message || 'Profile updated successfully';
-    this.isLoading = false;
-   
   }
 
-  handleError(error: any) {
-    this.alertMessage = 'alert-danger';
-    this.backendMessage = error.error.message || 'An error occurred';
-    this.isLoading = false;
-   
-  }
-  
-  
+  private processBusinessFormSubmission(): void {
 
+    const combinedData = {
+      ...this.proPersonalForm.value,
+      ...this.proBusinessForm.value,
+      imagePersonalFile: this.selectedFilePersonal,
+      imageBusinessFile: this.selectedFileBusiness,
+      isPersonalProfile: true,
+      isBusinessProfile: true,
+      licensesDetails: this.proPersonalForm.get('licenses')?.value
+    };
+
+
+    delete combinedData.licenses;
+
+    console.log('Datos COMBINADOS para enviar (Personal + Business):', combinedData);
+
+    this.handleSuccessfulSubmission(this.translate.instant('FORM_SUBMITTED_SUCCESSFULLY'));
+  }
+
+   private buildProfile(combinedData: any,
+    isBusiness: boolean,
+   
+    isFirstTime: boolean
+  ): Profile {
+   
+    return {
+      categories: combinedData.categories || [],
+      zipcodeId: combinedData.zipcode || '',
+      address: combinedData.address || '',
+      imagePersonal: combinedData.imagePersonal || '',
+      introduction: combinedData.introduction,
+      isBusiness,
+      licenses: combinedData.licensesDetails || [],
+      
+      ...(isBusiness && {
+        nameBusiness: combinedData.nameBusiness || '',
+        yearFounded: combinedData.yearFounded || '',
+        numberOfemployees: combinedData.numberOfemployees || '',
+        imageBusiness:  ''
+      })
+    };
+  }
+  private async uploadImageWithFile(file: File): Promise<string> {
+  const formData = new FormData();
+  formData.append('file', file);
+
+  try {
+    const response = await this.uploadImage(formData);
+    console.log('Imagen subida exitosamente:', response);
+    return response.fileName; 
+  } catch (error) {
+    this.handleError(error);
+    throw error;
+  }
 }
 
+async uploadImage(formData: FormData): Promise<any> {
+  return await firstValueFrom(this.uploadsService.postUploadsImageAll(formData));
+}
+    
+  handleSuccessfulSubmission(message: string) {
+    this.isLoading = false;
+    this.backendMessage = '';
+    setTimeout(() => {
+      this.alertMessage = 'alert-success';
+      this.backendMessage = message || 'Profile updated successfully';
+    });
+  }
+  handleError(error: any) {
+    this.isLoading = false;
+    this.backendMessage = '';
+    setTimeout(() => {
+      this.alertMessage = 'alert-danger';
+      this.backendMessage = error.error.message || 'An error occurred';
+    });
 
+  }
+
+}

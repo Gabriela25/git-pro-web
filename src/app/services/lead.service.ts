@@ -93,7 +93,7 @@ export class LeadService {
 
 
   postUploadsLead(body: FormData): Observable<{ fileName: string }> {
-    console.log(body)
+    
     const token = this.authService.getToken();
     const uploadOptions = {
       headers: {

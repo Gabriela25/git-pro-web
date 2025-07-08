@@ -1,0 +1,88 @@
+<form [formGroup]="parentForm">
+  <div class="fade-in">
+    <div class="form-group">
+      <label for="imageBusiness" class="form-label fw-bold">{{'Business image' | translate}}</label>
+      <div class="form-group text-center position-relative">
+        <div class="position-relative d-inline-block">
+          <img [src]="previewImgBusiness || imageBusiness || 'assets/avatar_profile.png'"
+               alt="Image Business" class="rounded-circle mb-3" width="100" height="100"
+               style="object-fit: cover; cursor: pointer;" (click)="triggerFileInput()"> <i class="bi bi-pen position-absolute"
+             style="right: 5px; bottom: 5px; font-size: 18px; cursor: pointer;"
+             (click)="triggerFileInput()"></i> </div>
+        <input type="file" class="form-control" id="imageBusiness" #fileInputBusiness
+               (change)="onFileSelected($event)" style="display: none;"
+               [ngClass]="{'is-invalid': parentForm.get('imageBusiness')?.invalid && (parentForm.get('imageBusiness')?.dirty || parentForm.get('imageBusiness')?.touched)}">
+
+        @if(parentForm.get('imageBusiness')?.invalid &&
+        (parentForm.get('imageBusiness')?.dirty ||
+        parentForm.get('imageBusiness')?.touched )){
+          <div>
+            @if(parentForm.get('imageBusiness')?.errors?.['required']){
+            <small class="form-text text-danger">
+              {{'auth.isImageBusinessRequired' | translate}}
+            </small>
+            }
+          </div>
+        }
+      </div>
+    </div>
+    <div class="form-group">
+      <div class="mb-3">
+        <label for="nameBusiness" class="form-label fw-bold">{{'profile.nameBusiness' | translate}}</label>
+        <input type="text" class="form-control" id="nameBusiness"
+               formControlName="nameBusiness" appCapitalizeFirst
+               [ngClass]="{'is-invalid': parentForm.get('nameBusiness')?.invalid && (parentForm.get('nameBusiness')?.dirty || parentForm.get('nameBusiness')?.touched)}" />
+        @if(parentForm.get('nameBusiness')?.invalid &&
+        (parentForm.get('nameBusiness')?.dirty ||
+        parentForm.get('nameBusiness')?.touched )){
+          <div>
+            @if(parentForm.get('nameBusiness')?.errors?.['required']){
+            <small class="form-text text-danger">
+              {{'profile.isNameBusinessRequired' | translate}}
+            </small>
+            }
+          </div>
+        }
+      </div>
+    </div>
+    <div class="form-group">
+      <div class="mb-3">
+        <label for="yearFounded" class="form-label fw-bold">{{'profile.yearFounded' | translate}}</label>
+        <input type="number" class="form-control" id="yearFounded"
+               formControlName="yearFounded" (keypress)="validateNumber($event)"
+               [ngClass]="{'is-invalid': parentForm.get('yearFounded')?.invalid && (parentForm.get('yearFounded')?.dirty || parentForm.get('yearFounded')?.touched)}" />
+        @if(parentForm.get('yearFounded')?.invalid &&
+        (parentForm.get('yearFounded')?.dirty ||
+        parentForm.get('yearFounded')?.touched )){
+          <div>
+            @if(parentForm.get('yearFounded')?.errors?.['required']){
+            <small class="form-text text-danger">
+              {{'profile.isYearFoundedRequired' | translate}}
+            </small>
+            }
+          </div>
+        }
+      </div>
+    </div>
+    <div class="form-group">
+      <div class="mb-3">
+        <label for="numberOfemployees"
+               class="form-label fw-bold">{{'profile.numberEmployees' | translate}}</label>
+        <input type="number" class="form-control" id="numberOfemployees"
+               formControlName="numberOfemployees" (keypress)="validateNumber($event)"
+               [ngClass]="{'is-invalid': parentForm.get('numberOfemployees')?.invalid && (parentForm.get('numberOfemployees')?.dirty || parentForm.get('numberOfemployees')?.touched)}" />
+        @if(parentForm.get('numberOfemployees')?.invalid &&
+        (parentForm.get('numberOfemployees')?.dirty ||
+        parentForm.get('numberOfemployees')?.touched )){
+          <div>
+            @if(parentForm.get('numberOfemployees')?.errors?.['required']){
+            <small class="form-text text-danger">
+              {{'profile.isNumberOfemployeesRequired' | translate}}
+            </small>
+            }
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+</form>

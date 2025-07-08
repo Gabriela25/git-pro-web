@@ -30,8 +30,11 @@ $secondary:$teal;
 .selected-item[_ngcontent-ng-c692748064]{
     max-width: 300px !important;
 }
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+html, body {
+  background-color: #f2f3f6;
+  color: #333;
+  font-family: 'Inter', sans-serif;
+}
 .img-logo-pro{
     width: 80px; 
     height: 80px; 

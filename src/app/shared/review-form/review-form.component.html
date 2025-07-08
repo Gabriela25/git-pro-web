@@ -1,0 +1,62 @@
+@if (order!.orderStatus!.name) {
+@if (hasReview) {
+<div>
+  <h5>{{'review.whatDidYouThinkProServices' |translate}}</h5>
+  <div class="d-flex justify-content-center mb-2" style="gap: 1rem;">
+    @for (star of [1,2,3,4,5]; track star) {
+    <div class="d-flex flex-column align-items-center">
+      <i class="bi" [ngClass]="star <= review.rating ? 'bi-star-fill text-warning' : 'bi-star text-secondary'"
+        style="font-size: 1.5rem;">
+      </i>
+      <small class="text-muted" style="user-select: none;">
+        {{
+        star === 1 ? ('review.veryBad' | translate) :
+
+        star === 5 ? ('review.veryGood' | translate) :
+        ''
+        }}
+      </small>
+    </div>
+    }
+  </div>
+  <p class="text-muted">{{ review.comment || 'review.noCommentProvided' | translate}}</p>
+</div>
+}
+@else {
+<div class="card p-3 shadow-sm mt-3">
+  <app-floating-alert [alertMessage]="alertMessage" [backendMessage]="backendMessage" />
+  <h5>{{'review.whatDidYouThinkProServices' | translate}}</h5>
+
+  <div class="d-flex justify-content-center mb-2" style="gap: 1rem;">
+    @for (item of stars; track item) {
+    <div class="d-flex flex-column align-items-center" style="cursor: pointer;">
+      <i class="bi" [ngClass]="{
+           'bi-star-fill text-warning': item <= rating(),
+           'bi-star text-muted': item > rating()
+         }" (click)="setRating(item)" style="font-size: 1.5rem;">
+      </i>
+      <small class="text-muted" style="user-select: none;">
+        {{
+        item === 1 ? ('review.veryBad' | translate) :
+
+        item === 5 ? ('review.veryGood' | translate) :
+        ''
+        }}
+      </small>
+    </div>
+    }
+  </div>
+
+
+  <div class="form-group mb-2">
+    <textarea [ngModel]="comment()" (ngModelChange)="comment.set($event)" rows="3" class="form-control"
+      placeholder="{{ 'review.writeAComment' | translate }}">
+        </textarea>
+  </div>
+
+  <button class="btn btn-primary" (click)="submitReview()" [disabled]="loading() || rating() === 0">
+    {{ loading() ? 'general.loading' : 'general.sendReview' | translate}}
+  </button>
+</div>
+}
+}

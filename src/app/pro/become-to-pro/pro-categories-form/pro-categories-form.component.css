@@ -1,0 +1,12 @@
+.highlight-save {
+  animation: pulse 1s infinite;
+  background-color: #72e9d5 !important;
+  border-color: #72e9d5 !important;
+  color: #000 !important;
+}
+
+@keyframes pulse {
+  0% { box-shadow: 0 0 0 0 rgba(255,193,7, 0.7); }
+  70% { box-shadow: 0 0 0 10px rgba(255,193,7, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(255,193,7, 0); }
+}

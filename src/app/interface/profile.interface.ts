@@ -1,4 +1,5 @@
 import { Category } from "./category.interface";
+import { License } from "./license.interace";
 
 export interface Profile {
     id?: string;
@@ -19,7 +20,8 @@ export interface Profile {
     updatedBy?: string;
     deletedBy?: string | null;
     categories: Array<string>;
-    available?: boolean;
+    licenses?: Array<License>;
+    status?: string;
 
   }
   

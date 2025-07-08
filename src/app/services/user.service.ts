@@ -4,7 +4,6 @@ import { environment } from '../../environments/environment';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { User } from '../interface/user.interface';
 import { Profile } from '../interface/profile.interface';
-import { AuthService } from './auth.service';
 import { AuthHeaders } from './auth-headers.service';
 import { Image } from '../interface/image.interface';
 
@@ -21,43 +20,39 @@ export class UserService {
 
   constructor( 
     private authHeadersService: AuthHeaders,
-    private authService: AuthService
+
   ) {}
   
-  becomeToPro(body: Profile): Observable<any> {
-   //const headers= this.authHeadersService.getHeaders()
-   const token = this.authService.getToken();
-    const options = {
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      }
-    };
-    return this._http.post(`${this.apiUrlBackend}/users/become-to-pro`, body,options);
+  becomeToPro(body: Profile): Observable<{profile: Profile,message: string}>{ 
+    const headers= this.authHeadersService.getHeaders();
+    return this._http.post<{profile: Profile,message: string}>(`${this.apiUrlBackend}/users/become-to-pro`, body,headers);
   }
+
   getMe(): Observable<{user:User}>{
     const headers= this.authHeadersService.getHeaders();
     return this._http.get<{user:User}>(`${this.apiUrlBackend}/users/me`,{...headers});
   }
-  putMe(body:User): Observable<{user:User}>{
-    const headers= this.authHeadersService.getHeaders();
-    //const headers= this.authHeadersService.getHeaders();
-    return this._http.put<{user:User}>(`${this.apiUrlBackend}/users/me`,body, {...headers});
-  }
-  postLicenses(body:any): Observable<{images:Image[]}>{
-    const headers= this.authHeadersService.getHeaders();
 
-    return this._http.post<{images:Image[]}>(`${this.apiUrlBackend}/users/licenses`,body, {...headers});
-  }
-  deletedLicenses(imageId:string): Observable<{message:string}>{
+  updateMe(body:User): Observable<{user:User,message:string}>{
     const headers= this.authHeadersService.getHeaders();
-
-    return this._http.delete<{message:string}>(`${this.apiUrlBackend}/users/licenses/${imageId}`, {...headers});
+    return this._http.put<{user:User,message:string}>(`${this.apiUrlBackend}/users/me`,body, {...headers});
   }
+  
   getLicense(profileId:string): Observable<{images:Image[]}>{
     const headers= this.authHeadersService.getHeaders();
     return this._http.get<{images:Image[]}>(`${this.apiUrlBackend}/users/licenses/${profileId}`, {...headers});
   }
+  postLicenses(body:any): Observable<{images:Image[],message: string}>{
+    const headers= this.authHeadersService.getHeaders();
+    return this._http.post<{images:Image[],message: string}>(`${this.apiUrlBackend}/users/licenses`,body, {...headers});
+  }
+
+  deletedLicenses(imageId:string): Observable<{message:string}>{
+    const headers= this.authHeadersService.getHeaders();
+    return this._http.delete<{message:string}>(`${this.apiUrlBackend}/users/licenses/${imageId}`, {...headers});
+  }
+
+  
 
 }
  

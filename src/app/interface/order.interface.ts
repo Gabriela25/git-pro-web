@@ -1,5 +1,6 @@
 import { Lead } from "./lead.interface";
 import { OrderStatus } from "./order-status.interface";
+import { Review } from "./review.interface";
 import { User } from "./user.interface";
 
 
@@ -13,7 +14,8 @@ export interface Order {
   assigned:    boolean;
   comment?:    string;
   orderStatusId: string;
-  orderStatus: OrderStatus
+  orderStatus: OrderStatus,
+  review?: Review,
   createdAt?:  Date;
   updatedAt?:  Date;
   deletedAt?:  null;

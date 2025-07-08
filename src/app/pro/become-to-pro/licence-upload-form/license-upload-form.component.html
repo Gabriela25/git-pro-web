@@ -1,0 +1,41 @@
+
+<div class="form-group">
+  <label for="title" class="form-label fw-bold mx-3">{{ 'profile.title' | translate }}</label>
+  <input type="text" id="title" class="form-control"  placeholder="{{ 'profile.titlePlaceholder' | translate }}" />
+  @if (parentForm.get('title')?.touched && parentForm.get('title  ')?.errors) {
+    <div class="text-danger">{{ 'profile.titleRequired' | translate }}</div>
+  }
+ 
+</div>
+<div class="form-group">
+  <label for="licenses" class="form-label fw-bold mx-3">{{ 'profile.licenses' | translate }}</label>
+  <input type="file" #fileInputLicenses style="display: none;" (change)="onFileChange($event)" multiple accept="image/*">
+  <button type="button" class="btn btn-primary" (click)="triggerFileInput()">{{ 'profile.addLicences' | translate }}</button>
+
+  @if (parentForm.get('licenses')?.touched && parentForm.get('licenses')?.errors) {
+    <div class="text-danger">
+      @if (parentForm.get('licenses')?.hasError('licenseRequiredBasedOnCategory')) {
+        {{ 'isLicencesRequiredForCategories' | translate }}
+      }
+    </div>
+  }
+  @if (errorMessage) {
+    <div class="text-danger">{{ errorMessage }}</div>
+  }
+
+  <div class="image-gallery mt-3"> @for (preview of previews; track $index) {
+      <div class="image-item"> <div class="image-wrapper">
+          <img [src]="preview" alt="License Preview" class="preview-img" />
+          <button type="button" class="remove-btn" (click)="removeImage.emit($index)">X</button>
+        </div>
+      </div>
+    }
+    @for (img of listImages; track img.id) {
+      <div class="image-item"> <div class="image-wrapper">
+          <img [src]="urlUploads + img.name" class="preview-img" />
+          <button type="button" class="remove-btn" (click)="removeExistingImage.emit($index)">X</button>
+        </div>
+      </div>
+    }
+  </div>
+</div>

@@ -52,6 +52,6 @@ export class UploadsService {
       }
     };
    const headers= this.authHeadersService.getHeaders();
-    return this._http.post<{ fileName: string }>(`${this.apiUrlBackend}/images/uploads/all/`, body,uploadOptions);
+    return this._http.post<{ fileName: string }>(`${this.apiUrlBackend}/files/uploads`, body,uploadOptions);
   }
 }

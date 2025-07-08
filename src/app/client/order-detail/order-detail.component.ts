@@ -20,6 +20,7 @@ import { FormArray, FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFo
 import { TranslateModule } from '@ngx-translate/core';
 import { SocketService } from '../../services/socket.service';
 import { OrderStatusService } from '../../services/order-status.service';
+import { ReviewFormComponent } from "../../shared/review-form/review-form.component";
 
 @Component({
   selector: 'app-detail-order',
@@ -30,7 +31,8 @@ import { OrderStatusService } from '../../services/order-status.service';
     TranslateModule,
     HeaderComponent,
     ModalComponent,
-  ],
+    ReviewFormComponent
+],
   providers: [
     provideNgxMask(),
 
@@ -73,7 +75,7 @@ export default class DetailLeadComponent {
         name: '',
         description: '',
         statusId: '',
-        image: ''
+        urlImage: ''
       },
       zipcodeId: '',
       zipcode: {
@@ -90,13 +92,13 @@ export default class DetailLeadComponent {
       imageUrl4: '',
       imageUrl5: '',
       imageUrl6: '',
-      leadRequests :[]
+      leadRequests: []
     },
-    
+
     assigned: false,
     comment: '',
     orderStatusId: '',
-  
+
     orderStatus: {
       name: ''
     }
@@ -114,7 +116,7 @@ export default class DetailLeadComponent {
       id: '',
       name: '',
       description: '',
-      image: '',
+      urlImage: '',
       statusId: ''
     },
     zipcodeId: '',
@@ -127,22 +129,22 @@ export default class DetailLeadComponent {
     imageUrl5: '',
     imageUrl6: '',
     qtyPro: 0,
-    leadRequests:[]
+    leadRequests: []
   };
   urlUploads: string = environment.urlUploads;
   listUserPro: Array<any> = [];
   listOrderTemp: Array<Order> = [];
   orderStatus: Array<OrderStatus> = [];
-  orderStatusCanceled : Array<OrderStatus> = [];
+  orderStatusCanceled: Array<OrderStatus> = [];
   orderStatusId: string = '';
-  orderIdUserPro: string  = '';
+  orderIdUserPro: string = '';
   isLoading = false;
   backendMessage = '';
   alertMessage = '';
   alertTimeout: any;
   orderCanceledForm!: FormGroup;
-  status : OrderStatus = {
-    name:''
+  status: OrderStatus = {
+    name: ''
   }
   selectedLabel: string = '';
   constructor(
@@ -154,10 +156,10 @@ export default class DetailLeadComponent {
     private orderStatusService: OrderStatusService,
     private leadService: LeadService,
     private socketService: SocketService,
-    
-  
+
+
   ) {
-    
+
   }
   ngOnInit() {
     this.orderId = this.route.snapshot.paramMap.get('id')!;
@@ -170,26 +172,37 @@ export default class DetailLeadComponent {
     this.checkOrders(this.orderId);
     this.initializeCanceledFormForm()
   }
-  
+
   initializeCanceledFormForm() {
     this.orderCanceledForm = this.fb.group({
       optionsCanceled: this.fb.control('')
     });
   }
-  
- 
+
+
 
   checkOrders(orderId: string) {
     this.orderStatusService.getAllOrderStatus().subscribe({
       next: (response) => {
-        this.orderStatus = response.orderStatus.filter(status=>status.name==='Scheduled' || status.name==='Completed' || status.name==='Canceled')
-        this.orderStatusCanceled = response.orderStatus.filter(status=>status.name==='Request new pro' || status.name==='NoT scheduled yet')
+        this.orderStatus = response.orderStatus.filter(status => status.name === 'Scheduled' || status.name === 'Completed' || status.name === 'Canceled')
+        this.orderStatusCanceled = response.orderStatus.filter(status => status.name === 'Request new pro' || status.name === 'NoT scheduled yet')
+        const order = ['Scheduled', 'Completed', 'Canceled'];
+
+        this.orderStatus = response.orderStatus
+          .filter(status =>
+            status.name === 'Scheduled' ||
+            status.name === 'Completed' ||
+            status.name === 'Canceled'
+          )
+          .sort((a, b) => order.indexOf(a.name) - order.indexOf(b.name));
+
       },
       error: (error) => console.error(error)
     });
     this.orderService.getOrderDetail(orderId).subscribe({
       next: (response) => {
         this.order = response.order;
+     
         this.leadId = response.order.leadId;
         this.orderStatusId = response.order.orderStatus.id!;
         /*this.updateOrderForm.patchValue({
@@ -201,9 +214,9 @@ export default class DetailLeadComponent {
           //si el usuario es cliente, revisamos los pro que ya tienen esa orden
           this.checkUsersPro(this.leadId)
         }
-        else{
+        else {
           this.updateOrderForm.patchValue({
-            orderStatus:  this.orderStatusId
+            orderStatus: this.orderStatusId
           });
         }
       },
@@ -212,12 +225,13 @@ export default class DetailLeadComponent {
 
   }
   checkUsersPro(leadId: string) {
-    console.log(leadId)
+    
     this.orderService.getOrderbyLeadUser(leadId).subscribe({
       next: (response) => {
         this.listOrderTemp = response.orders;
-        console.log(response.orders)
+      
         for (let i = 0; i < this.listOrderTemp.length; i++) {
+
           this.listUserPro.push(
             {
               "user": this.listOrderTemp[i]['user'],
@@ -226,20 +240,17 @@ export default class DetailLeadComponent {
             }
           )
         }
-        //this.orderStatusArray.clear();
-        /*this.listOrderTemp.forEach((order) => {    
-          this.orderStatusArray.push(
-            this.fb.control(order.orderStatusId, Validators.required)
-          );
-        });*/
+        console.log('lista de usuaerios pro')
+        console.log(this.listUserPro)
+       
       },
       error: (error) => console.log(error)
     });
     this.leadService.getLeadDetail(leadId).subscribe({
       next: (response) => {
         this.lead = response.lead;
-        
-        
+
+
       },
       error: (error) => console.log(error)
     });
@@ -251,28 +262,12 @@ export default class DetailLeadComponent {
              style="width: 200px; height: 200px; object-fit: cover; display: block; margin: 0 auto;" />
         </div>
       `);
-      this.toggleModal(this.modal, 'open');
+    this.toggleModal(this.modal, 'open');
   }
   toggleModal(modal: any, action: 'open' | 'close') {
     modal[action]();
   }
-  /*onSubmit(orderId: string, i: number) {
-    if (this.updateOrderForm.valid) {
-      const formData = this.updateOrderForm.value;
-      let data: any = {};
-      //si es distinto de cero el usuario es profesional
-      if(i!=-1){
-        const orderStatusId = formData.orderStatus[i];
-        data  = {
-          orderStatusId: orderStatusId
-        }
-      }else{
-        const orderStatusId = formData.orderStatus;
-       
-
-    }
-
-  }*/
+  
   handleSuccessfulSubmission(response: any) {
     this.alertMessage = 'alert-success';
     this.backendMessage = response.message || 'Status order updated successfully';
@@ -298,13 +293,13 @@ export default class DetailLeadComponent {
   }
 
   updatedOrderStatus(orderId: string, value: OrderStatus) {
-   
+
     this.orderIdUserPro = orderId;
     this.title = 'Updated order';
     this.status = value;
-     console.log(this.status.name)
+    console.log(this.status.name)
     // Inicializar el formulario antes de asignar el mensaje
-    
+
     if (this.status.name === 'Canceled') {
       this.orderCanceledForm.reset();
       this.messageUpdateOrder = this.sanitizer.bypassSecurityTrustHtml(`
@@ -327,22 +322,22 @@ export default class DetailLeadComponent {
         </div>
       `);
     }
-  
+
     // Suscribirse para obtener el valor seleccionado en los radio buttons
-   
-  
+
+
     this.toggleModal(this.modalUpdateStatus, 'open');
   }
 
-    
-   
-  onConfirmAction(){
-    let data  = {}
+
+
+  onConfirmAction() {
+    let data = {}
     const selectedOptionCanceled = this.orderCanceledForm.value.optionsCanceled;
     // Es porque el usuario no seleccionó ninguna opción del radio.
     console.log(this.orderCanceledForm)
-    if(selectedOptionCanceled === '' || selectedOptionCanceled ===null){
-       data  = {
+    if (selectedOptionCanceled === '' || selectedOptionCanceled === null) {
+      data = {
         orderStatusId: this.status.id
       }
     }
@@ -352,34 +347,36 @@ export default class DetailLeadComponent {
       }
       this.orderCanceledForm.reset()
     }
-    
-    this.orderService.updatedOrder(this.orderIdUserPro , data).subscribe({
+
+    this.orderService.updatedOrder(this.orderIdUserPro, data).subscribe({
       next: (response) => {
+       
         const index = this.listUserPro.findIndex((order) => order.orderId === this.orderIdUserPro);
-  
+
         if (index !== -1) {
           this.listUserPro[index] = {
-            user: response.order.user,  
-            orderId: response.order.id, 
-            orderStatus: response.order.orderStatus, 
+            user: response.order.user,
+            orderId: response.order.id,
+            orderStatus: response.order.orderStatus,
           };
         }
         this.listUserPro = [...this.listUserPro];
-  
+        console.log('lista de usuaerios pro')
+        console.log(this.listUserPro)
         this.handleSuccessfulSubmission(response);
-         
-        if(this.selectedLabel === 'Request new pro'){
+
+        if (this.selectedLabel === 'Request new pro') {
           const lead = this.lead;
-          
+
           this.socketService.sendMessage('forwarding-lead', { lead });
         }
       },
       error: (error) => this.handleError(error)
     });
   }
-  
 
-  onCancelAction(){
+
+  onCancelAction() {
     this.toggleModal(this.modalUpdateStatus, 'close');
   }
 

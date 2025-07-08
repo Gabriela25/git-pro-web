@@ -48,7 +48,7 @@ export class HeaderComponent implements OnInit {
   alertTimeout: any;
   token: string = '';
   isOpen: boolean = false;
-  isOnline: boolean = true;
+  //isOnline: boolean = true;
   isPro: boolean = false;
   textPro: string = '';
   title: string = '';
@@ -76,6 +76,7 @@ export class HeaderComponent implements OnInit {
   ) {
     this.trans.addLangs(['es', 'en']);
     this.isAuthenticated = this.authService.isAuthenticated()
+    console.log('esperando autenticacion')
     console.log(this.isAuthenticated )
   }
   ngOnInit() {
@@ -84,6 +85,7 @@ export class HeaderComponent implements OnInit {
 
     });
     this.authService.user$.subscribe((data: any) => {
+      console.log('entre1')
       if (data) {
         this.nameUser = data.name;
         this.emailUser = data.email; 
@@ -93,7 +95,7 @@ export class HeaderComponent implements OnInit {
         else {
           this.imagePersonal = "";
         }      
-        this.isOnline = data.available; 
+        //this.isOnline = data.status; 
         this.isPro = data.isPro || false; 
         if(this.isPro){
           this.textPro  = 'Professional info';       
@@ -116,9 +118,11 @@ export class HeaderComponent implements OnInit {
       closeDropDownOnSelection: true,
       singleSelect: true
     };
+    
     this.categoryService.getAllCategories().subscribe({
+      
       next: (response) => this.listCategories = response.categories,
-      error: (error) => console.error(error)
+      error: (error) => this.handleError(error)
     });
   }
 
@@ -135,7 +139,7 @@ export class HeaderComponent implements OnInit {
  
 
   toggleOnlineStatus(): void {
-    this.isOnline = !this.isOnline;
+    //this.isOnline = !this.isOnline;
  
     const user: User = {
       id: '',
@@ -150,16 +154,15 @@ export class HeaderComponent implements OnInit {
         imagePersonal: '',
         introduction: '',
         isBusiness: false,
-        available: this.isOnline
+        //status: this.isOnline
       }
     };
 
-    this.userService.putMe(user).subscribe({
+    this.userService.updateMe(user).subscribe({
       next: (response) => {  
-        this.authService.updateUser('available', response.user.profile?.available);
+        this.authService.updateUser('status', response.user.profile?.status);
       },
-      error: (error) => {
-      }
+      error: (error) => this.handleError(error)
     });
   }
   switchLanguage(languaje: string) {
@@ -183,7 +186,7 @@ export class HeaderComponent implements OnInit {
     }, 3000);
   }
   modalLogOut() {
-    console.log('entre para abrir el modal')
+    
     this.bodyModal = this.sanitizer.bypassSecurityTrustHtml(`
       <div>
         <div class="text-center"></div>
@@ -215,6 +218,16 @@ export class HeaderComponent implements OnInit {
     localStorage.removeItem('user');
     this.authService.authStatus = authStatus.notAuthenticated
     this.router.navigate(['/']);
+  }
+  
+  handleError(error: any) {
+    this.isLoading = false;
+    this.backendMessage = '';
+    setTimeout(() => {
+      this.alertMessage = 'alert-danger';
+      this.backendMessage = error.error.message || 'An error occurred';
+    });
+
   }
 
 }

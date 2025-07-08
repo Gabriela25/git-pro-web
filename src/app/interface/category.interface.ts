@@ -3,7 +3,8 @@ export interface Category {
   name:        string;
   description: string;
   statusId:    string;
-  image:       string;
+  urlImage:       string;
+  licenseRequired?: boolean;
   createdAt?:   Date;
   updatedAt?:   Date;
   deletedAt?:   null;

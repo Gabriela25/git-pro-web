@@ -7,7 +7,7 @@
 >
 <div [innerHTML]="bodyModal"></div>
 </app-modal>
-
+<app-floating-alert [alertMessage]="alertMessage" [backendMessage]="backendMessage"></app-floating-alert>
 
 <div><div>
     <div id="carouselExampleIndicators" class="carousel slide">
@@ -38,7 +38,7 @@
     </div>
 </div>
 
-<div class="container-fluid ml-3 mr-3" style="background: #f5eaf3;">
+<div class="container-fluid ml-3 mr-3" style="background: #f8f7f8;">
     <div class="row">
         <div class="col-md-1"></div>
 
@@ -48,7 +48,7 @@
                     @for (item of listCategories; track item) {
                         <a (click)="navigateToServices(item)"  class="col-md-3 text-center p-3 m-2 bg-white rounded shadow container-center-img text-decoration-none" style="display: inline-block;cursor: pointer;">
                             <div >
-                                <img [src]="item.image" alt="" width="120" height="120">
+                                <img [src]="item.urlImage" alt="" width="120" height="120">
                                 <div class="text-center"><span><b>{{ item.name }}</b></span></div>
                             </div>
                         </a>

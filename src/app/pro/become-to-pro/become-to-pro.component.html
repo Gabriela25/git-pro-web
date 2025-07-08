@@ -5,17 +5,18 @@
 
     <div style="text-align:center">
         <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" id="isPersonal" value="isPersonal" [(ngModel)]="isSelectOption"
-                (change)="onRadioChange($event)">
-            <label class="form-check-label" for="isPersonal">Personal</label>
+            <input class="form-check-input" type="radio" id="isPersonalModal" value="isPersonal"
+                [(ngModel)]="isSelectOption" (change)="onRadioChange($event)">
+            <label class="form-check-label" for="isPersonalModal">{{ 'profile.personal' | translate }}</label>
         </div>
         <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" id="isBusiness" value="isBusiness" [(ngModel)]="isSelectOption"
-                (change)="onRadioChange($event)">
-            <label class="form-check-label" for="isBusiness">Business</label>
+            <input class="form-check-input" type="radio" id="isBusinessModal" value="isBusiness"
+                [(ngModel)]="isSelectOption" (change)="onRadioChange($event)">
+            <label class="form-check-label" for="isBusinessModal">{{ 'profile.business' | translate }}</label>
         </div>
     </div>
 </app-modal>
+
 <div class="container-fluid">
     <div class="row">
         <div class="col-lg-3">
@@ -27,313 +28,77 @@
                     <input class="form-check-input" type="radio" name="inlineRadioOptions" id="isPersonalFooter"
                         value="isPersonal" [(ngModel)]="isSelectOption" (change)="onRadioChange($event)"
                         [disabled]="isDisabled">
-                    <label class="form-check-label" for="isPersonal">Personal</label>
+                    <label class="form-check-label" for="isPersonalFooter">{{ 'profile.personal' | translate }}</label>
                 </div>
                 <div class="form-check form-check-inline">
                     <input class="form-check-input" type="radio" name="inlineRadioOptions" id="isBusinessFooter"
                         value="isBusiness" [(ngModel)]="isSelectOption" (change)="onRadioChange($event)">
-                    <label class="form-check-label" for="isBusinessFooter">Business</label>
+                    <label class="form-check-label" for="isBusinessFooter">{{ 'profile.business' | translate }}</label>
                 </div>
             </div>
             }
-            @if(!isNext){
-            <div class="card container-box">
-                <h5 class="card-header bg-primary text-light">Personal Form</h5>
+
+            <div class="card container-box mt-3">
+                @if (!isNext) {
+                <h5 class="card-header bg-primary text-light">{{ 'profile.formPersonal' | translate }}</h5>
+                }
+                @else {
+                <h5 class="card-header bg-primary text-light">{{ 'profile.formBusiness' | translate }}</h5>
+                }
                 <div class="card-body">
                     <app-floating-alert [alertMessage]="alertMessage" [backendMessage]="backendMessage" />
-                    <form [formGroup]="proPersonalForm" (ngSubmit)="onSubmit()" autocomplete="off">
-                        <div>
-                            <div class="form-group">
-                                <label for="imagePersonal" class="form-label fw-bold">Personal image</label>
-                                <div class="form-group text-center position-relative">
-                                    <div class="mb-3">
-                                        <div class="position-relative d-inline-block">
-                                            <img [src]="previewImgPersonal || imagePersonal || 'assets/avatar_profile.png'"
-                                                alt="Image Personal" class="rounded-circle mb-3"
-                                                style="object-fit: cover;" width="100" height="100"
-                                                (click)="triggerFileInputP()">
-                                            <i class="bi bi-pen position-absolute"
-                                                style="right: 5px; bottom: 5px; font-size: 18px; cursor: pointer;"
-                                                (click)="triggerFileInputP()"></i>
-                                        </div>
+                    @if(!isNext) {
 
-                                        <input type="file" class="form-control" id="imagePersonal" #fileInputPersonal
-                                            (change)="onFileSelected($event)" style="display: none;"
-                                            [ngClass]="{'is-invalid': proPersonalForm.get('imagePersonal')?.invalid && (proPersonalForm.get('imagePersonal')?.dirty || proPersonalForm.get('imagePersonal')?.touched)}" />
-                                        @if(proPersonalForm.get('imagePersonal')?.invalid &&
-                                        (proPersonalForm.get('imagePersonal')?.dirty ||
-                                        proPersonalForm.get('imagePersonal')?.touched )){
-                                        <div>
-                                            @if(proPersonalForm.get('imagePersonal')?.errors?.['required']){
-                                            <small class="form-text text-danger">
-                                                {{'auth.isImagePersonalRequired' | translate}}
-                                            </small>
-                                            }
-                                        </div>
-                                        }
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <div class="mb-3">
-                                    <label for="category" class="form-label fw-bold">{{'profile.categories' |
-                                        translate}}</label>
-                                    <ng-multiselect-dropdown [placeholder]="'Select'| translate"
-                                        [settings]="dropdownSettings" [data]="listCategories"
-                                        formControlName="categories" (onSelect)="onItemSelect($event)"
-                                        (onSelectAll)="onSelectAll($event)"
-                                        [ngClass]="{'is-invalid': proPersonalForm.get('categories')?.invalid && (proPersonalForm.get('categories')?.dirty || proPersonalForm.get('categories')?.touched)}">
-                                    </ng-multiselect-dropdown>
-                                    @if(proPersonalForm.get('categories')?.invalid &&
-                                    (proPersonalForm.get('categories')?.dirty ||
-                                    proPersonalForm.get('categories')?.touched )){
-                                    <div>
-                                        @if(proPersonalForm.get('categories')?.errors?.['required']){
-                                        <small class="form-text text-danger">
-                                            {{'profile.isCategoryIdsRequired' | translate}}
-                                        </small>
-                                        }
-                                    </div>
-                                    }
+                    <app-pro-personal-form 
+                    [parentForm]="proPersonalForm" 
+                    [listCategories]="listCategories"
+                    [listZipcode]="listZipcode"
+                    (licensesChanged)="onLicensesChangedFromChild($event)"
+                    (fileSelected)="onFileSelectedPersonal($event)"
+                     [previewImgPersonal]="previewImgPersonal"   
+                    >
+                    </app-pro-personal-form>
+                     <div *ngIf="proPersonalForm.get('categories')?.errors?.['incompleteLicenses']" class="text-danger mt-2">
+  Hay categorías que requieren licencia pero no se ha completado la carga del documento.
+</div>
 
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="fileInput" class="form-label mt-2">Add images about the issue </label>
-                                <div class="upload-container">
-                                    <input #fileInput type="file" multiple (change)="onFileSelected1($event)"
-                                        class="d-none" accept="image/*" />
-                                    <button type="button" (click)="openFileSelector(fileInput)" class="btn btn-primary">
-                                        Add licenses
-                                    </button>
-                                    <p class="error-message" *ngIf="errorMessage">{{ errorMessage }}</p>
-                                    <div class="row mt-3">
-                                        <div class="col-6 col-md-4 mb-3" *ngFor="let img of previews; let i = index">
-                                            <button class="remove-btn" (click)="removeImage(i)">X</button>
-                                            <img [src]="img" alt="Vista previa" class="preview-img" />
-                                        </div>
-                                        <div class="col-6 col-md-4 mb-3"
-                                            *ngFor="let image of listImages; let i = index">
-                                            <button class="remove-btn" (click)="removeExistingImage(i)">X</button>
-                                            <img [src]="urlUploads + image.name" class="preview-img" />
 
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="form-group mt-3">
-                                <div class="mb-3">
-                                    <label for="zipcode" class="form-label fw-bold">{{'profile.zipCode' |
-                                        translate}}</label>
-                                    <select class="form-select" aria-label="select" id="zipcode"
-                                        formControlName="zipcode"
-                                        [ngClass]="{'is-invalid': proPersonalForm.get('zipcode')?.invalid && (proPersonalForm.get('zipcode')?.dirty || proPersonalForm.get('zipcode')?.touched)}">
-                                        <option value="" selected>{{'general.select' | translate}}</option>
-                                        @for (item of listZipcode; track item) {
-                                        <option [value]="item.id">{{item.name}}</option>
-                                        }
-                                    </select>
-                                    @if(proPersonalForm.get('zipcode')?.invalid &&
-                                    (proPersonalForm.get('zipcode')?.dirty ||
-                                    proPersonalForm.get('zipcode')?.touched
-                                    )){
-                                    <div>
-                                        @if(proPersonalForm.get('zipcode')?.errors?.['required']){
-                                        <small class="form-text text-danger">
-                                            {{'profile.isZipcodeRequired' | translate}}
-                                        </small>
-                                        }
-                                    </div>
-                                    }
-                                </div>
-                            </div>
+                    <div class="d-flex justify-content-end mt-3">
 
-                            <div class="form-group">
-                                <div class="mb-3">
-                                    <label for="address" class="form-label fw-bold">{{'profile.address' |
-                                        translate}}</label>
-                                    <input type="text" class="form-control" id="address" formControlName="address"
-                                        appCapitalizeFirst noWhitespace
-                                        [ngClass]="{'is-invalid': proPersonalForm.get('address')?.invalid && (proPersonalForm.get('address')?.dirty || proPersonalForm.get('address')?.touched)}" />
-                                    @if(proPersonalForm.get('address')?.invalid &&
-                                    (proPersonalForm.get('address')?.dirty ||
-                                    proPersonalForm.get('address')?.touched
-                                    )){
-                                    <div>
-                                        @if(proPersonalForm.get('address')?.errors?.['required']){
-                                        <small class="form-text text-danger">
-                                            {{'profile.isAddressRequired' | translate}}
-                                        </small>
-                                        }
-                                        @else if(proPersonalForm.get('address')?.errors?.['minlength']){
-                                        <small class="form-text text-danger">
-                                            {{'profile.minimum10Characters' | translate}}
-                                        </small>
-                                        }
-                                        @else if(proPersonalForm.get('address')?.errors?.['noWhitespace']){
-                                        <small class="form-text text-danger">
-                                            {{'general.isWhitespace' | translate}}
-                                        </small>
-                                        }
-
-                                    </div>
-                                    }
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <div class="mb-3">
-                                    <label for="introduction" class="form-label fw-bold">Introduction</label>
-                                    <textarea class="form-control" id="introduction" rows="3"
-                                        formControlName="introduction" appCapitalizeFirst></textarea>
-                                </div>
-                            </div>
-                            <div class="d-flex justify-content-end mt-3">
-                                <!-- Si la opción seleccionada es 'isBusiness', muestra el botón "Next". Caso contrario, muestra "Save" -->
-                                @if(isSelectOption=='isPersonal'){
-                                <button type="button" class="btn btn-primary" (click)="onSubmit()">
-                                    {{ 'general.save' | translate }}
-                                </button>
-                                }
-                                @else {
-                                <button type="button" class="btn btn-primary" (click)="nextStep()">
-                                    {{ 'general.next' | translate }}
-                                </button>
-
-                                }
-                                <!-- Botón "Save" por defecto -->
-                                <ng-template #saveButton>
-                                    <button type="submit" class="btn btn-primary">
-                                        {{ 'general.save' | translate }}
-                                    </button>
-                                </ng-template>
-                            </div>
-                        </div>
-                        @if(isLoading){
-                        <div class="d-flex justify-content-center mt-3">
-                            <div class="spinner-border" role="status">
-                            </div>
-                        </div>
+                        @if(isSelectOption=='isPersonal'){
+                        <button type="button" class="btn btn-primary  btn-lg btn-block" (click)="onSubmit()">
+                            {{ 'general.save' | translate }}
+                        </button>
                         }
-                    </form>
+                        @else {
+                        <button type="button" class="btn btn-primary  btn-lg btn-block" (click)="nextStep()">
+                            {{ 'general.next' | translate }}
+                        </button>
+
+                        }
+
+                        <!-- <ng-template #saveButton>
+                            <button type="submit" class="btn btn-primary btn-lg btn-block">
+                                {{ 'general.save' | translate }}
+                            </button>
+                        </ng-template> -->
+                    </div>
+                    }
+
+                    @if(isNext) {
+                    <app-pro-business-form [parentForm]="proBusinessForm" [previewImgBusiness]="previewImgBusiness"
+                        [imageBusiness]="imageBusiness" (fileSelected)="onFileSelectedBusiness($event)">
+                    </app-pro-business-form>
+
+                    <div class="d-flex justify-content-between mt-3">
+                        <button type="button" class="btn btn-outline-primary  btn-lg btn-block mt-3"
+                            (click)="previousStep()">Previous</button>
+                        <button type="button" class="btn btn-primary btn-lg btn-block mt-3" (click)="onSubmit()">{{'general.save' |
+                            translate}}</button>
+                    </div>
+                    }
                 </div>
             </div>
-            }
-            <!-- Formulario Business -->
-            @if(isNext){
-            <div class="card container-box">
-                <h5 class="card-header bg-primary text-light">Business Form</h5>
-                <div class="card-body">
-                    <app-floating-alert [alertMessage]="alertMessage" [backendMessage]="backendMessage" />
-                    <form [formGroup]="proBusinessForm" (ngSubmit)="onSubmit()" autocomplete="off">
-                        <div class="fade-in">
-                            <div class="form-group">
-                                <label for="imageBusiness" class="form-label fw-bold">Business image</label>
-                                <div class="form-group text-center position-relative">
-                                    <div class="position-relative d-inline-block">
-                                        <img [src]="previewImgBusiness || imageBusiness || 'assets/avatar_profile.png'"
-                                            alt="Image Business" class="rounded-circle mb-3" width="100" height="100"
-                                            style="object-fit: cover;" (click)="triggerFileInputB()">
-                                        <i class="bi bi-pen position-absolute"
-                                            style="right: 5px; bottom: 5px; font-size: 18px; cursor: pointer;"
-                                            (click)="triggerFileInputB()"></i>
-                                    </div>
-                                    <input type="file" class="form-control" id="imageBusiness" #fileInputBusiness
-                                        (change)="onFileSelected($event)" style="display: none;"
-                                        [ngClass]="{'is-invalid': proBusinessForm.get('imageBusiness')?.invalid && (proBusinessForm.get('imageBusiness')?.dirty || proBusinessForm.get('imageBusiness')?.touched)}">
-
-                                    @if(proBusinessForm.get('imageBusiness')?.invalid &&
-                                    (proBusinessForm.get('imageBusiness')?.dirty ||
-                                    proBusinessForm.get('imageBusiness')?.touched )){
-                                    <div>
-                                        @if(proBusinessForm.get('imageBusiness')?.errors?.['required']){
-                                        <small class="form-text text-danger">
-                                            {{'auth.isImageBusinessRequired' | translate}}
-                                        </small>
-                                        }
-                                    </div>
-                                    }
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <div class="mb-3">
-                                    <label for="nameBusiness" class="form-label fw-bold">{{'profile.nameBusiness' |
-                                        translate}}</label>
-                                    <input type="text" class="form-control" id="nameBusiness"
-                                        formControlName="nameBusiness" appCapitalizeFirst
-                                        [ngClass]="{'is-invalid': proBusinessForm.get('nameBusiness')?.invalid && (proBusinessForm.get('nameBusiness')?.dirty || proBusinessForm.get('nameBusiness')?.touched)}" />
-                                    @if(proBusinessForm.get('nameBusiness')?.invalid &&
-                                    (proBusinessForm.get('nameBusiness')?.dirty ||
-                                    proBusinessForm.get('nameBusiness')?.touched )){
-                                    <div>
-                                        @if(proBusinessForm.get('nameBusiness')?.errors?.['required']){
-                                        <small class="form-text text-danger">
-                                            {{'profile.isNameBusinessRequired' | translate}}
-                                        </small>
-                                        }
-                                    </div>
-                                    }
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <div class="mb-3">
-                                    <label for="yearFounded" class="form-label fw-bold">{{'profile.yearFounded' |
-                                        translate}}</label>
-                                    <input type="number" class="form-control" id="yearFounded"
-                                        formControlName="yearFounded" (keypress)="validateNumber($event)"
-                                        [ngClass]="{'is-invalid': proBusinessForm.get('yearFounded')?.invalid && (proBusinessForm.get('yearFounded')?.dirty || proBusinessForm.get('yearFounded')?.touched)}" />
-                                    @if(proBusinessForm.get('yearFounded')?.invalid &&
-                                    (proBusinessForm.get('yearFounded')?.dirty ||
-                                    proBusinessForm.get('yearFounded')?.touched )){
-                                    <div>
-                                        @if(proBusinessForm.get('yearFounded')?.errors?.['required']){
-                                        <small class="form-text text-danger">
-                                            {{'profile.isYearFoundedRequired' | translate}}
-                                        </small>
-                                        }
-                                    </div>
-                                    }
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <div class="mb-3">
-                                    <label for="numberOfemployees"
-                                        class="form-label fw-bold">{{'profile.numberEmployees'
-                                        | translate}}</label>
-                                    <input type="number" class="form-control" id="numberOfemployees"
-                                        formControlName="numberOfemployees" (keypress)="validateNumber($event)"
-                                        [ngClass]="{'is-invalid': proBusinessForm.get('numberOfemployees')?.invalid && (proBusinessForm.get('numberOfemployees')?.dirty || proBusinessForm.get('numberOfemployees')?.touched)}" />
-                                    @if(proBusinessForm.get('numberOfemployees')?.invalid &&
-                                    (proBusinessForm.get('numberOfemployees')?.dirty ||
-                                    proBusinessForm.get('numberOfemployees')?.touched )){
-                                    <div>
-                                        @if(proBusinessForm.get('numberOfemployees')?.errors?.['required']){
-                                        <small class="form-text text-danger">
-                                            {{'profile.isNumberOfemployeesRequired' | translate}}
-                                        </small>
-                                        }
-                                    </div>
-                                    }
-                                </div>
-                            </div>
-
-                            <div class="d-flex justify-content-between mt-3">
-                                <button type="button" class="btn btn-outline-primary mt-3"
-                                    (click)="previousStep()">Previous</button>
-                                <button type="submit" class="btn btn-primary mt-3">{{'general.save' |
-                                    translate}}</button>
-                            </div>
-                        </div>
-                        @if(isLoading){
-                        <div class="d-flex justify-content-center mt-3">
-                            <div class="spinner-border" role="status">
-                            </div>
-                        </div>
-                        }
-                    </form>
-                </div>
-            </div>
-            }
         </div>
         <div class="col-lg-3">
         </div>

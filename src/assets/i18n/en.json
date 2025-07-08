@@ -11,7 +11,9 @@
     "accept": "Accept",
     "isWhitespace": "The field must have valid characters",
     "allow":"Allow",
-    "dontAllow": "Don't allow"
+    "dontAllow": "Don't allow",
+    "sendReview": "Send review",
+    "loading":"Loading..."
   },
   "header": {
     "profile": "Profile",
@@ -52,23 +54,40 @@
     "thePasswordsDoNotMatch": "The passwords do not match"
   },
   "profile": {
+    "personal": "Personal",
+    "business": "Business",
+    "formPersonal": "Personal profile form",
+    "formBusiness": "Business profile form",
     "firstName": "First name",
     "lastName": "Last name",
     "email": "Email address",
     "phone": "Phone",
     "password": "Password",
     "categories": "Categories",
+    "selectedCategories": "Selected categories",
+    "addCategories": "Add categories",
+    "licenseTitle": "License title",
+    "requireLicense": "Requires license",
+    "uploadLicense/Document":"Upload license/Document",
+    "uploadFile": "Upload file",
+    "file": "File",
+    "pdfDocument": "PDF document",
+    "rememberToPress":"Remember to press",
+    "toSendYourUploadedDocuments": "to send your uploaded documents",
     "zipCode": "ZIP Code",
     "imgProfile": "Image profile",
     "nameBusiness": "Name business",
     "webSite": "Web site",
     "address": "Address",
+    "introduction": "Introduction",
     "minimum10Characters": "Minimum 10 characters",
     "socialMediaLink": "Social media link",
     "businessFaqs": "Business FAQs",
     "yourIntroduction": "Your introduction",
     "credentials": "Credentials",
-    "licenses": "Licenses",
+    "licenses": "Licences",
+    "addLicenses": "Add licenses",
+    "isLicencesRequiredForCategories": "A license is required for the selected categories",
     "backgroundCheck": "Background check",
     "professionalLicenses": "Professional licenses",
     "yearFounded": "Year founded",
@@ -109,5 +128,14 @@
 
   "fielIsInvalid":{
     "fielIsRequired":"The field is required"
+  },
+  "review":{
+    "whatDidYouThinkProServices":"What did you think of the pro's service?",
+    "veryBad":"Very bad",
+    "veryGood":"Very good",
+    "writeAComment":"Write a comment (optional)",
+    "noCommentProvided":"No comment provided",
+    "yourRating": "Your rating"
   }
+
 }

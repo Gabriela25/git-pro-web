@@ -83,9 +83,8 @@ export default class PaymentsComponent {
           return new Date(b.activationDate ?? 0).getTime() - new Date(a.activationDate ?? 0).getTime();
         });
       },
-      error: (error) => {
-        console.log(error);
-      }
+      error: (error) => this.handleError(error)
+        
     });
   }
 
@@ -176,19 +175,22 @@ export default class PaymentsComponent {
 
  
 
-  handleSuccessfulSubmission(response: any) {
-    this.alertMessage = 'alert-success';
-    this.backendMessage = response.message || 'Profile updated successfully';
+ handleSuccessfulSubmission(response: any) {
     this.isLoading = false;
-   
+    this.backendMessage = '';
+    setTimeout(() => {
+      this.alertMessage = 'alert-success';
+      this.backendMessage = response.message || 'Payment created successfully'; 
+    });
   }
-
   handleError(error: any) {
-    this.alertMessage = 'alert-danger';
-    this.backendMessage = error.error.message || 'An error occurred';
     this.isLoading = false;
-   
-  }
+    this.backendMessage = '';
+    setTimeout(() => {
+      this.alertMessage = 'alert-danger';
+     this.backendMessage = error.error.message || 'An error occurred';
+    });
 
+  }
   
 }

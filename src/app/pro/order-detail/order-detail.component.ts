@@ -73,7 +73,7 @@ export default class DetailLeadComponent {
         name: '',
         description: '',
         statusId: '',
-        image: ''
+        urlImage: ''
       },
       zipcodeId: '',
       zipcode: {
@@ -114,7 +114,7 @@ export default class DetailLeadComponent {
       id: '',
       name: '',
       description: '',
-      image: '',
+      urlImage: '',
       statusId: ''
     },
     zipcodeId: '',
@@ -184,6 +184,14 @@ export default class DetailLeadComponent {
       next: (response) => {
         this.orderStatus = response.orderStatus.filter(status=>status.name==='Scheduled' || status.name==='Completed' || status.name==='Canceled')
         this.orderStatusCanceled = response.orderStatus.filter(status=>status.name==='Request new pro' || status.name==='NoT scheduled yet')
+        const order = ['Scheduled', 'Completed', 'Canceled'];
+        this.orderStatus = response.orderStatus
+          .filter(status =>
+            status.name === 'Scheduled' ||
+            status.name === 'Completed' ||
+            status.name === 'Canceled'
+          )
+          .sort((a, b) => order.indexOf(a.name) - order.indexOf(b.name));
       },
       error: (error) => console.error(error)
     });
@@ -256,23 +264,7 @@ export default class DetailLeadComponent {
   toggleModal(modal: any, action: 'open' | 'close') {
     modal[action]();
   }
-  /*onSubmit(orderId: string, i: number) {
-    if (this.updateOrderForm.valid) {
-      const formData = this.updateOrderForm.value;
-      let data: any = {};
-      //si es distinto de cero el usuario es profesional
-      if(i!=-1){
-        const orderStatusId = formData.orderStatus[i];
-        data  = {
-          orderStatusId: orderStatusId
-        }
-      }else{
-        const orderStatusId = formData.orderStatus;
-       
 
-    }
-
-  }*/
   handleSuccessfulSubmission(response: any) {
     this.alertMessage = 'alert-success';
     this.backendMessage = response.message || 'Status order updated successfully';

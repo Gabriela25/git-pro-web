@@ -45,7 +45,9 @@ export class AuthService {
     localStorage.removeItem(this.TOKEN_KEY);
 
   }
-
+  getCurrentUser(): any | null {
+    return this._userSubject.value;
+  }
   
   isAuthenticated(): boolean {
     const token = this.getToken();

@@ -58,9 +58,9 @@ export default class GetOrdersComponent {
     //ordenamos descendente
     this.orderService.getOrderUserCustomer().subscribe({
       next: (response) => {
-       console.log('cantidad',this.orders)
+   
         this.orders = response.orders;
-        console.log('cantidad',response)
+
         this.total = response.total;
         this.page = response.page;
         this.limit = response.limit;
@@ -90,7 +90,8 @@ export default class GetOrdersComponent {
     this.modal.open();
   }
   orderDetail(id: string) {
-    this.router.navigate([`/leads/orders/order/detail/${id}`]);
+
+    this.router.navigate([`/client/orders/order/detail/${id}`]);
   }
   
   onPageChange(newPage: number) {

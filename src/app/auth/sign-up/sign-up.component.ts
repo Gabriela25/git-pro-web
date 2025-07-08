@@ -66,9 +66,6 @@ export default class SignUpComponent implements OnInit {
     if(value == 'password'){
       this.showPassword = !this.showPassword;
     }
-    else if(value == 'confirmPassword'){
-      this.showConfirmPassword = !this.showConfirmPassword;
-    }
     
   }
   initializeSignUpForm() {
