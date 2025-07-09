@@ -5,6 +5,7 @@ import { Category, } from './../../../interface/category.interface'; // Ajusta l
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { FloatingAlertComponent } from "../../../shared/floating-alert/floating-alert.component";
+import { DomSanitizer } from '@angular/platform-browser';
 // Ajusta la ruta
 
 @Component({
@@ -16,7 +17,7 @@ import { FloatingAlertComponent } from "../../../shared/floating-alert/floating-
     FormsModule,
     ReactiveFormsModule,
     FloatingAlertComponent
-],
+  ],
 
   // Ajusta tu selector
   templateUrl: './pro-categories-form.component.html', // Asegúrate de que la ruta sea correcta
@@ -24,12 +25,12 @@ import { FloatingAlertComponent } from "../../../shared/floating-alert/floating-
 })
 export class ProCategoriesFormComponent implements OnInit, OnChanges {
   hasPendingLicensesToSave = false;
-  @Input() parentForm!: FormGroup; // Recibimos el FormGroup del padre
-  @Input() listCategories: Category[] = []; // Recibimos la lista completa de categorías
+  @Input() parentForm!: FormGroup;
+  @Input() listCategories: Category[] = [];
 
-  showSelect: boolean = false; // Controla la visibilidad del select
-  searchTerm: string = ''; // Para el campo de búsqueda (si lo agregamos)
-  filteredCategories: Category[] = []; // Categorías filtradas para mostrar en el select
+  showSelect: boolean = false;
+  searchTerm: string = '';
+  filteredCategories: Category[] = [];
 
   // Esta variable se vinculará al <select multiple> y contendrá los IDs seleccionados
   selectedCategoryIdsInForm: string[] = [];
@@ -37,14 +38,16 @@ export class ProCategoriesFormComponent implements OnInit, OnChanges {
   // Esta será la lista final que mostraremos y procesaremos con objetos completos e imágenes
   finalSelectedCategoriesWithImages: SelectedCategoryWithImage[] = [];
   selectedCategoriesToSend: Category[] = [];
-  isLoading :boolean = false; 
-  backendMessage : string = '';
-  alertMessage: string = ''; 
+  isLoading: boolean = false;
+  backendMessage: string = '';
+  alertMessage: string = '';
   readonly maxSelections = 3; // Límite de selecciones
   @Output() licensesChanged = new EventEmitter<any[]>();
+  @Input() initialLicenses: any[] = [];
 
-  
-  constructor() { }
+  constructor(
+    private sanitizer: DomSanitizer
+  ) { }
 
   ngOnInit() {
     // Asegurarse de que el FormControl 'categories' esté inicializado en el parentForm
@@ -65,47 +68,74 @@ export class ProCategoriesFormComponent implements OnInit, OnChanges {
     this.filterCategories();
   }
 
-  // Usamos ngOnChanges para reaccionar a cambios en @Input() listCategories
+ 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['listCategories'] && changes['listCategories'].currentValue) {
-      this.filterCategories(); // Re-filtrar si la lista de categorías cambia
-      this.updateFinalSelectedCategories(); // Re-sincronizar
+    if (changes['listCategories']) {
+
+      this.filterCategories();
+      this.updateFinalSelectedCategories();
+    }
+
+    if (changes['initialLicenses'] && this.initialLicenses?.length > 0 && this.listCategories?.length > 0) {
+      this.initializeFromEdit();
     }
   }
+  initializeFromEdit(): void {
+    this.selectedCategoryIdsInForm = this.initialLicenses.map(l => l.categoryId);
+    this.parentForm.get('categories')?.setValue(this.selectedCategoryIdsInForm);
+
+    const newFinalList: SelectedCategoryWithImage[] = this.initialLicenses.map(license => {
+      const matchedCategory = this.listCategories.find(cat => cat.id === license.categoryId);
+   
+      if (!matchedCategory) return null;
+
+      return {
+        category: matchedCategory,
+        uploadedImageBase64: this.sanitizer.bypassSecurityTrustResourceUrl(license.url), 
+        uploadedImageFile: null, // usuario puede reemplazarla
+        title: license.title,
+        mimetype: license.mimetype
+      };
+    }).filter(Boolean) as SelectedCategoryWithImage[];
+
+    this.finalSelectedCategoriesWithImages = newFinalList;
+    this.selectedCategoriesToSend = newFinalList.map(entry => entry.category);
+  }
+
   onSelectChange(event: Event): void {
-  const selectElement = event.target as HTMLSelectElement;
-  const selectedOption = selectElement.value;
+    const selectElement = event.target as HTMLSelectElement;
+    const selectedOption = selectElement.value;
 
-  // Evitar duplicados
-  if (this.selectedCategoryIdsInForm.includes(selectedOption)) {
-    return;
+    // Evitar duplicados
+    if (this.selectedCategoryIdsInForm.includes(selectedOption)) {
+      return;
+    }
+
+    // Validar licencias pendientes
+    if (this.hasIncompleteRequiredLicenses()) {
+      alert('Debes subir los documentos requeridos antes de seleccionar otra categoría.');
+      return;
+    }
+
+    // Obtener la categoría completa y agregarla a selectedCategoriesToSend
+    const selectedCategory = this.listCategories.find(cat => cat.id === selectedOption);
+    if (
+      selectedCategory &&
+      !this.selectedCategoriesToSend.find(cat => cat.id === selectedCategory.id)
+    ) {
+      this.selectedCategoriesToSend.push(selectedCategory);
+    }
+
+    const updatedIds = [...this.selectedCategoryIdsInForm, selectedOption];
+
+    if (updatedIds.length > this.maxSelections) {
+      this.handleError({ error: { message: `You can only select a maximum of ${this.maxSelections} categories.` } });
+      return;
+    }
+
+    this.parentForm.get('categories')?.setValue(updatedIds);
+    this.showSelect = false;
   }
-
-  // Validar licencias pendientes
-  if (this.hasIncompleteRequiredLicenses()) {
-    alert('Debes subir los documentos requeridos antes de seleccionar otra categoría.');
-    return;
-  }
-
-  // Obtener la categoría completa y agregarla a selectedCategoriesToSend
-  const selectedCategory = this.listCategories.find(cat => cat.id === selectedOption);
-  if (
-    selectedCategory &&
-    !this.selectedCategoriesToSend.find(cat => cat.id === selectedCategory.id)
-  ) {
-    this.selectedCategoriesToSend.push(selectedCategory);
-  }
-
-  const updatedIds = [...this.selectedCategoryIdsInForm, selectedOption];
-
-  if (updatedIds.length > this.maxSelections) {
-    this.handleError({ error: { message:  `You can only select a maximum of ${this.maxSelections} categories.` } });
-    return;
-  }
-
-  this.parentForm.get('categories')?.setValue(updatedIds);
-  this.showSelect = false;
-}
 
   // --- Lógica de visibilidad del select ---
   toggleSelectVisibility(): void {
@@ -121,7 +151,7 @@ export class ProCategoriesFormComponent implements OnInit, OnChanges {
     // Validar si hay licencias requeridas incompletas
     if (this.hasIncompleteRequiredLicenses()) {
       this.handleError({ error: { message: 'You must upload the file and title for all categories that require a license before selecting a new one.' } });
-      
+
       return;
     }
 
@@ -140,7 +170,7 @@ export class ProCategoriesFormComponent implements OnInit, OnChanges {
         category.name?.toLowerCase().includes(lowerCaseSearchTerm)) // Asumo que 'code' también puede ser relevante para buscar
       );
     }
-    
+
     this.ensureSelectedVisibleInFilter();
   }
 
@@ -151,7 +181,7 @@ export class ProCategoriesFormComponent implements OnInit, OnChanges {
         this.filteredCategories.push(selectedCat);
       }
     });
-    
+
     this.filteredCategories.sort((a, b) => (a.name || '').localeCompare(b.name || '') || a.name.localeCompare(b.name));
   }
 
@@ -167,7 +197,7 @@ export class ProCategoriesFormComponent implements OnInit, OnChanges {
         if (existingEntry) {
           newFinalList.push(existingEntry); // Mantener la entrada existente con su imagen
         } else {
-          newFinalList.push({ category: fullCategory, uploadedImageBase64: null, uploadedImageFile: null, title: '' });
+          newFinalList.push({ category: fullCategory, uploadedImageBase64: null, uploadedImageFile: null, title: '',mimetype: '' }); // Crear una nueva entrada sin imagen
         }
       }
     });
@@ -176,7 +206,7 @@ export class ProCategoriesFormComponent implements OnInit, OnChanges {
       this.selectedCategoryIdsInForm.includes(entry.category.id)
     );
 
-    
+
   }
 
   // --- Manejo de la carga de imagen ---
@@ -191,13 +221,13 @@ export class ProCategoriesFormComponent implements OnInit, OnChanges {
         if (entry) {
           entry.uploadedImageBase64 = reader.result;
           entry.uploadedImageFile = file;
-          
+
         }
       };
       reader.readAsDataURL(file); // Leer como Base64 para previsualizar
     }
     this.hasPendingLicensesToSave = true
-     //this.emitLicensesChanged();
+    //this.emitLicensesChanged();
   }
 
   // --- Eliminar una categoría de la lista de visualización ---
@@ -218,7 +248,7 @@ export class ProCategoriesFormComponent implements OnInit, OnChanges {
   onSubmitParentForm(): void {
     if (this.hasIncompleteRequiredLicenses()) {
       this.handleError({ error: { message: 'You must upload the file and title for all categories that require a license.' } });
-   
+
       return;
     }
     const licensesToSend = this.finalSelectedCategoriesWithImages
@@ -228,7 +258,7 @@ export class ProCategoriesFormComponent implements OnInit, OnChanges {
         title: entry.title || '',
         file: entry.uploadedImageFile
       }));
-    console.log('Licencias a enviar:', licensesToSend);
+    
     if (this.selectedCategoryIdsInForm.length < this.maxSelections) {
       this.showSelect = true;
     } else {
@@ -237,20 +267,23 @@ export class ProCategoriesFormComponent implements OnInit, OnChanges {
     this.emitLicensesChanged();
   }
   hasIncompleteRequiredLicenses(): boolean {
+    
     return this.finalSelectedCategoriesWithImages.some(entry =>
+      
       entry.category.licenseRequired &&
-      (!entry.uploadedImageFile || !entry.title)
+      ((!entry.uploadedImageFile && !entry.title) || !entry.uploadedImageBase64) // Verifica si no hay archivo o título
     );
   }
 
- 
-emitLicensesChanged() {
+
+  emitLicensesChanged() {
     const licenses = this.finalSelectedCategoriesWithImages
       .filter(entry => entry.category.licenseRequired && entry.uploadedImageFile)
       .map(entry => ({
         categoryId: entry.category.id,
         title: entry.title || '',
-        file: entry.uploadedImageFile
+        file: entry.uploadedImageFile,
+        mimetype: entry.mimetype || ''
       }));
 
     this.licensesChanged.emit(licenses);
@@ -259,7 +292,7 @@ emitLicensesChanged() {
   }
 
   handleError(error: any) {
-  
+
     this.isLoading = false;
     this.backendMessage = '';
     setTimeout(() => {

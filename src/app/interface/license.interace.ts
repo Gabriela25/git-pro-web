@@ -4,20 +4,20 @@ import { Category } from './category.interface';
 
 
 export interface License {
-  id: string;
+  id? :string;
   profileId: string;
   profile ?: Profile;
   category?: Category;
-  categoryId?: string;
+  categoryId: string;
   url: string;
   filename?: string;
   mimetype?: string;
-  title?: string;
-  createdAt: Date;
-  updatedAt: Date;
+  title: string;
+  createdAt?: Date;
+  updatedAt?: Date;
   deletedAt?: Date | null;
-  createdBy: string;
-  updatedBy: string;
+  createdBy?: string;
+  updatedBy?: string;
   deletedBy?: string | null;
 }
 

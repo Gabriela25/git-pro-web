@@ -25,19 +25,20 @@ import { ProCategoriesFormComponent } from '../pro-categories-form/pro-categorie
   templateUrl: './pro-personal-form.component.html',
   styleUrls: ['./pro-personal-form.component.css'] // Crea este archivo si necesitas estilos específicos
 })
-export class ProPersonalFormComponent   {
+export class ProPersonalFormComponent    {
   @Input() parentForm!: FormGroup;
   @Input() listCategories: any[] = [];
-  @Input() listZipcode: any[] = [];
-  
+  @Input() listZipcode: any[] = []; 
   @Input() previewImgPersonal: string | ArrayBuffer | null = null;
   @Input() imagePersonal: string = '';
   @Output() fileSelected = new EventEmitter<File>();
   @Input() dropdownSettings : any = {};
   
-  @Output() categoriesChanged = new EventEmitter<void>(); // Nuevo evento para notificar cambios en categorías
+  @Output() categoriesChanged = new EventEmitter<void>(); 
   @ViewChild('fileInputPersonal') fileInputPersonal!: ElementRef<HTMLInputElement>;
   @Output() licensesChanged = new EventEmitter<any[]>();
+  @Input() initialLicenses: any[] = []; // Para recibir las licencias iniciales desde el padre
+
   selectedCategories: Category[] = [];
   readonly maxSelections = 3;
   alertMessage = '';
@@ -45,9 +46,6 @@ export class ProPersonalFormComponent   {
   isLoading = false;
   constructor() {}
   
-
- 
-
    triggerFileInput(): void {
     this.fileInputPersonal.nativeElement.click();
   }
@@ -62,7 +60,7 @@ export class ProPersonalFormComponent   {
   }
 
 
-
+  
   onLicensesChangedFromChild(licenses: any[]) {
    
     this.licensesChanged.emit(licenses);
@@ -75,16 +73,6 @@ export class ProPersonalFormComponent   {
 
   }
  
-   handleError(error: any) {
-    this.isLoading = false;
-    this.backendMessage = '';
-    setTimeout(() => {
-      this.alertMessage = 'alert-danger';
-      this.backendMessage = error.error.message || 'An error occurred';
-    });
-
-  }
-  
 
     
 } 

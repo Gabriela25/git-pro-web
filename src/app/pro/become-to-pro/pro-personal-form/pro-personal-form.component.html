@@ -1,101 +1,99 @@
+<!--Personal form-->
 <form [formGroup]="parentForm">
-    <div class="form-group">
-        <label for="imagePersonal" class="form-label fw-bold">{{'Personal image' | translate}}</label>
-        <div class="form-group text-center position-relative">
-            <div class="mb-3">
-               
-                <div class="position-relative d-inline-block">
-                    <img [src]="previewImgPersonal || imagePersonal || 'assets/avatar_profile.png'" alt="Image Personal"
-                        class="rounded-circle mb-3" style="object-fit: cover; cursor: pointer;" width="100" height="100"
-                        (click)="triggerFileInput()"> <i class="bi bi-pen position-absolute"
-                        style="right: 5px; bottom: 5px; font-size: 18px; cursor: pointer;"
-                        (click)="triggerFileInput()"></i>
-                   
-                </div>
-
-                <input type="file" class="form-control" id="imagePersonal" #fileInputPersonal
-                    (change)="onFileSelected($event)" style="display: none;"
-                    [ngClass]="{'is-invalid': parentForm.get('imagePersonal')?.invalid && (parentForm.get('imagePersonal')?.dirty || parentForm.get('imagePersonal')?.touched)}" />
-                @if(parentForm.get('imagePersonal')?.invalid &&
-                (parentForm.get('imagePersonal')?.dirty ||
-                parentForm.get('imagePersonal')?.touched )){
-                <div>
-                    @if(parentForm.get('imagePersonal')?.errors?.['required']){
-                    <small class="form-text text-danger">
-                        {{'auth.isImagePersonalRequired' | translate}}
-                    </small>
-                    }
-                </div>
-                }
-            </div>
+  <div class="form-group">
+    <label for="imagePersonal" class="form-label fw-bold">{{ 'Personal image' | translate }}</label>
+    <div class="form-group text-center position-relative">
+      <div class="mb-3">
+        <div class="position-relative d-inline-block">
+          <img [src]="imagePersonal || previewImgPersonal || 'assets/avatar_profile.png'" alt="Image Personal"
+            class="rounded-circle mb-3" style="object-fit: cover; cursor: pointer;" width="100" height="100"
+            (click)="triggerFileInput()">
+          <i class="bi bi-pen position-absolute" style="right: 5px; bottom: 5px; font-size: 18px; cursor: pointer;"
+            (click)="triggerFileInput()"></i>
         </div>
-    </div>
-<app-pro-categories-form
-  [parentForm]="parentForm"
-  [listCategories]="listCategories"
-  (licensesChanged)="onLicensesChangedFromChild($event)">
-</app-pro-categories-form>
-    
 
-    <div class="form-group mt-3">
-        <div class="mb-3">
-            <label for="zipcode" class="form-label fw-bold">{{'profile.zipCode' | translate}}</label>
-            <select class="form-select" aria-label="select" id="zipcode" formControlName="zipcode"
-                [ngClass]="{'is-invalid': parentForm.get('zipcode')?.invalid && (parentForm.get('zipcode')?.dirty || parentForm.get('zipcode')?.touched)}">
-                <option value="" selected>{{'general.select' | translate}}</option>
-                @for (item of listZipcode; track item.id) { <option [value]="item.id">{{item.code}}- {{item.name}}</option> }
-            </select>
-            @if(parentForm.get('zipcode')?.invalid &&
-            (parentForm.get('zipcode')?.dirty ||
-            parentForm.get('zipcode')?.touched
-            )){
-            <div>
-                @if(parentForm.get('zipcode')?.errors?.['required']){
-                <small class="form-text text-danger">
-                    {{'profile.isZipcodeRequired' | translate}}
-                </small>
-                }
-            </div>
-            }
-        </div>
-    </div>
+        <input type="file" class="form-control" id="imagePersonal" #fileInputPersonal
+          (change)="onFileSelected($event)" style="display: none;"
+          [ngClass]="{
+              'is-invalid':
+                parentForm.get('imagePersonal')?.invalid &&
+                (parentForm.get('imagePersonal')?.dirty || parentForm.get('imagePersonal')?.touched)
+            }" />
 
-    <div class="form-group">
-        <div class="mb-3">
-            <label for="address" class="form-label fw-bold">{{'profile.address' | translate}}</label>
-            <input type="text" class="form-control" id="address" formControlName="address" appCapitalizeFirst
-                appNoWhitespace
-                [ngClass]="{'is-invalid': parentForm.get('address')?.invalid && (parentForm.get('address')?.dirty || parentForm.get('address')?.touched)}" />
-            @if(parentForm.get('address')?.invalid &&
-            (parentForm.get('address')?.dirty ||
-            parentForm.get('address')?.touched
-            )){
-            <div>
-                @if(parentForm.get('address')?.errors?.['required']){
-                <small class="form-text text-danger">
-                    {{'profile.isAddressRequired' | translate}}
-                </small>
-                }
-                @else if(parentForm.get('address')?.errors?.['minlength']){
-                <small class="form-text text-danger">
-                    {{'profile.minimum10Characters' | translate}}
-                </small>
-                }
-                @else if(parentForm.get('address')?.errors?.['noWhitespace']){
-                <small class="form-text text-danger">
-                    {{'general.isWhitespace' | translate}}
-                </small>
-                }
-            </div>
-            }
+        <div *ngIf="parentForm.get('imagePersonal')?.invalid &&
+                    (parentForm.get('imagePersonal')?.dirty || parentForm.get('imagePersonal')?.touched)">
+          <small class="form-text text-danger" *ngIf="parentForm.get('imagePersonal')?.errors?.['required']">
+            {{ 'auth.isImagePersonalRequired' | translate }}
+          </small>
         </div>
+      </div>
     </div>
+  </div>
 
-    <div class="form-group">
-        <div class="mb-3">
-            <label for="introduction" class="form-label fw-bold">{{'profile.introduction' | translate}}</label>
-            <textarea class="form-control" id="introduction" rows="3" formControlName="introduction"
-                appCapitalizeFirst></textarea>
-        </div>
+  <!--Add categories and licenses-->
+  <app-pro-categories-form
+    [parentForm]="parentForm"
+    [listCategories]="listCategories"
+    (licensesChanged)="onLicensesChangedFromChild($event)"
+    [initialLicenses]="initialLicenses">
+  </app-pro-categories-form>
+  <!--end categories-->
+
+  <div class="form-group mt-3">
+    <div class="mb-3">
+      <label for="zipcode" class="form-label fw-bold">{{ 'profile.zipCode' | translate }}</label>
+      <select class="form-select" aria-label="select" id="zipcode" formControlName="zipcode"
+        [ngClass]="{
+            'is-invalid':
+              parentForm.get('zipcode')?.invalid &&
+              (parentForm.get('zipcode')?.dirty || parentForm.get('zipcode')?.touched)
+          }">
+        <option value="" selected>{{ 'general.select' | translate }}</option>
+        <option *ngFor="let item of listZipcode; " [value]="item.id">
+          {{ item.code }} - {{ item.name }}
+        </option>
+      </select>
+
+      <div *ngIf="parentForm.get('zipcode')?.invalid &&
+                  (parentForm.get('zipcode')?.dirty || parentForm.get('zipcode')?.touched)">
+        <small class="form-text text-danger" *ngIf="parentForm.get('zipcode')?.errors?.['required']">
+          {{ 'profile.isZipcodeRequired' | translate }}
+        </small>
+      </div>
     </div>
+  </div>
+
+  <div class="form-group">
+    <div class="mb-3">
+      <label for="address" class="form-label fw-bold">{{ 'profile.address' | translate }}</label>
+      <input type="text" class="form-control" id="address" formControlName="address" appCapitalizeFirst appNoWhitespace
+        [ngClass]="{
+            'is-invalid':
+              parentForm.get('address')?.invalid &&
+              (parentForm.get('address')?.dirty || parentForm.get('address')?.touched)
+          }" />
+
+      <div *ngIf="parentForm.get('address')?.invalid &&
+                  (parentForm.get('address')?.dirty || parentForm.get('address')?.touched)">
+        <small class="form-text text-danger" *ngIf="parentForm.get('address')?.errors?.['required']">
+          {{ 'profile.isAddressRequired' | translate }}
+        </small>
+        <small class="form-text text-danger" *ngIf="parentForm.get('address')?.errors?.['minlength']">
+          {{ 'profile.minimum10Characters' | translate }}
+        </small>
+        <small class="form-text text-danger" *ngIf="parentForm.get('address')?.errors?.['noWhitespace']">
+          {{ 'general.isWhitespace' | translate }}
+        </small>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <div class="mb-3">
+      <label for="introduction" class="form-label fw-bold">{{ 'profile.introduction' | translate }}</label>
+      <textarea class="form-control" id="introduction" rows="3" formControlName="introduction"
+        appCapitalizeFirst></textarea>
+    </div>
+  </div>
 </form>
+<!--end Personal form-->
