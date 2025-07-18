@@ -18,6 +18,7 @@ import { ModalComponent } from '../../shared/modal/modal.component';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { FloatingAlertComponent } from '../../shared/floating-alert/floating-alert.component';
 import { UploadsService } from '../../services/uploads.service';
+import { UserReq } from '../../interface/user-req.interface';
 
 @Component({
   selector: 'app-basic-info',
@@ -50,7 +51,7 @@ export default class BasicInfoComponent implements OnInit {
   @ViewChild('modal') modal!: ModalComponent;
   bodyModal!: SafeHtml | string;
   title: string = 'Enable Notifications in Your Browser';
-  user: User = {
+  user: UserReq = {
     id: '',
     firstname: '',
     lastname: '',
@@ -58,7 +59,7 @@ export default class BasicInfoComponent implements OnInit {
     phone: '',
     profile: {
       id: '',
-      categories: [],
+      categoryIds: [],
       zipcodeId: '',
       address: '',
       imagePersonal: '',
@@ -143,7 +144,7 @@ export default class BasicInfoComponent implements OnInit {
     } else {
       this.isLoading = true;
       const formData = this.basicInfoForm.value;
-      const user: User = {
+      const user: UserReq = {
         firstname: formData.firstname || [],
         lastname: formData.lastname || '',
         phone: formData.phone || '',
@@ -151,7 +152,7 @@ export default class BasicInfoComponent implements OnInit {
         enabled: true,
         profile: {
           id: '',
-          categories: [],
+          categoryIds: [],
           zipcodeId: '',
           address: '',
           imagePersonal: '',

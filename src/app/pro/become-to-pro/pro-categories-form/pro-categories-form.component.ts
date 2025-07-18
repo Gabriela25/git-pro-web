@@ -25,6 +25,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 })
 export class ProCategoriesFormComponent implements OnInit, OnChanges {
   hasPendingLicensesToSave = false;
+  removeCategoryWithLicense: boolean = false;
   @Input() parentForm!: FormGroup;
   @Input() listCategories: Category[] = [];
 
@@ -53,6 +54,7 @@ export class ProCategoriesFormComponent implements OnInit, OnChanges {
     // Asegurarse de que el FormControl 'categories' esté inicializado en el parentForm
     if (!this.parentForm.contains('categories')) {
       this.parentForm.addControl('categories', new FormControl([]));
+      console.log(this.parentForm.contains('categories'))
     }
     // Inicializar selectedCategoryIdsInForm con el valor actual del formControl (si lo tiene)
     this.selectedCategoryIdsInForm = this.parentForm.get('categories')?.value || [];
@@ -68,8 +70,9 @@ export class ProCategoriesFormComponent implements OnInit, OnChanges {
     this.filterCategories();
   }
 
- 
+
   ngOnChanges(changes: SimpleChanges): void {
+    console.log('Changes detected:', changes);
     if (changes['listCategories']) {
 
       this.filterCategories();
@@ -77,32 +80,65 @@ export class ProCategoriesFormComponent implements OnInit, OnChanges {
     }
 
     if (changes['initialLicenses'] && this.initialLicenses?.length > 0 && this.listCategories?.length > 0) {
+      console.log('Initial licenses changed:', this.initialLicenses);
       this.initializeFromEdit();
     }
   }
   initializeFromEdit(): void {
+    // Paso 1: Cargar las categorías que tienen licencia
     this.selectedCategoryIdsInForm = this.initialLicenses.map(l => l.categoryId);
-    this.parentForm.get('categories')?.setValue(this.selectedCategoryIdsInForm);
 
-    const newFinalList: SelectedCategoryWithImage[] = this.initialLicenses.map(license => {
+    const formSelectedCategoryAllIds = this.parentForm.get('categories')?.value || [];
+
+    this.parentForm.get('categories')?.setValue(formSelectedCategoryAllIds);
+
+    // Paso 3: Mapear categorías con licencia
+    const withLicense: SelectedCategoryWithImage[] = this.initialLicenses.map(license => {
       const matchedCategory = this.listCategories.find(cat => cat.id === license.categoryId);
-   
+
       if (!matchedCategory) return null;
 
       return {
         category: matchedCategory,
-        uploadedImageBase64: this.sanitizer.bypassSecurityTrustResourceUrl(license.url), 
-        uploadedImageFile: null, // usuario puede reemplazarla
+        uploadedImageBase64: this.sanitizer.bypassSecurityTrustResourceUrl(license.url),
+        uploadedImageFile: null,
         title: license.title,
         mimetype: license.mimetype
       };
     }).filter(Boolean) as SelectedCategoryWithImage[];
 
-    this.finalSelectedCategoriesWithImages = newFinalList;
-    this.selectedCategoriesToSend = newFinalList.map(entry => entry.category);
+    // Paso 4: Obtener categorías seleccionadas en el formulario (pueden incluir nuevas o sin licencia)
+    const selectedCategoryIds = this.parentForm.get('categories')?.value as string[] || [];
+
+    // Paso 5: Detectar categorías seleccionadas que no tienen licencia aún
+    const newCategories = selectedCategoryIds
+      .filter(id => !withLicense.find(wl => wl.category.id === id)) // categorías nuevas o sin licencia
+      .map(id => {
+        const matched = this.listCategories.find(cat => cat.id === id);
+        if (!matched) return null;
+
+        return {
+          category: matched,
+          uploadedImageBase64: null,
+          uploadedImageFile: null,
+          title: '',         // vacío porque no tiene licencia todavía
+          mimetype: ''       // vacío también
+        };
+      })
+      .filter(Boolean) as SelectedCategoryWithImage[];
+
+    // Paso 6: Combinar todo
+    this.finalSelectedCategoriesWithImages = [...withLicense, ...newCategories];
+    console.log('Final categories with images:', this.finalSelectedCategoriesWithImages);
+    // Paso 7: Preparar lista de solo categorías para enviar al backend
+    this.selectedCategoriesToSend = this.finalSelectedCategoriesWithImages.map(entry => entry.category);
+    console.log('Final categories with images:', this.finalSelectedCategoriesWithImages);
+    console.log('Selected categories to send:', this.selectedCategoriesToSend);
   }
 
+
   onSelectChange(event: Event): void {
+
     const selectElement = event.target as HTMLSelectElement;
     const selectedOption = selectElement.value;
 
@@ -111,17 +147,13 @@ export class ProCategoriesFormComponent implements OnInit, OnChanges {
       return;
     }
 
-    // Validar licencias pendientes
-    if (this.hasIncompleteRequiredLicenses()) {
-      alert('Debes subir los documentos requeridos antes de seleccionar otra categoría.');
-      return;
-    }
-
     // Obtener la categoría completa y agregarla a selectedCategoriesToSend
     const selectedCategory = this.listCategories.find(cat => cat.id === selectedOption);
+
     if (
       selectedCategory &&
       !this.selectedCategoriesToSend.find(cat => cat.id === selectedCategory.id)
+
     ) {
       this.selectedCategoriesToSend.push(selectedCategory);
     }
@@ -195,9 +227,9 @@ export class ProCategoriesFormComponent implements OnInit, OnChanges {
       if (fullCategory) {
         const existingEntry = this.finalSelectedCategoriesWithImages.find(item => item.category.id === selectedId);
         if (existingEntry) {
-          newFinalList.push(existingEntry); // Mantener la entrada existente con su imagen
+          newFinalList.unshift(existingEntry); // Mantener la entrada existente con su imagen
         } else {
-          newFinalList.push({ category: fullCategory, uploadedImageBase64: null, uploadedImageFile: null, title: '',mimetype: '' }); // Crear una nueva entrada sin imagen
+          newFinalList.unshift({ category: fullCategory, uploadedImageBase64: null, uploadedImageFile: null, title: '', mimetype: '' }); // Crear una nueva entrada sin imagen
         }
       }
     });
@@ -241,7 +273,15 @@ export class ProCategoriesFormComponent implements OnInit, OnChanges {
     if (updatedCategoryIds.length === 0) {
       this.showSelect = false;
     }
-    this.selectedCategoriesToSend = this.selectedCategoriesToSend.filter(cat => cat.id !== categoryId);
+    const isCategoryLicensedRequired = this.listCategories.find(cat => cat.id === categoryId)?.licenseRequired;
+    if (isCategoryLicensedRequired) {
+      this.removeCategoryWithLicense = true;
+ 
+
+    }
+    /*if( this.selectedCategoriesToSend.length > 0) {
+      this.finalSelectedCategoriesWithImages = this.finalSelectedCategoriesWithImages.filter(item => item.category.id !== categoryId);
+    }*/
   }
 
   // --- Método para simular el guardado final ---
@@ -258,7 +298,7 @@ export class ProCategoriesFormComponent implements OnInit, OnChanges {
         title: entry.title || '',
         file: entry.uploadedImageFile
       }));
-    
+
     if (this.selectedCategoryIdsInForm.length < this.maxSelections) {
       this.showSelect = true;
     } else {
@@ -267,9 +307,9 @@ export class ProCategoriesFormComponent implements OnInit, OnChanges {
     this.emitLicensesChanged();
   }
   hasIncompleteRequiredLicenses(): boolean {
-    
+    console.log('Checking for incomplete licenses...', this.finalSelectedCategoriesWithImages);
     return this.finalSelectedCategoriesWithImages.some(entry =>
-      
+
       entry.category.licenseRequired &&
       ((!entry.uploadedImageFile && !entry.title) || !entry.uploadedImageBase64) // Verifica si no hay archivo o título
     );
@@ -285,7 +325,7 @@ export class ProCategoriesFormComponent implements OnInit, OnChanges {
         file: entry.uploadedImageFile,
         mimetype: entry.mimetype || ''
       }));
-
+    console.log('Emitting licenses changed:', licenses);
     this.licensesChanged.emit(licenses);
 
     this.hasPendingLicensesToSave = false
@@ -300,5 +340,17 @@ export class ProCategoriesFormComponent implements OnInit, OnChanges {
       this.backendMessage = error.error.message || 'An error occurred';
     });
 
+  }
+  shouldShowUpdateLicenseButton(): boolean {
+    
+    return this.finalSelectedCategoriesWithImages.some(entry =>
+      entry.category.licenseRequired
+    );
+  }
+  isLicenseIncomplete(entry: SelectedCategoryWithImage): boolean | undefined {
+    return (
+      entry.category.licenseRequired &&
+      ((!entry.uploadedImageFile && !entry.title) || !entry.uploadedImageBase64)
+    );
   }
 }

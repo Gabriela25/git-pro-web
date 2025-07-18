@@ -1,0 +1,20 @@
+<div class="payment-container">
+  <div *ngIf="isLoading">
+    <h2>Preparando tu Pago...</h2>
+    <p>Serás redirigido a la página segura de Stripe en breve.</p>
+    <div class="spinner"></div>
+  </div>
+
+  <div *ngIf="!isLoading && errorMessage">
+    <h2>Error al Iniciar el Pago</h2>
+    <p>{{ errorMessage }}</p>
+    <button (click)="retryPayment()" class="btn btn-primary">Reintentar Pago</button>
+    <button (click)="goToCategorySelection()" class="btn btn-secondary">Volver a Seleccionar Categorías</button>
+  </div>
+
+  <div *ngIf="!isLoading && !errorMessage && !paymentInitiated">
+    <h2>Inicia tu Pago</h2>
+    <p>Haz click en el botón para ser redirigido a la página de pago segura.</p>
+    <button (click)="initiateStripeCheckout()" class="btn btn-primary">Proceder al Pago</button>
+  </div>
+</div>

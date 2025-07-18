@@ -6,6 +6,8 @@ import { User } from '../interface/user.interface';
 import { Profile } from '../interface/profile.interface';
 import { AuthHeaders } from './auth-headers.service';
 import { Image } from '../interface/image.interface';
+import { ProfileReq } from '../interface/profile-req.interface';
+import { UserReq } from '../interface/user-req.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -23,7 +25,7 @@ export class UserService {
 
   ) {}
   
-  becomeToPro(body: Profile): Observable<{profile: Profile,message: string}>{ 
+  becomeToPro(body: ProfileReq): Observable<{profile: Profile,message: string}>{ 
     const headers= this.authHeadersService.getHeaders();
     return this._http.post<{profile: Profile,message: string}>(`${this.apiUrlBackend}/users/become-to-pro`, body,headers);
   }
@@ -33,7 +35,7 @@ export class UserService {
     return this._http.get<{user:User}>(`${this.apiUrlBackend}/users/me`,{...headers});
   }
 
-  updateMe(body:User): Observable<{user:User,message:string}>{
+  updateMe(body:UserReq): Observable<{user:User,message:string}>{
     const headers= this.authHeadersService.getHeaders();
     return this._http.put<{user:User,message:string}>(`${this.apiUrlBackend}/users/me`,body, {...headers});
   }

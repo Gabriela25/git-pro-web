@@ -14,7 +14,7 @@ import { ProPersonalFormComponent } from './pro-personal-form/pro-personal-form.
 import { ProBusinessFormComponent } from "./pro-business-form/pro-business-form.component";
 import { HeaderComponent } from "../../shared/header/header.component";
 import { CommonModule } from '@angular/common';
-import e from 'express';
+
 import { UserService } from '../../services/user.service';
 import { User } from '../../interface/user.interface';
 import { Profile } from '../../interface/profile.interface';
@@ -24,6 +24,9 @@ import { LicenseService } from '../../services/license.service';
 import { title } from 'process';
 import { License } from '../../interface/license.interace';
 import { environment } from '../../../environments/environment.development';
+import { CheckStripeService } from '../../services/checkout-stripe.service';
+import { Router } from '@angular/router';
+import { ProfileReq } from '../../interface/profile-req.interface';
 
 
 @Component({
@@ -67,10 +70,10 @@ export default class BecomeToProComponent implements OnInit {
 
   imagePersonal: string = '';
   imageBusiness: string = '';
-  previewImgPersonal: string | ArrayBuffer | null = 'assets/avatar_profile.png';
+  previewImgPersonal: string | ArrayBuffer | null = null;
   selectedFilePersonal: File | null = null;
 
-  previewImgBusiness: string | ArrayBuffer | null = 'assets/avatar_profile.png';
+  previewImgBusiness: string | ArrayBuffer | null = null;
   selectedFileBusiness: File | null = null;
 
   filesLicences: File[] = [];
@@ -87,7 +90,7 @@ export default class BecomeToProComponent implements OnInit {
     phone: '',
     profile: {
       id: '',
-      categories: [],
+      profileCategories: [],
       zipcodeId: '',
       address: '',
       imagePersonal: '',
@@ -97,15 +100,22 @@ export default class BecomeToProComponent implements OnInit {
     }
   }
   initialLicenses: { categoryId: string; title: string; url: string; mimetype: string }[] = [];
+  isLoadingPayment: boolean = false;
+  errorMessagePayment: string | null = null;
+  paymentInitiated: boolean = false;
+  selectedCategoryIds: string[] = [];
   constructor(
     private fb: FormBuilder,
     private translate: TranslateService,
+    private router: Router,
     private categoryService: CategoryService,
     private zipCodeService: ZipcodeService,
     private userService: UserService,
     private uploadsService: UploadsService,
     private licenseService: LicenseService,
-    private cdr: ChangeDetectorRef
+    private checkStripe: CheckStripeService,
+
+
   ) { }
 
   ngOnInit(): void {
@@ -124,52 +134,44 @@ export default class BecomeToProComponent implements OnInit {
     });
   }
   populateUserProfile() {
-    if (this.user.profile) {    
+    if (this.user.profile) {
       //asignamos si el perfil es personal o business
       this.isUserProPersonal = this.user.profile.isBusiness!;
-      this.imagePersonal = `${this.urlUploads}${this.user.profile.imagePersonal}`;
+      this.imagePersonal = `${this.user.profile.imagePersonal}`;
+      // Asignacion de licencias del perfil
       this.initialLicenses = (this.user.profile.licenses || []).map((license: any) => ({
         categoryId: license.categoryId,
         title: license.title,
         url: `${this.urlUploads}${license.url}`,
         mimetype: license.mimetype || '',
       }));
+
       this.proPersonalForm.patchValue({
-        categories: this.user.profile.categories,
+        categories: this.user.profile.profileCategories.map((pc) => pc.categoryId),
         zipcode: this.user.profile.zipcodeId,
         address: this.user.profile.address,
-        imagePersonal: `${this.urlUploads}${this.user.profile.imagePersonal}`,
+        imagePersonal: `${this.user.profile.imagePersonal}`,
         introduction: this.user.profile.introduction,
         licenses: this.initialLicenses
       });
       if (this.user.profile.isBusiness) {
         this.isSelectOption = 'isBusiness';
         this.isDisabled = true;
-      
-        this.imageBusiness = `${this.urlUploads}${this.user.profile.imageBusiness}`;
-        
+        this.imageBusiness = `${this.user.profile.imageBusiness}`;
         this.proBusinessForm.patchValue({
-          imageBusiness: `${this.urlUploads}${this.user.profile.imageBusiness}`,
+          imageBusiness: `${this.user.profile.imageBusiness}`,
           nameBusiness: this.user.profile.nameBusiness,
           yearFounded: this.user.profile.yearFounded,
           numberOfemployees: this.user.profile.numberOfemployees
         });
       }
     }
-    else {    
+    else {
       this.openModalOnPageLoad();
     }
 
   }
-  /* ngAfterViewInit(): void {
- 
-     if (this.showOptsPro) {
-       setTimeout(() => {
-         this.openModalOnPageLoad();
- 
-       }, 0);
-     }
-   }*/
+
   openModalOnPageLoad() {
 
     if (this.modal) {
@@ -200,12 +202,14 @@ export default class BecomeToProComponent implements OnInit {
   onAccept() {
     console.log('onAccept called');
   }
+  // Carga inicial de categorías y Zipcodes
   loadInitialData(): void {
     this.categoryService.getAllCategories().subscribe({
       next: (response) => {
         this.listCategories = response.categories;
         // Disparar validación por si dependiera de categorías
-        this.proPersonalForm.get('licenses')?.updateValueAndValidity();
+        // TODO: Revisar si es necesario
+        //this.proPersonalForm.get('categories')?.updateValueAndValidity();
       },
       error: (error) => this.handleError(error)
     });
@@ -256,16 +260,13 @@ export default class BecomeToProComponent implements OnInit {
   }
   onFileSelectedPersonal(file: File): void {
     this.selectedFilePersonal = file;
-
     this.proPersonalForm.get('imagePersonal')?.setValue(file);
-
     const reader = new FileReader();
     reader.onload = e => {
-
       this.previewImgPersonal = e.target?.result || null;
+
     };
     reader.readAsDataURL(file);
-
     this.proPersonalForm.get('imagePersonal')?.markAsTouched();
     this.proPersonalForm.get('imagePersonal')?.updateValueAndValidity();
   }
@@ -273,13 +274,11 @@ export default class BecomeToProComponent implements OnInit {
   onFileSelectedBusiness(file: File): void {
     this.selectedFileBusiness = file;
     this.proBusinessForm.get('imageBusiness')?.setValue(file);
-
     const reader = new FileReader();
     reader.onload = e => {
       this.previewImgBusiness = e.target?.result || null;
     };
     reader.readAsDataURL(file);
-
     this.proBusinessForm.get('imageBusiness')?.markAsTouched();
     this.proBusinessForm.get('imageBusiness')?.updateValueAndValidity();
   }
@@ -293,7 +292,7 @@ export default class BecomeToProComponent implements OnInit {
       this.isLoading = false;
 
       if (this.isLicenceRequiredForSelectedCategories() === true) {
-        this.handleError({ error: { message: 'Press the add categories button' } });
+        this.handleError({ error: { message: 'Press the update licenses button' } });
         return;
       } else {
         this.handleError({ error: { message: 'Please complete all required fields in your personal profile.' } });
@@ -309,7 +308,7 @@ export default class BecomeToProComponent implements OnInit {
     this.isNext = false;
     if (this.currentStep === 2 && this.isSelectOption === 'isBusiness') {
       this.currentStep = 1;
-      this.isSelectOption = 'isPersonal';
+      this.isSelectOption = 'isBusiness';
     } else if (this.currentStep === 1 && this.isSelectOption === 'isPersonal') {
       this.showOptsPro = true;
     }
@@ -318,17 +317,11 @@ export default class BecomeToProComponent implements OnInit {
 
   onSubmit(): void {
     this.isLoading = true;
-
     if (this.isSelectOption === 'isPersonal') {
-
       this.proPersonalForm.markAllAsTouched();
       this.proPersonalForm.updateValueAndValidity(); // Forzar validación
-
-      console.log('Submitting form with isSelectOption:', this.proPersonalForm.valid);
       if (this.proPersonalForm.invalid || this.isLicenceRequiredForSelectedCategories() === true) {
-        console.log(this.isLicenceRequiredForSelectedCategories());
         this.isLoading = false;
-
         if (this.isLicenceRequiredForSelectedCategories() === true) {
           this.handleError({ error: { message: 'Press the add categories button' } });
           return;
@@ -338,14 +331,11 @@ export default class BecomeToProComponent implements OnInit {
 
         return;
       }
-
       // Si el formulario personal es válido, procesar envío
-
       this.processFormSubmission(false);
 
     } else if (this.isSelectOption === 'isBusiness') {
       // Caso: Se envía el perfil de negocio (que incluye el personal)
-
       // 1. Marcar y validar el formulario personal
       this.proPersonalForm.markAllAsTouched();
       this.proPersonalForm.updateValueAndValidity();
@@ -376,33 +366,28 @@ export default class BecomeToProComponent implements OnInit {
         this.handleError({ error: { message: 'Please complete all required fields in your personal profile.' } });
         return;
       }
-
       // Si ambos formularios son válidos, combinar y procesar envío
       this.processFormSubmission(true);
     }
   }
-  // Verifica si se requiere licencia para las categorías seleccionadas
-  // y si la cantidad de licencias proporcionadas coincide con las categorías que requieren licencia
+
   isLicenceRequiredForSelectedCategories(): boolean {
-    const selectedCategoryIds: string[] = this.proPersonalForm.get('categories')?.value || [];
-
-    const selectedCategories = this.listCategories.filter(cat =>
-      selectedCategoryIds.includes(cat.id)
+    this.selectedCategoryIds = this.proPersonalForm.get('categories')?.value || [];
+    const licenses = this.proPersonalForm.get('licenses')?.value || [];
+    // Filtrar solo las licencias que están dentro de las categorías seleccionadas
+    const matchedLicenses = licenses.filter((lic: any) =>
+      this.selectedCategoryIds.includes(lic.categoryId)
     );
-
-    const categoriesThatRequireLicense = selectedCategories.filter(cat => cat.licenseRequired);
-    const hasLicenseRequired = categoriesThatRequireLicense.length;
-    if ((hasLicenseRequired != this.proPersonalForm.get('licenses')?.value.length)) {
-
-      return true;
-    }
-
-    return false;
+    
+    // Verificar si alguna de esas licencias no tiene archivo
+    const incomplete = matchedLicenses.some((lic: any) =>
+      !lic.file || lic.file == null || lic.file === ''
+    );
+    
+    return incomplete;
   }
   async processFormSubmission(isBusiness: boolean): Promise<void> {
-
     const isFirstTime = !this.user.profile || !this.user.profile.id;
-
     const combinedData = {
       ...this.proPersonalForm.value,
       ...(isBusiness ? this.proBusinessForm.value : {}),
@@ -414,10 +399,22 @@ export default class BecomeToProComponent implements OnInit {
     // Subir imágenes personales y empresariales
     combinedData.imagePersonal = combinedData.imagePersonalFile
       ? await this.uploadImageWithFile(combinedData.imagePersonalFile)
+      : this.user.profile?.imagePersonal || '';
+
+    combinedData.imageBusiness = isBusiness
+      ? (combinedData.imageBusinessFile
+        ? await this.uploadImageWithFile(combinedData.imageBusinessFile)
+        : this.user.profile?.imageBusiness || '')
       : '';
 
-    if (isBusiness && combinedData.imageBusinessFile) {
-      combinedData.imageBusiness = await this.uploadImageWithFile(combinedData.imageBusinessFile);
+    if (isBusiness) {
+      if (combinedData.imageBusinessFile) {
+        combinedData.imageBusiness = await this.uploadImageWithFile(combinedData.imageBusinessFile);
+      } else if (!isFirstTime) {
+        combinedData.imageBusiness = this.user.profile?.imageBusiness || '';
+      } else {
+        combinedData.imageBusiness = '';
+      }
     }
 
     // Subir archivos de licencias (si existen)
@@ -427,10 +424,12 @@ export default class BecomeToProComponent implements OnInit {
       }
     }
 
-    const profile = this.buildProfile(combinedData, isBusiness, isFirstTime);
+    const profile = this.buildProfile(combinedData, isBusiness);
+    let profileIdToUse: string;
     if (isFirstTime) {
       this.userService.becomeToPro(profile).subscribe({
-        next: (response) => {
+        next: async (response) => {
+          profileIdToUse = response.profile.id ?? '';
           // Crear licencias asociadas al perfil
           if (combinedData.licensesDetails.length > 0) {
             for (const license of combinedData.licensesDetails) {
@@ -439,7 +438,7 @@ export default class BecomeToProComponent implements OnInit {
                 url: license.file || '',
                 categoryId: license.categoryId || '',
                 filename: license.file || '',
-                profileId: response.profile.id || ''
+                profileId: profileIdToUse
               };
 
               this.licenseService.createLicense(licenseToCreate).subscribe({
@@ -447,26 +446,80 @@ export default class BecomeToProComponent implements OnInit {
                 error: (err) => this.handleError(err)
               });
             }
-          }
+          } /*else {
+            await this.initiateStripeCheckout(profileIdToUse);
+          }*/
           this.handleSuccessfulSubmission(response.message);
         },
         error: (err) => this.handleError(err)
       });
     } else {
-      // Actualizar perfil existente
-      this.handleProfileEdit(profile);
-      //this.handleSuccessfulSubmission(this.translate.instant('FORM_UPDATED_SUCCESSFULLY'));
+      this.handleProfileEdit(profile, combinedData, profile.id!);
+     
     }
   }
+  async initiateStripeCheckout(profileId: string): Promise<void> {
+    this.isLoadingPayment = true;        // Activa el spinner de carga
+    this.errorMessagePayment = null;     // Limpia cualquier mensaje de error previo
+    this.paymentInitiated = true;        // Indica que el proceso de pago ha comenzado para mostrar la UI correspondiente
 
+    try {
+      const categoryIds = this.selectedCategoryIds; // Obtiene los IDs de las categorías seleccionadas
+      if (!categoryIds || categoryIds.length === 0) {
+        // Si no se ha seleccionado ninguna categoría, lanza un error y sale
+        throw new Error('Selecciona al menos una categoría para continuar.');
+      }
+
+      // --- ESTA ES LA CORRECCIÓN CRÍTICA ---
+      // Convertimos el Observable a una Promesa y esperamos a que se resuelva.
+      // Opción para RxJS 7+:
+      const response = await firstValueFrom(
+        this.checkStripe.createCheckoutSession(profileId, categoryIds)
+      );
+      // O, si estás usando una versión anterior de RxJS y 'toPromise()' no está deprecado o lo tienes importado:
+      // const response = await this.checkStripe.createCheckoutSession(profileId, categoryIds).toPromise();
+
+
+      // Una vez que 'await' ha finalizado, 'response' contendrá la respuesta exitosa del backend.
+      if (response && response.checkoutStripe.url) {
+        window.location.href = response.checkoutStripe.url; // Redirige al usuario a la página de pago de Stripe
+        // La ejecución de este método se detendrá aquí ya que el navegador cambia de página.
+      } else {
+        // Este bloque se ejecutaría si el backend respondiera OK, pero sin la URL esperada.
+        // (Lo cual sería un error en el backend si siempre debe devolver una URL).
+        this.errorMessagePayment = 'No se pudo obtener la URL de pago de Stripe. Por favor, intenta de nuevo.';
+        this.paymentInitiated = false; // Permite que el usuario reintente el pago
+      }
+
+    } catch (error: any) {
+      // Este bloque 'catch' capturará cualquier error que ocurra durante la operación asíncrona:
+      // - Errores de red
+      // - Errores HTTP (4xx, 5xx) devueltos por el backend
+      // - Errores lanzados explícitamente, como el de "Selecciona al menos una categoría".
+      console.error('Error al crear la sesión de Checkout:', error);
+
+      // Intenta obtener un mensaje de error más específico de la respuesta del backend
+      this.errorMessagePayment = error.error?.message || 'Hubo un problema al iniciar el pago. Intenta más tarde.';
+      this.paymentInitiated = false; // Permite que el usuario vea la opción de reintentar
+    } finally {
+      // El bloque 'finally' SIEMPRE se ejecuta después de que el bloque 'try' o 'catch' ha terminado.
+      // Esto asegura que el spinner se desactive, sin importar el resultado.
+      this.isLoadingPayment = false; // Desactiva el spinner
+    }
+  }
+  retryPayment(): void {
+
+  }
+  goToCategorySelection(): void {
+    this.router.navigate(['/profile/edit']); // O la ruta a tu selección de categorías  
+  }
+  // Construye el objeto ProfileReq a partir de los datos combinados
   private buildProfile(combinedData: any,
     isBusiness: boolean,
-
-    isFirstTime: boolean
-  ): Profile {
+  ): ProfileReq {
 
     return {
-      categories: combinedData.categories || [],
+      categoryIds: combinedData.categories || [],
       zipcodeId: combinedData.zipcode || '',
       address: combinedData.address || '',
       imagePersonal: combinedData.imagePersonal || '',
@@ -482,13 +535,13 @@ export default class BecomeToProComponent implements OnInit {
       })
     };
   }
+  // Método para subir una imagen y obtener su nombre de archivo
   private async uploadImageWithFile(file: File): Promise<string> {
     const formData = new FormData();
     formData.append('file', file);
-
     try {
       const response = await this.uploadImage(formData);
-      console.log('Imagen subida exitosamente:', response);
+
       return response.fileName;
     } catch (error) {
       this.handleError(error);
@@ -517,9 +570,30 @@ export default class BecomeToProComponent implements OnInit {
     });
 
   }
-  private handleProfileEdit(profile: Profile) {
+  private handleProfileEdit(profile: ProfileReq, combinedData: any, profileIdToUse: string) {
+
     this.userService.updateMe({ ...this.user, profile }).subscribe({
       next: (response) => {
+     
+        if (combinedData.licensesDetails.length > 0) {
+          for (const license of combinedData.licensesDetails) {
+            const licenseToCreate: License = {
+              title: license.title || '',
+              url: license.file || '',
+              categoryId: license.categoryId || '',
+              filename: license.file || '',
+              profileId: this.user.profile?.id!
+            };
+            this.licenseService.createLicense(licenseToCreate).subscribe({
+              next: (res) => {
+                this.checkUserProfile()
+                this.handleSuccessfulSubmission(response.message);
+              },
+              error: (err) => this.handleError(err)
+            });
+          }
+          this.handleSuccessfulSubmission(response.message);
+        }
 
       },
       error: (error) => this.handleError(error)

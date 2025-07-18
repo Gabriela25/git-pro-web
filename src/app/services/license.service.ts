@@ -24,7 +24,7 @@ export class LicenseService {
 
   createLicense(body: License): Observable<{ license: License }> {
     const headers = this.authHeadersService.getHeaders();
-    return this._http.post<{ license: License }>(`${this.apiUrlBackend}/licenses`, body, headers);
+    return this._http.post<{ license: License }>(`${this.apiUrlBackend}/profile-licenses`, body, headers);
   }
 
 }

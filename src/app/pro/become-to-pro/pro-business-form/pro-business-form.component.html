@@ -6,7 +6,7 @@
       <div class="form-group text-center position-relative">
         <div class="position-relative d-inline-block">
 
-          <img [src]="imageBusiness || previewImgBusiness || 'assets/avatar_profile.png'" alt="Image Business"
+          <img [src]="getImageBusinessSrc()" alt="Image Business"
             class="rounded-circle mb-3" width="100" height="100" style="object-fit: cover; cursor: pointer;"
             (click)="triggerFileInput()" />
           <i class="bi bi-pen position-absolute" style="right: 5px; bottom: 5px; font-size: 18px; cursor: pointer;"

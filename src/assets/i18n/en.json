@@ -13,7 +13,8 @@
     "allow":"Allow",
     "dontAllow": "Don't allow",
     "sendReview": "Send review",
-    "loading":"Loading..."
+    "loading":"Loading...",
+    "activateCategoryAndPay":"Activate categories and pay"
   },
   "header": {
     "profile": "Profile",
@@ -65,7 +66,7 @@
     "password": "Password",
     "categories": "Categories",
     "selectedCategories": "Selected categories",
-    "addCategories": "Add categories",
+    "updateLincenses": "Update licenses",
     "licenseTitle": "License title",
     "requireLicense": "Requires license",
     "uploadLicense/Document":"Upload license/Document",

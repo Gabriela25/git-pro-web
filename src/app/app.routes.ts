@@ -9,35 +9,35 @@ import { authGuard } from './auth.guard';
 
 export const routes: Routes = [
     {
-        path:'home',
-        loadComponent:()=> import('./home/home.component')
+        path: 'home',
+        loadComponent: () => import('./home/home.component')
     },
     {
-        path:'auth',
-        loadChildren:()=>import('./auth/auth.routes')
-    }, 
+        path: 'auth',
+        loadChildren: () => import('./auth/auth.routes')
+    },
     {
-        path:'pro',
-        loadChildren:()=>import('./pro/pro.routes'),
+        path: 'pro',
+        loadChildren: () => import('./pro/pro.routes'),
         canActivate: [authGuard]
     },
     {
-        path:'client',
-        loadChildren:()=>import('./client/client.routes'),
+        path: 'client',
+        loadChildren: () => import('./client/client.routes'),
         canActivate: [authGuard]
     },
-   
-   
-   
-
-   
     {
-        path:'',
-        redirectTo:'home',
-        pathMatch:'full'
-    },{
-        path:'**',
-        redirectTo:'home',
-        pathMatch:'full'
+        path: 'category-payment',
+        loadComponent: () => import('./payments/category-payment/category-payment.component').then(m => m.CategoryPaymentComponent),
+        canActivate: [authGuard]
+    },
+    {
+        path: '',
+        redirectTo: 'home',
+        pathMatch: 'full'
+    }, {
+        path: '**',
+        redirectTo: 'home',
+        pathMatch: 'full'
     }
 ];

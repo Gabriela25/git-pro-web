@@ -22,6 +22,7 @@ import { CategoryService } from '../../services/category.service';
 import { LeadService } from '../../services/lead.service';
 import { ServiceWorkersService } from '../../services/service-workers.service';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { UserReq } from '../../interface/user-req.interface';
 @Component({
   selector: 'app-header',
   standalone: true,
@@ -141,14 +142,14 @@ export class HeaderComponent implements OnInit {
   toggleOnlineStatus(): void {
     //this.isOnline = !this.isOnline;
  
-    const user: User = {
+    const user: UserReq = {
       id: '',
       firstname: '',
       lastname: '',
       email: '',
       phone: '',
       profile: {
-        categories: [],
+        categoryIds: [],
         zipcodeId: '',
         address: '',
         imagePersonal: '',

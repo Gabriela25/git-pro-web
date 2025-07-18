@@ -43,16 +43,16 @@
 
   <div *ngFor="let entry of finalSelectedCategoriesWithImages" class="selected-category-card">
     <div class="card-header">
-      <span class="mx-3"> {{ entry.category.name }} ({{ entry.category.name }})</span>
+      <span class="m-3"> {{ entry.category.name }} </span>
       <button type="button" (click)="removeSelectedCategory(entry.category.id)"
         class="btn btn-danger btn-sm rounded-circle remove-btn">
         <i class="bi bi-x"></i>
       </button>
     </div>
 
-    <div class="card-body">
-      <p>{{ entry.category.description }}</p>
-      <p>{{'profile.requireLicense' | translate}}:
+    <div class="card-body m-3">
+      <p class=""><span>Description: </span>{{ entry.category.description }}</p>
+      <p >{{'profile.requireLicense' | translate}}:
         @if(entry.category.licenseRequired) {
         <strong> Yes</strong>
         }@else {
@@ -62,19 +62,19 @@
 
       <div *ngIf="entry.category.licenseRequired" class="image-upload-section">
         <h6>{{'profile.uploadLicense/Document' |translate}}:</h6>
-
+       
         <div class="form-group mb-3">
           <label for="title" class="form-label fw-bold mx-3">{{ 'profile.licenseTitle' | translate }}</label>
-          <input type="text" id="title" class="form-control" [(ngModel)]="entry.title"
-            placeholder="{{ 'profile.licenseTitle' | translate }}" name="title-{{entry.category.id}}" />
+          <input type="text" id="title" class="form-control" [(ngModel)]="entry.title" [readonly]="entry.uploadedImageBase64"
+            placeholder="{{ 'profile.licenseTitle' | translate }}" name="title-{{entry.category.id}}" [ngClass]="{ 'is-invalid': isLicenseIncomplete(entry) }" />
           @if (parentForm.get('title')?.touched && parentForm.get('title ')?.errors) {
           <div class="text-danger">{{ 'profile.titleRequired' | translate }}</div>
           }
-
         </div>
+        <div *ngIf="!entry.uploadedImageBase64">
         <input type="file" (change)="onFileSelected($event, entry.category.id)" accept="image/*, .pdf"
-          class="form-control">
-
+          class="form-control" [ngClass]="{ 'is-invalid': isLicenseIncomplete(entry) }">
+        </div>
         <div *ngIf="entry.uploadedImageBase64 || entry.uploadedImageFile" class="uploaded-file-preview mt-2">
           <p class="mb-1">{{'profile.uploadFile' | translate}}:</p>
           <div *ngIf="entry.uploadedImageBase64" class="text-center">
@@ -102,19 +102,12 @@
   </div>
 
 
-  <div *ngIf="hasPendingLicensesToSave" class="alert alert-warning mt-3">
-    <i class="bi bi-exclamation-triangle-fill me-2"></i>
-    {{'profile.rememberToPress' | translate}} <strong>"{{'profile.addCategories' | translate}}"</strong>
-    {{'profile.toSendYourUploadedDocuments' |translate}}.
-  </div>
-  <div class="d-flex justify-content-end mt-3">
-    <button type="button" class="btn btn-outline-secondary mt-3"
-      [ngClass]="{'highlight-save': hasPendingLicensesToSave}" (click)="onSubmitParentForm()">
-      {{'profile.addCategories' | translate}}
-    </button>
-
-
-  </div>
+ <div *ngIf="shouldShowUpdateLicenseButton() || removeCategoryWithLicense" class="d-flex justify-content-end mt-3">
+  <button type="button" class="btn btn-outline-secondary mt-3"
+    (click)="onSubmitParentForm()">
+    {{ 'profile.updateLincenses' | translate }}
+  </button>
+</div>
 
 
 </div>

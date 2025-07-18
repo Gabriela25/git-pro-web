@@ -49,8 +49,23 @@
         <h5 class="card-header bg-primary text-light" *ngIf="isNext">
           {{ 'profile.formBusiness' | translate }}
         </h5>
+         <div class="payment-container" *ngIf="paymentInitiated">
+                        <div *ngIf="isLoadingPayment">
+                            <h2>{{ 'payment.preparingPayment' | translate }}</h2>
+                            <p>{{ 'payment.redirectingToStripe' | translate }}</p>
+                            <div class="spinner"></div>
+                        </div>
 
-        <div class="card-body">
+                        <div *ngIf="!isLoadingPayment && errorMessagePayment">
+                            <h2>{{ 'payment.errorInitiatingPayment' | translate }}</h2>
+                            <p>{{ errorMessagePayment }}</p>
+                            <button (click)="retryPayment()" class="btn btn-primary">{{ 'general.retryPayment' | translate }}</button>
+                            <button (click)="goToCategorySelection()" class="btn btn-secondary">{{ 'general.backToCategorySelection' | translate }}</button>
+                        </div>
+
+                        </div>
+                </div>
+        <div class="card-body bg-white container-box">
           <app-floating-alert [alertMessage]="alertMessage" [backendMessage]="backendMessage" />
 
           <!-- Personal form -->
@@ -69,7 +84,7 @@
             <div class="d-flex justify-content-end mt-3">
               <button *ngIf="isSelectOption === 'isPersonal'" type="button" class="btn btn-primary btn-lg btn-block"
                       (click)="onSubmit()">
-                {{ 'general.save' | translate }}
+                {{ 'general.activateCategoryAndPay' | translate }}
               </button>
               <button *ngIf="isSelectOption !== 'isPersonal'" type="button" class="btn btn-primary btn-lg btn-block"
                       (click)="nextStep()">
@@ -94,9 +109,24 @@
               </button>
               <button type="button" class="btn btn-primary btn-lg btn-block mt-3"
                       (click)="onSubmit()">
-                {{ 'general.save' | translate }}
+                {{ 'general.activateCategoryAndPay' | translate }}
               </button>
             </div>
+             <div class="payment-container" *ngIf="paymentInitiated">
+                        <div *ngIf="isLoadingPayment">
+                            <h2>{{ 'payment.preparingPayment' | translate }}</h2>
+                            <p>{{ 'payment.redirectingToStripe' | translate }}</p>
+                            <div class="spinner"></div>
+                        </div>
+
+                        <div *ngIf="!isLoadingPayment && errorMessagePayment">
+                            <h2>{{ 'payment.errorInitiatingPayment' | translate }}</h2>
+                            <p>{{ errorMessagePayment }}</p>
+                            <button (click)="retryPayment()" class="btn btn-primary">{{ 'general.retryPayment' | translate }}</button>
+                            <button (click)="goToCategorySelection()" class="btn btn-secondary">{{ 'general.backToCategorySelection' | translate }}</button>
+                        </div>
+
+                
           </div>
         </div>
       </div>

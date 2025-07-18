@@ -2,7 +2,7 @@ import { Category } from "./category.interface";
 import { License } from "./license.interace";
 import { ProfileCategory } from "./profile-category.interface";
 
-export interface Profile {
+export interface ProfileReq {
     id?: string;
     userId?: string;
     zipcodeId: string;
@@ -21,7 +21,7 @@ export interface Profile {
     updatedBy?: string;
     deletedBy?: string | null;
     licenses?: Array<License>;
-    profileCategories: Array<ProfileCategory>; 
+    categoryIds: Array<string>; 
     status?: string;
 
   }
