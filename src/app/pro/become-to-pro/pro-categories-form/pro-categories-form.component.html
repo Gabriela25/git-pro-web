@@ -65,8 +65,12 @@
        
         <div class="form-group mb-3">
           <label for="title" class="form-label fw-bold mx-3">{{ 'profile.licenseTitle' | translate }}</label>
-          <input type="text" id="title" class="form-control" [(ngModel)]="entry.title" [readonly]="entry.uploadedImageBase64"
-            placeholder="{{ 'profile.licenseTitle' | translate }}" name="title-{{entry.category.id}}" [ngClass]="{ 'is-invalid': isLicenseIncomplete(entry) }" />
+          <input type="text" id="title" class="form-control" [(ngModel)]="entry.title" 
+            (input)="onTitleChange()"
+            [readonly]="entry.uploadedImageBase64 && !entry.uploadedImageFile"
+            placeholder="{{ 'profile.licenseTitle' | translate }}" 
+            name="title-{{entry.category.id}}" 
+            [ngClass]="{ 'is-invalid': isLicenseIncomplete(entry) }" />
           @if (parentForm.get('title')?.touched && parentForm.get('title ')?.errors) {
           <div class="text-danger">{{ 'profile.titleRequired' | translate }}</div>
           }
@@ -76,7 +80,16 @@
           class="form-control" [ngClass]="{ 'is-invalid': isLicenseIncomplete(entry) }">
         </div>
         <div *ngIf="entry.uploadedImageBase64 || entry.uploadedImageFile" class="uploaded-file-preview mt-2">
-          <p class="mb-1">{{'profile.uploadFile' | translate}}:</p>
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <p class="mb-0">{{'profile.uploadFile' | translate}}:</p>
+            <!-- Solo mostrar botón de eliminar si el archivo no viene de la base de datos (es nuevo) -->
+            <button type="button" class="btn btn-danger btn-sm" 
+                    *ngIf="entry.uploadedImageFile" 
+                    (click)="removeUploadedFile(entry.category.id)" 
+                    title="{{ 'profile.removeFile' | translate }}">
+              <i class="bi bi-trash"></i>
+            </button>
+          </div>
           <div *ngIf="entry.uploadedImageBase64" class="text-center">
             <img [src]="entry.uploadedImageBase64" alt="Imagen cargada" class="img-fluid" style="max-height: 150px;">
         
@@ -100,14 +113,6 @@
       </div>
     </div>
   </div>
-
-
- <div *ngIf="shouldShowUpdateLicenseButton() || removeCategoryWithLicense" class="d-flex justify-content-end mt-3">
-  <button type="button" class="btn btn-outline-secondary mt-3"
-    (click)="onSubmitParentForm()">
-    {{ 'profile.updateLincenses' | translate }}
-  </button>
-</div>
 
 
 </div>

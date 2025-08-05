@@ -1,4 +1,14 @@
-import { Component, Input, Output, EventEmitter, OnInit, ElementRef, ViewChild, SimpleChanges, OnChanges } from '@angular/core';
+import {
+  Component,
+  Input,
+  Output,
+  EventEmitter,
+  OnInit,
+  ElementRef,
+  ViewChild,
+  SimpleChanges,
+  OnChanges,
+} from '@angular/core';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
@@ -19,11 +29,10 @@ import { environment } from '../../../../environments/environment.development';
     FormsModule,
     TranslateModule,
     NgSelectModule,
-    ProCategoriesFormComponent
-
+    ProCategoriesFormComponent,
   ],
   templateUrl: './pro-personal-form.component.html',
-  styleUrls: ['./pro-personal-form.component.css'] // Crea este archivo si necesitas estilos específicos
+  styleUrls: ['./pro-personal-form.component.css'], // Crea este archivo si necesitas estilos específicos
 })
 export class ProPersonalFormComponent {
   urlUploads: string = environment.urlUploads;
@@ -36,7 +45,8 @@ export class ProPersonalFormComponent {
   @Input() dropdownSettings: any = {};
 
   @Output() categoriesChanged = new EventEmitter<void>();
-  @ViewChild('fileInputPersonal') fileInputPersonal!: ElementRef<HTMLInputElement>;
+  @ViewChild('fileInputPersonal')
+  fileInputPersonal!: ElementRef<HTMLInputElement>;
   @Output() licensesChanged = new EventEmitter<any[]>();
   @Input() initialLicenses: any[] = []; // Para recibir las licencias iniciales desde el padre
 
@@ -45,7 +55,7 @@ export class ProPersonalFormComponent {
   alertMessage = '';
   backendMessage = '';
   isLoading = false;
-  constructor() { }
+  constructor() {}
 
   triggerFileInput(): void {
     this.fileInputPersonal.nativeElement.click();
@@ -54,25 +64,14 @@ export class ProPersonalFormComponent {
     const input = event.target as HTMLInputElement;
     //this.imagePersonal = ''
     if (input.files && input.files[0]) {
-
       this.fileSelected.emit(input.files[0]);
     } else {
       this.fileSelected.emit(null!);
     }
   }
 
-
-
   onLicensesChangedFromChild(licenses: any[]) {
-
     this.licensesChanged.emit(licenses);
-    const hasIncomplete = licenses.some(l => l.licenseRequired && !l.isComplete);
-    if (hasIncomplete) {
-      this.parentForm.get('categories')?.setErrors({ incompleteLicenses: true });
-    } else {
-      this.parentForm.get('categories')?.setErrors(null);
-    }
-
   }
 
   getImagePersonalSrc(): string {
@@ -91,5 +90,4 @@ export class ProPersonalFormComponent {
     if (this.imagePersonal) return this.urlUploads + this.imagePersonal;
     return 'assets/avatar_profile.png';
   }
-
-} 
+}

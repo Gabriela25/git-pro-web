@@ -14,15 +14,16 @@ export interface Profile {
     yearFounded?: number | null;
     numberOfemployees?: number | null;
     imageBusiness?: string | null;
+    licenses?: Array<License>;
+    profileCategories: Array<ProfileCategory>; 
+    status?: string;
     createdAt?: string;
     updatedAt?: string;
     deletedAt?: string | null;
     createdBy?: string;
     updatedBy?: string;
     deletedBy?: string | null;
-    licenses?: Array<License>;
-    profileCategories: Array<ProfileCategory>; 
-    status?: string;
+   
 
   }
   

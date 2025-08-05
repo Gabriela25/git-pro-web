@@ -25,7 +25,6 @@ import { DomSanitizer } from '@angular/platform-browser';
 })
 export class ProCategoriesFormComponent implements OnInit, OnChanges {
   hasPendingLicensesToSave = false;
-  removeCategoryWithLicense: boolean = false;
   @Input() parentForm!: FormGroup;
   @Input() listCategories: Category[] = [];
 
@@ -42,7 +41,7 @@ export class ProCategoriesFormComponent implements OnInit, OnChanges {
   isLoading: boolean = false;
   backendMessage: string = '';
   alertMessage: string = '';
-  readonly maxSelections = 3; // Límite de selecciones
+  readonly maxSelections = 5; // Límite de selecciones
   @Output() licensesChanged = new EventEmitter<any[]>();
   @Input() initialLicenses: any[] = [];
 
@@ -134,6 +133,9 @@ export class ProCategoriesFormComponent implements OnInit, OnChanges {
     this.selectedCategoriesToSend = this.finalSelectedCategoriesWithImages.map(entry => entry.category);
     console.log('Final categories with images:', this.finalSelectedCategoriesWithImages);
     console.log('Selected categories to send:', this.selectedCategoriesToSend);
+    
+    // Emitir cambios automáticamente después de inicializar
+    setTimeout(() => this.emitLicensesChanged(), 100);
   }
 
 
@@ -167,6 +169,9 @@ export class ProCategoriesFormComponent implements OnInit, OnChanges {
 
     this.parentForm.get('categories')?.setValue(updatedIds);
     this.showSelect = false;
+    
+    // Emitir cambios automáticamente al seleccionar una nueva categoría
+    setTimeout(() => this.emitLicensesChanged(), 100); // Timeout para asegurar que se actualice la lista primero
   }
 
   // --- Lógica de visibilidad del select ---
@@ -253,13 +258,27 @@ export class ProCategoriesFormComponent implements OnInit, OnChanges {
         if (entry) {
           entry.uploadedImageBase64 = reader.result;
           entry.uploadedImageFile = file;
-
+          // Emitir cambios automáticamente al cargar un archivo
+          this.emitLicensesChanged();
         }
       };
       reader.readAsDataURL(file); // Leer como Base64 para previsualizar
     }
     this.hasPendingLicensesToSave = true
-    //this.emitLicensesChanged();
+  }
+
+  // --- Eliminar archivo cargado ---
+  removeUploadedFile(categoryId: string): void {
+    const entry = this.finalSelectedCategoriesWithImages.find(item => item.category.id === categoryId);
+    if (entry) {
+      entry.uploadedImageBase64 = null;
+      entry.uploadedImageFile = null;
+      entry.title = '';
+      entry.mimetype = '';
+      this.hasPendingLicensesToSave = true;
+      // Emitir cambios automáticamente al eliminar un archivo
+      this.emitLicensesChanged();
+    }
   }
 
   // --- Eliminar una categoría de la lista de visualización ---
@@ -273,43 +292,21 @@ export class ProCategoriesFormComponent implements OnInit, OnChanges {
     if (updatedCategoryIds.length === 0) {
       this.showSelect = false;
     }
-    const isCategoryLicensedRequired = this.listCategories.find(cat => cat.id === categoryId)?.licenseRequired;
-    if (isCategoryLicensedRequired) {
-      this.removeCategoryWithLicense = true;
- 
-
-    }
-    /*if( this.selectedCategoriesToSend.length > 0) {
-      this.finalSelectedCategoriesWithImages = this.finalSelectedCategoriesWithImages.filter(item => item.category.id !== categoryId);
-    }*/
-  }
-
-  // --- Método para simular el guardado final ---
-  onSubmitParentForm(): void {
-    if (this.hasIncompleteRequiredLicenses()) {
-      this.handleError({ error: { message: 'You must upload the file and title for all categories that require a license.' } });
-
-      return;
-    }
-    const licensesToSend = this.finalSelectedCategoriesWithImages
-      .filter(entry => entry.category.licenseRequired && entry.uploadedImageFile)
-      .map(entry => ({
-        categoryId: entry.category.id,
-        title: entry.title || '',
-        file: entry.uploadedImageFile
-      }));
-
-    if (this.selectedCategoryIdsInForm.length < this.maxSelections) {
-      this.showSelect = true;
-    } else {
-      this.showSelect = false; // opcional, para ocultarlo si ya completó las 3
-    }
+    
+    // Emitir cambios después de eliminar una categoría
     this.emitLicensesChanged();
   }
+
+  // --- Método para manejar cambios en el título ---
+  onTitleChange(): void {
+    // Emitir cambios cuando se modifica el título
+    this.emitLicensesChanged();
+  }
+
+  // --- Validación de licencias incompletas ---
   hasIncompleteRequiredLicenses(): boolean {
     console.log('Checking for incomplete licenses...', this.finalSelectedCategoriesWithImages);
     return this.finalSelectedCategoriesWithImages.some(entry =>
-
       entry.category.licenseRequired &&
       ((!entry.uploadedImageFile && !entry.title) || !entry.uploadedImageBase64) // Verifica si no hay archivo o título
     );
@@ -317,36 +314,29 @@ export class ProCategoriesFormComponent implements OnInit, OnChanges {
 
 
   emitLicensesChanged() {
-    const licenses = this.finalSelectedCategoriesWithImages
-      .filter(entry => entry.category.licenseRequired && entry.uploadedImageFile)
-      .map(entry => ({
-        categoryId: entry.category.id,
-        title: entry.title || '',
-        file: entry.uploadedImageFile,
-        mimetype: entry.mimetype || ''
-      }));
-    console.log('Emitting licenses changed:', licenses);
-    this.licensesChanged.emit(licenses);
-
-    this.hasPendingLicensesToSave = false
+    // Emitir todas las categorías seleccionadas con sus datos de licencia
+    const allCategories = this.finalSelectedCategoriesWithImages.map(entry => ({
+      categoryId: entry.category.id,
+      title: entry.title || '',
+      file: entry.uploadedImageFile,
+      mimetype: entry.mimetype || '',
+      licenseRequired: entry.category.licenseRequired
+    }));
+    
+    console.log('Emitting licenses changed:', allCategories);
+    this.licensesChanged.emit(allCategories);
+    this.hasPendingLicensesToSave = false;
   }
 
   handleError(error: any) {
-
     this.isLoading = false;
     this.backendMessage = '';
     setTimeout(() => {
       this.alertMessage = 'alert-danger';
       this.backendMessage = error.error.message || 'An error occurred';
     });
+  }
 
-  }
-  shouldShowUpdateLicenseButton(): boolean {
-    
-    return this.finalSelectedCategoriesWithImages.some(entry =>
-      entry.category.licenseRequired
-    );
-  }
   isLicenseIncomplete(entry: SelectedCategoryWithImage): boolean | undefined {
     return (
       entry.category.licenseRequired &&

@@ -27,6 +27,7 @@ import { environment } from '../../../environments/environment.development';
 import { CheckStripeService } from '../../services/checkout-stripe.service';
 import { Router } from '@angular/router';
 import { ProfileReq } from '../../interface/profile-req.interface';
+import { AuthService } from '../../services/auth.service';
 
 
 @Component({
@@ -81,7 +82,7 @@ export default class BecomeToProComponent implements OnInit {
   listImages: Image[] = [];
   imagesToDelete: Image[] = [];
   errorMessage = '';
-
+  categoryStatus: string = '';  
   user: User = {
     id: '',
     firstname: '',
@@ -114,14 +115,13 @@ export default class BecomeToProComponent implements OnInit {
     private uploadsService: UploadsService,
     private licenseService: LicenseService,
     private checkStripe: CheckStripeService,
-
+    private authService: AuthService,
 
   ) { }
 
   ngOnInit(): void {
     this.initForms();
     this.loadInitialData();
-    this.checkUserProfile();
   }
   checkUserProfile() {
     this.userService.getMe().subscribe({
@@ -144,7 +144,29 @@ export default class BecomeToProComponent implements OnInit {
         title: license.title,
         url: `${this.urlUploads}${license.url}`,
         mimetype: license.mimetype || '',
-      }));
+      })); 
+      if(this.user.profile.profileCategories && this.user.profile.profileCategories.length > 0){
+
+        for(const category of this.user.profile.profileCategories){
+          if(category.status === 'PENDING_PAYMENT'){
+            this.categoryStatus = category.status 
+          }
+        }
+      }
+      // Crear la estructura de licencias con la información necesaria para validación
+      const initialLicensesForForm = this.user.profile.profileCategories.map((pc) => {
+        const existingLicense = this.initialLicenses.find(license => license.categoryId === pc.categoryId);
+        const category = this.listCategories?.find(cat => cat.id === pc.categoryId);
+        
+        return {
+          categoryId: pc.categoryId,
+          title: existingLicense?.title || '',
+          file: null,
+          url: existingLicense?.url || '',
+          mimetype: existingLicense?.mimetype || '',
+          licenseRequired: category?.licenseRequired || false
+        };
+      });
 
       this.proPersonalForm.patchValue({
         categories: this.user.profile.profileCategories.map((pc) => pc.categoryId),
@@ -152,7 +174,7 @@ export default class BecomeToProComponent implements OnInit {
         address: this.user.profile.address,
         imagePersonal: `${this.user.profile.imagePersonal}`,
         introduction: this.user.profile.introduction,
-        licenses: this.initialLicenses
+        licenses: initialLicensesForForm
       });
       if (this.user.profile.isBusiness) {
         this.isSelectOption = 'isBusiness';
@@ -204,18 +226,30 @@ export default class BecomeToProComponent implements OnInit {
   }
   // Carga inicial de categorías y Zipcodes
   loadInitialData(): void {
+    let categoriesLoaded = false;
+    let zipcodesLoaded = false;
+    
+    const checkBothLoaded = () => {
+      if (categoriesLoaded && zipcodesLoaded) {
+        this.checkUserProfile();
+      }
+    };
+
     this.categoryService.getAllCategories().subscribe({
       next: (response) => {
         this.listCategories = response.categories;
-        // Disparar validación por si dependiera de categorías
-        // TODO: Revisar si es necesario
-        //this.proPersonalForm.get('categories')?.updateValueAndValidity();
+        categoriesLoaded = true;
+        checkBothLoaded();
       },
       error: (error) => this.handleError(error)
     });
 
     this.zipCodeService.getAllZipcodes().subscribe({
-      next: (response) => this.listZipcode = response.zipcodes,
+      next: (response) => {
+        this.listZipcode = response.zipcodes;
+        zipcodesLoaded = true;
+        checkBothLoaded();
+      },
       error: (error) => this.handleError(error)
     });
 
@@ -224,21 +258,89 @@ export default class BecomeToProComponent implements OnInit {
   // Validador condicional para licencias (obligatorio si alguna categoría requiere licencia)
   licenseConditionalValidator(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
-      const categories: Category[] = this.proPersonalForm?.get('categories')?.value || [];
-      const licenses = control.value || [];
-
-      const requiresLicense = categories.some(cat => cat.licenseRequired === true);
-      if (requiresLicense && (!licenses || licenses.length === 0)) {
-        return { licensesRequired: true };
+      // Si no hay formulario padre aún, no validar
+      if (!this.proPersonalForm) {
+        return null;
       }
-      return null;
+      
+      const selectedCategoryIds: string[] = this.proPersonalForm?.get('categories')?.value || [];
+      const licensesData = control.value || [];
+
+
+      // Si no hay categorías seleccionadas, no hay error
+      if (selectedCategoryIds.length === 0) {
+        console.log('No categories selected, validation passes');
+        return null;
+      }
+
+      // Si no tenemos la lista de categorías cargada aún, no validar
+      if (!this.listCategories || this.listCategories.length === 0) {
+        console.log('Categories not loaded yet, skipping validation');
+        return null;
+      }
+
+      // Verificar si hay categorías seleccionadas que requieren licencia
+      const categoriesRequiringLicense = selectedCategoryIds.filter(categoryId => {
+        const category = this.listCategories?.find(cat => cat.id === categoryId);
+        const requiresLicense = category?.licenseRequired || false;
+        return requiresLicense;
+      });
+
+     
+
+      if (categoriesRequiringLicense.length === 0) {
+    
+        return null; // No hay categorías que requieran licencia
+      }
+
+      // Verificar si todas las categorías que requieren licencia tienen datos completos
+      const allLicensesComplete = categoriesRequiringLicense.every(categoryId => {
+        const licenseData = licensesData.find((lic: any) => lic.categoryId === categoryId);
+        
+        if (!licenseData) {
+          console.log(`No license data for category ${categoryId}`);
+          return false;
+        }
+        
+        // Verificar si tiene archivo (nuevo) o url (existente)
+        const hasFile = licenseData.file !== null && licenseData.file !== undefined;
+        const hasUrl = licenseData.url && licenseData.url.trim() !== '';
+        const hasTitle = licenseData.title && licenseData.title.trim() !== '';
+        
+        const isComplete = (hasFile || hasUrl) && hasTitle;
+        
+        
+        
+        return isComplete;
+      });
+
+    
+
+      return allLicensesComplete ? null : { licensesRequired: true };
     };
   }
 
   // Recepción del array de licencias emitido desde el hijo
-  onLicensesChangedFromChild(licenses: any[]) {
+  onLicensesChangedFromChild(categoriesData: any[]) {
+    console.log('Received categories data from child:', categoriesData);
+    
+    // Crear el array completo de datos de licencias, preservando las existentes
+    const allCategoriesForTracking = categoriesData.map(cat => {
+      // Buscar si existe una licencia existente para esta categoría
+      const existingLicense = this.initialLicenses.find(license => license.categoryId === cat.categoryId);
+      
+      return {
+        categoryId: cat.categoryId,
+        title: cat.title || existingLicense?.title || '',
+        file: cat.file || null,
+        url: existingLicense?.url || '', // Preservar URL existente
+        mimetype: cat.mimetype || existingLicense?.mimetype || '',
+        licenseRequired: cat.licenseRequired
+      };
+    });
 
-    this.proPersonalForm.get('licenses')?.setValue(licenses);
+    console.log('Final license data for form:', allCategoriesForTracking);
+    this.proPersonalForm.get('licenses')?.setValue(allCategoriesForTracking);
     this.proPersonalForm.get('licenses')?.updateValueAndValidity();
   }
 
@@ -250,7 +352,7 @@ export default class BecomeToProComponent implements OnInit {
       this.isUserProPersonal = true;
       this.showBusinessTab = false;
       this.currentStep = 1;
-      this.proPersonalForm.get('licences')?.updateValueAndValidity();
+      this.proPersonalForm.get('licenses')?.updateValueAndValidity();
       this.proPersonalForm.get('categories')?.updateValueAndValidity();
     } else {
       this.isUserProPersonal = false;
@@ -292,7 +394,7 @@ export default class BecomeToProComponent implements OnInit {
       this.isLoading = false;
 
       if (this.isLicenceRequiredForSelectedCategories() === true) {
-        this.handleError({ error: { message: 'Press the update licenses button' } });
+        this.handleError({ error: { message: 'Please complete all required license information for selected categories.' } });
         return;
       } else {
         this.handleError({ error: { message: 'Please complete all required fields in your personal profile.' } });
@@ -320,17 +422,36 @@ export default class BecomeToProComponent implements OnInit {
     if (this.isSelectOption === 'isPersonal') {
       this.proPersonalForm.markAllAsTouched();
       this.proPersonalForm.updateValueAndValidity(); // Forzar validación
-      if (this.proPersonalForm.invalid || this.isLicenceRequiredForSelectedCategories() === true) {
+      
+      
+      // Verificar cada control individualmente
+      Object.keys(this.proPersonalForm.controls).forEach(key => {
+        const control = this.proPersonalForm.get(key);
+        console.log(`Control '${key}':`, {
+          valid: control?.valid,
+          invalid: control?.invalid,
+          errors: control?.errors,
+          value: control?.value,
+          touched: control?.touched,
+          dirty: control?.dirty
+        });
+      });
+      
+      const licenseValidationResult = this.isLicenceRequiredForSelectedCategories();
+  
+      
+      if (this.proPersonalForm.invalid || licenseValidationResult === true) {
         this.isLoading = false;
-        if (this.isLicenceRequiredForSelectedCategories() === true) {
-          this.handleError({ error: { message: 'Press the add categories button' } });
+        if (licenseValidationResult === true) {
+          this.handleError({ error: { message: 'Please complete all required license information for selected categories.' } });
           return;
         } else {
           this.handleError({ error: { message: 'Please complete all required fields in your personal profile.' } });
         }
-
+        console.log('Form invalid:', this.proPersonalForm.invalid, 'License validation:', this.isLicenceRequiredForSelectedCategories());
         return;
       }
+
       // Si el formulario personal es válido, procesar envío
       this.processFormSubmission(false);
 
@@ -342,9 +463,9 @@ export default class BecomeToProComponent implements OnInit {
 
       if (this.proPersonalForm.invalid || this.isLicenceRequiredForSelectedCategories() === true) {
         this.isLoading = false;
-        this.isLoading = false;
+       
         if (this.isLicenceRequiredForSelectedCategories() === true) {
-          this.handleError({ error: { message: 'Press the add categories button' } });
+          this.handleError({ error: { message: 'Please complete all required license information for selected categories.' } });
           return;
         } else {
           this.handleError({ error: { message: 'Please complete all required fields in your personal profile.' } });
@@ -373,27 +494,71 @@ export default class BecomeToProComponent implements OnInit {
 
   isLicenceRequiredForSelectedCategories(): boolean {
     this.selectedCategoryIds = this.proPersonalForm.get('categories')?.value || [];
-    const licenses = this.proPersonalForm.get('licenses')?.value || [];
-    // Filtrar solo las licencias que están dentro de las categorías seleccionadas
-    const matchedLicenses = licenses.filter((lic: any) =>
-      this.selectedCategoryIds.includes(lic.categoryId)
-    );
+    const licensesData = this.proPersonalForm.get('licenses')?.value || [];
     
-    // Verificar si alguna de esas licencias no tiene archivo
-    const incomplete = matchedLicenses.some((lic: any) =>
-      !lic.file || lic.file == null || lic.file === ''
-    );
+
     
-    return incomplete;
+    // Si no hay categorías seleccionadas, no hay problema
+    if (this.selectedCategoryIds.length === 0) {
+     
+      return false;
+    }
+    
+    // Si no tenemos la lista de categorías, no podemos validar
+    if (!this.listCategories || this.listCategories.length === 0) {
+      console.log('Categories not loaded yet');
+      return false;
+    }
+    
+    // Verificar si hay categorías seleccionadas que requieren licencia pero no la tienen completa
+    const incompleteRequired = this.selectedCategoryIds.some(categoryId => {
+      // Buscar la categoría en listCategories para verificar si requiere licencia
+      const category = this.listCategories.find(cat => cat.id === categoryId);
+      
+      if (!category?.licenseRequired) {
+        console.log(`Category ${categoryId} does not require license`);
+        return false; // No requiere licencia, está completa
+      }
+      
+      console.log(`Category ${categoryId} requires license, checking data...`);
+      
+      // Si requiere licencia, verificar si tiene los datos completos
+      const licenseData = licensesData.find((lic: any) => lic.categoryId === categoryId);
+      if (!licenseData) {
+        console.log(`No license data found for category ${categoryId}`);
+        return true; // Requiere licencia pero no tiene datos
+      }
+      
+      // Verificar si tiene archivo (nuevo) o url (existente)
+      const hasFile = licenseData.file !== null && licenseData.file !== undefined;
+      const hasUrl = licenseData.url && licenseData.url.trim() !== '';
+      const hasTitle = licenseData.title && licenseData.title.trim() !== '';
+      
+      const isComplete = (hasFile || hasUrl) && hasTitle;
+    
+      
+      return !isComplete; // Incompleta si falta archivo/url o título
+    });
+    
+  
+    return incompleteRequired;
   }
   async processFormSubmission(isBusiness: boolean): Promise<void> {
+  
     const isFirstTime = !this.user.profile || !this.user.profile.id;
+    const allLicensesData = this.proPersonalForm.get('licenses')?.value || [];
+    
+    // Filtrar solo las licencias que requieren archivo (tienen licenseRequired = true y file)
+    const licensesWithFiles = allLicensesData.filter((lic: any) => 
+      lic.licenseRequired && lic.file
+    );
+    
     const combinedData = {
       ...this.proPersonalForm.value,
       ...(isBusiness ? this.proBusinessForm.value : {}),
       imagePersonalFile: this.selectedFilePersonal,
       imageBusinessFile: isBusiness ? this.selectedFileBusiness : null,
-      licensesDetails: this.proPersonalForm.get('licenses')?.value || []
+      licensesDetails: licensesWithFiles
     };
 
     // Subir imágenes personales y empresariales
@@ -447,13 +612,23 @@ export default class BecomeToProComponent implements OnInit {
               });
             }
           } /*else {
-            await this.initiateStripeCheckout(profileIdToUse);
+           
           }*/
-          this.handleSuccessfulSubmission(response.message);
+          //this.handleSuccessfulSubmission(response.message);
+          console.log('Profile created antes de crear',);
+            this.authService.updateUser('isPro', true);
+          
+            if (response.profile.imagePersonal) {
+            this.authService.updateUser('imagePersonal', response.profile.imagePersonal);
+            }
+            this.checkUserProfile();
+            this.handleSuccessfulSubmission(response.message);
+          this.activateCategoryAndPay();
         },
         error: (err) => this.handleError(err)
       });
     } else {
+      alert('Profile updated');
       this.handleProfileEdit(profile, combinedData, profile.id!);
      
     }
@@ -573,30 +748,43 @@ export default class BecomeToProComponent implements OnInit {
   private handleProfileEdit(profile: ProfileReq, combinedData: any, profileIdToUse: string) {
 
     this.userService.updateMe({ ...this.user, profile }).subscribe({
-      next: (response) => {
+      next: async (response) => {
      
         if (combinedData.licensesDetails.length > 0) {
           for (const license of combinedData.licensesDetails) {
-            const licenseToCreate: License = {
-              title: license.title || '',
-              url: license.file || '',
-              categoryId: license.categoryId || '',
-              filename: license.file || '',
-              profileId: this.user.profile?.id!
-            };
-            this.licenseService.createLicense(licenseToCreate).subscribe({
-              next: (res) => {
-                this.checkUserProfile()
-                this.handleSuccessfulSubmission(response.message);
-              },
-              error: (err) => this.handleError(err)
-            });
+            // Solo crear licencias nuevas (que tienen file pero no url)
+            if (license.file && !license.url) {
+              console.log('License to create:', license);
+              const licenseToCreate: License = {
+                title: license.title || '',
+                url: license.file || '',
+                categoryId: license.categoryId || '',
+                filename: license.file || '',
+                profileId: this.user.profile?.id!
+              };
+              this.licenseService.createLicense(licenseToCreate).subscribe({
+                next: (res) => {
+                  this.checkUserProfile()
+                  this.handleSuccessfulSubmission(response.message);
+                },
+                error: (err) => this.handleError(err)
+              });
+            }
           }
+        } else {
           this.handleSuccessfulSubmission(response.message);
         }
-
+        
+        if (response.user.profile?.imagePersonal) {
+          this.authService.updateUser('imagePersonal', response.user.profile.imagePersonal);
+        }
+        //await this.activateCategoryAndPay();
       },
       error: (error) => this.handleError(error)
     });
+  }
+
+  async activateCategoryAndPay(){
+     await this.initiateStripeCheckout(this.user.profile?.id!);
   }
 }

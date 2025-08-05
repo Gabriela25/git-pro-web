@@ -10,7 +10,7 @@ import { CategoryService } from '../../services/category.service';
   imports: [
     HeaderComponent,
 
-    FormComponent
+    
   ],
   templateUrl: './categories.component.html',
   styleUrl: './categories.component.css'

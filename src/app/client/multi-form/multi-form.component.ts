@@ -21,6 +21,7 @@ import { LeadRegister } from '../../interface/lead-register.interface';
 import { LeadService } from '../../services/lead.service';
 import { UserService } from '../../services/user.service';
 import { FloatingAlertComponent } from '../../shared/floating-alert/floating-alert.component';
+import { firstValueFrom } from 'rxjs';
 
 
 
@@ -293,12 +294,15 @@ export default class MultiFormComponent {
           const formData = new FormData();
           formData.append('file', fileData.file);
           try {
-            const urlImage = await this.uploadImage(formData);
-            if (urlImage !== 'Error al subir el archivo') {
-              
-              (lead as any)[fileData.key] = urlImage;
-            }
-          } catch (error) {
+          // Subir la imagen y obtener la URL
+          const response = await this.uploadImage(formData);
+          if (response.fileName !== 'Error al subir el archivo') {
+            (lead as any)[fileData.key] = response.fileName;
+          }
+
+          response.fileName
+
+        } catch (error) {
             console.error(`Error asignando la URL para ${fileData.key}:`, error);
           }
         }
@@ -308,14 +312,8 @@ export default class MultiFormComponent {
     }
   }
   
-  async uploadImage(formData: FormData): Promise<string> {
-    try {
-      const response = await this.leadService.postUploadsLead(formData).toPromise();
-      return response!.fileName; 
-    } catch (error) {
-      console.error('Error al subir el archivo:', error);
-      return 'Error al subir el archivo'; 
-    }
+  async uploadImage(formData: FormData): Promise<any> {
+      return await firstValueFrom(this.uploadsService.postUploadsImageAll(formData));
   }
   onCreatedLead(payload: unknown) {
     if (!payload) {

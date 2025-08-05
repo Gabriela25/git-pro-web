@@ -137,6 +137,11 @@
     "writeAComment":"Write a comment (optional)",
     "noCommentProvided":"No comment provided",
     "yourRating": "Your rating"
+  },
+ "paymentSuccess": {
+    "successMessage": "Payment successful!",
+    "thankYouMessage": "Thank you for your purchase. The selected categories are now active in your profile.",
+    "goFixi": "Go fixi"
   }
 
 }

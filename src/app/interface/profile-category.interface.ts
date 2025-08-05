@@ -7,7 +7,7 @@ export interface ProfileCategory {
     id?: string;
     profileId: string;
     categoryId: string;
-    isActive: boolean;
+    status: string;
     stripeSubscriptionId: string | null;
     cancellationRequestedAt: Date | null;
     createdAt?: string;
