@@ -1,9 +1,11 @@
 export interface Category {
+
   id:          string;
   name:        string;
   description: string;
   statusId:    string;
   urlImage:       string;
+  stripePriceId: string;
   licenseRequired?: boolean;
   createdAt?:   Date;
   updatedAt?:   Date;

@@ -9,9 +9,7 @@
         <i class="bi bi-plus" *ngIf="!showSelect"></i> <i class="bi bi-x" *ngIf="showSelect"></i>
       </button>
     </div>
-
     <div *ngIf="showSelect" class="select-container fade-in">
-
       <select id="categories" (change)="onSelectChange($event)"
         [ngClass]="{'is-invalid': parentForm.get('categories')?.invalid && (parentForm.get('categories')?.dirty || parentForm.get('categories')?.touched), 'form-select': true}"
         class="mb-3">
@@ -24,7 +22,6 @@
         }
       </select>
     </div>
-
     @if(parentForm.get('categories')?.invalid &&
     (parentForm.get('categories')?.dirty ||
     parentForm.get('categories')?.touched
@@ -36,23 +33,29 @@
     </div>
     }
   </div>
-
   <hr />
-
   <h6>{{'profile.selectedCategories' | translate}}</h6>
 
-  <div *ngFor="let entry of finalSelectedCategoriesWithImages" class="selected-category-card">
-    <div class="card-header">
-      <span class="m-3"> {{ entry.category.name }} </span>
-      <button type="button" (click)="removeSelectedCategory(entry.category.id)"
-        class="btn btn-danger btn-sm rounded-circle remove-btn">
-        <i class="bi bi-x"></i>
-      </button>
+  <div *ngFor="let entry of finalSelectedCategoriesWithImages; index as i" class="selected-category-card">
+    <div class="card-header d-flex align-items-center justify-content-between">
+      <span>{{ entry.category.name }}</span>
+      <div class="d-flex align-items-center">
+        <div *ngIf="entry.stripeSubscriptionId" >
+          <div class="form-check form-switch">
+            <label class="form-check-label" for="flexSwitchCheckDefault-{{i}}"></label>
+            <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault-{{i}}" [checked]="entry.status === 'ACTIVE' || entry.status === 'REACTIVATED'" (change)="onToggleSubscription(entry)">
+          </div>
+        </div>
+        <button *ngIf="entry.stripeSubscriptionId == null" type="button" (click)="removeSelectedCategory(entry.category.id)"
+          class="btn btn-danger btn-sm rounded-circle remove-btn ms-2">
+          <i class="bi bi-x"></i>
+        </button>
+      </div>
     </div>
 
     <div class="card-body m-3">
       <p class=""><span>Description: </span>{{ entry.category.description }}</p>
-      <p >{{'profile.requireLicense' | translate}}:
+      <p>{{'profile.requireLicense' | translate}}:
         @if(entry.category.licenseRequired) {
         <strong> Yes</strong>
         }@else {
@@ -62,37 +65,33 @@
 
       <div *ngIf="entry.category.licenseRequired" class="image-upload-section">
         <h6>{{'profile.uploadLicense/Document' |translate}}:</h6>
-       
+
         <div class="form-group mb-3">
           <label for="title" class="form-label fw-bold mx-3">{{ 'profile.licenseTitle' | translate }}</label>
-          <input type="text" id="title" class="form-control" [(ngModel)]="entry.title" 
-            (input)="onTitleChange()"
+          <input type="text" id="title" class="form-control" [(ngModel)]="entry.title" (input)="onTitleChange()"
             [readonly]="entry.uploadedImageBase64 && !entry.uploadedImageFile"
-            placeholder="{{ 'profile.licenseTitle' | translate }}" 
-            name="title-{{entry.category.id}}" 
+            placeholder="{{ 'profile.licenseTitle' | translate }}" name="title-{{entry.category.id}}"
             [ngClass]="{ 'is-invalid': isLicenseIncomplete(entry) }" />
           @if (parentForm.get('title')?.touched && parentForm.get('title ')?.errors) {
           <div class="text-danger">{{ 'profile.titleRequired' | translate }}</div>
           }
         </div>
         <div *ngIf="!entry.uploadedImageBase64">
-        <input type="file" (change)="onFileSelected($event, entry.category.id)" accept="image/*, .pdf"
-          class="form-control" [ngClass]="{ 'is-invalid': isLicenseIncomplete(entry) }">
+          <input type="file" (change)="onFileSelected($event, entry.category.id)" accept="image/*, .pdf"
+            class="form-control" [ngClass]="{ 'is-invalid': isLicenseIncomplete(entry) }">
         </div>
         <div *ngIf="entry.uploadedImageBase64 || entry.uploadedImageFile" class="uploaded-file-preview mt-2">
           <div class="d-flex justify-content-between align-items-center mb-2">
             <p class="mb-0">{{'profile.uploadFile' | translate}}:</p>
             <!-- Solo mostrar botón de eliminar si el archivo no viene de la base de datos (es nuevo) -->
-            <button type="button" class="btn btn-danger btn-sm" 
-                    *ngIf="entry.uploadedImageFile" 
-                    (click)="removeUploadedFile(entry.category.id)" 
-                    title="{{ 'profile.removeFile' | translate }}">
+            <button type="button" class="btn btn-danger btn-sm" *ngIf="entry.uploadedImageFile"
+              (click)="removeUploadedFile(entry.category.id)" title="{{ 'profile.removeFile' | translate }}">
               <i class="bi bi-trash"></i>
             </button>
           </div>
           <div *ngIf="entry.uploadedImageBase64" class="text-center">
             <img [src]="entry.uploadedImageBase64" alt="Imagen cargada" class="img-fluid" style="max-height: 150px;">
-        
+
             <div *ngIf="entry.mimetype ==='pdf'">
               <iframe [src]="entry.uploadedImageBase64" width="100%" height="200px">
               </iframe>
@@ -111,8 +110,61 @@
           </div>
         </div>
       </div>
+   
+
     </div>
   </div>
+  <!-- Modal de confirmación -->
+<div class="modal fade" id="cancelSubscriptionModal" tabindex="-1" aria-labelledby="cancelSubscriptionModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="cancelSubscriptionModalLabel">{{ 'profile.cancelSubscription' | translate }}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        {{ 'profile.confirmCancelSubscription' | translate }}
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ 'general.no' | translate }}</button>
+        <button type="button" class="btn btn-danger" (click)="confirmCancelSubscription()">{{ 'general.yes' | translate }}</button>
+      </div>
+    </div>
+  </div>
+</div>
 
-
+<div class="modal fade" id="reactiveSubscriptionModalLabel" tabindex="-1" aria-labelledby="reactiveSubscriptionModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="reactiveSubscriptionModalLabel">{{ 'profile.reactiveSubscription' | translate }}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        {{ 'profile.confirmCancelSubscription' | translate }}
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ 'general.no' | translate }}</button>
+        <button type="button" class="btn btn-danger" (click)="confirmReactiveSubscription()">{{ 'general.yes' | translate }}</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="newSubscriptionModalLabel" tabindex="-1" aria-labelledby="newSubscriptionModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="newSubscriptionModalLabel">{{ 'profile.newSubscription' | translate }}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        {{ 'profile.confirmCancelSubscription' | translate }}
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ 'general.no' | translate }}</button>
+        <button type="button" class="btn btn-danger" (click)="newSubscription()">{{ 'general.yes' | translate }}</button>
+      </div>
+    </div>
+  </div>
+</div>
 </div>

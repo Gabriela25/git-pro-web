@@ -18,7 +18,7 @@ export class AuthHeaders {
     if (token) {
       headersConfig['Authorization'] = `Bearer ${token}`;
     }
-
+    console.log(headersConfig);
     return { headers: new HttpHeaders(headersConfig) };
   }
 }

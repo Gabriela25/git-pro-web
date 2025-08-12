@@ -6,4 +6,9 @@ export interface SelectedCategoryWithImage {
   uploadedImageFile?: File | null;
   title: string,
   mimetype: string; 
+
+  status: string;
+  stripeSubscriptionId: string | null;
+  cancellationRequestedAt: Date | null;
+  
 }

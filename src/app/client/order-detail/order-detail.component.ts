@@ -75,7 +75,8 @@ export default class DetailLeadComponent {
         name: '',
         description: '',
         statusId: '',
-        urlImage: ''
+        urlImage: '',
+        stripePriceId: ''
       },
       zipcodeId: '',
       zipcode: {
@@ -117,7 +118,8 @@ export default class DetailLeadComponent {
       name: '',
       description: '',
       urlImage: '',
-      statusId: ''
+      statusId: '',
+      stripePriceId: ''
     },
     zipcodeId: '',
     phone: '',

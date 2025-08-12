@@ -35,7 +35,8 @@ export default class LeadDetailComponent implements OnInit {
       name: '',
       description: '',
       urlImage: '',
-      statusId: ''
+      statusId: '',
+      stripePriceId: '',
     },
     zipcodeId: '',
     phone: '',
