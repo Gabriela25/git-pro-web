@@ -1,0 +1,117 @@
+:host {
+  display: block;
+  background-color: #fdfdfd;
+  min-height: 100vh;
+  font-family: 'Arial', sans-serif;
+  color: #333;
+  padding-top: 60px;
+}
+
+section {
+  padding: 60px 20px;
+  text-align: center;
+}
+
+h1, h2 {
+  color: #1a202c;
+  margin-bottom: 20px;
+}
+
+p {
+  max-width: 600px;
+  margin: 0 auto 20px auto;
+  color: #555;
+}
+
+/* Sección principal */
+#que-es-fixi {
+  background-color: #e4f9f1;
+}
+
+/* Cómo funciona: pasos */
+.steps {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 30px;
+  margin-top: 30px;
+}
+
+.step {
+  background-color: #fff;
+  border-radius: 12px;
+  padding: 25px;
+  width: 180px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.08);
+  transition: transform 0.2s;
+}
+
+.step:hover {
+  transform: translateY(-5px);
+}
+
+.step i {
+  color: var(--secondary);
+  margin-bottom: 15px;
+}
+
+/* Beneficios */
+#beneficios {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 30px;
+  margin-top: 30px;
+}
+
+.benefit {
+  background-color: #fff;
+  border-radius: 12px;
+  padding: 25px;
+  width: 200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.08);
+  transition: transform 0.2s;
+}
+
+.benefit:hover {
+  transform: translateY(-5px);
+}
+
+.benefit i {
+  color: var(--secondary);;
+  margin-bottom: 15px;
+}
+
+/* CTA */
+#cta button {
+  background-color: var(--secondary);
+  color: #fff;
+  border: none;
+  padding: 15px 30px;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+#cta button:hover {
+  background-color: var(--secondary);
+}
+
+/* Responsive */
+@media(max-width: 768px) {
+  .steps, #beneficios {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .step, .benefit {
+    width: 100%;
+  }
+}

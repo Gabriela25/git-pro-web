@@ -6,6 +6,7 @@ export interface ProfileCategory {
 
     id?: string;
     profileId: string;
+    
     categoryId: string;
     status: string;
     stripeSubscriptionId: string | null;

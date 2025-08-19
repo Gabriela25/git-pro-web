@@ -1,0 +1,40 @@
+<app-header></app-header>
+<div class="m-5">
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-3"></div>
+        <div class="col-12 col-md-6 mt-5 justify-content-center">
+            <div *ngFor="let user of users" class="card mb-3 shadow-sm">
+                <div class="card-body m-2">
+                    <div class="row align-items-center">
+                        <div class="col-5 d-flex justify-content-center">
+                            <img [src]="urlUploads+ user.profile?.imagePersonal || 'https://via.placeholder.com/120'"
+                                alt="Foto" class="img-fluid rounded-circle"
+                                style="width: 150px; height: 150px; object-fit: cover;">
+                        </div>
+                        <div class="col-7">
+                            <div class="d-flex align-items-center mb-2" style="gap:0;">
+                                <ng-container *ngFor="let star of [1,2,3,4,5]">
+                                    <i class="bi"
+                                       [ngClass]="{
+                                         'bi-star-fill': star <= getAverageStars(user),
+                                         'bi-star': star > getAverageStars(user)
+                                       }"
+                                       style="font-size: 1.5rem; color: #ffc107; margin-right: 2px;">
+                                    </i>
+                                </ng-container>
+                                <span class="ms-2 text-muted" style="font-size:1rem;">
+                                    {{ getAverageStars(user) | number:'1.1-1' }}/5
+                                </span>
+                            </div>
+                            <strong><i><h5 class="card-title">{{ user.firstname }} {{ user.lastname }}</h5></i></strong>
+                            <p class="card-text text-muted">{{ user.profile?.introduction }}</p>
+                            <a [routerLink]="['/view-profile', user.id]" class="btn btn-primary">View Profile</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-3"></div>
+    </div>
+</div>
+<app-footer></app-footer>

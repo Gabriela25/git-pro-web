@@ -43,6 +43,21 @@ export const routes: Routes = [
         loadComponent:()=> import('./payment/payment-cancel/payment-cancel.component').then(m=>m.PaymentCancelComponent),
         canActivate:[authGuard]
     },
+    {   
+        path: 'about',
+        loadComponent: () => import('./about/about.component').then(m => m.AboutComponent)      
+    },
+    {
+        path: 'features',   
+        loadComponent: () => import('./features/features.component').then(m => m.FeaturesComponent)
+    },
+    {
+        path: 'all-pro',
+        loadComponent: () => import('./all-pro/all-pro.component').then(m => m.AllProComponent)
+    },{
+        path: 'view-profile/:id',
+        loadComponent: () => import('./view-profile/view-profile.component').then(m => m.ViewProfileComponent)
+    },
     {
         path: '',
         redirectTo: 'home',

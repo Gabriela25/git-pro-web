@@ -1,7 +1,8 @@
-
 import { FormControl } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 import { ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -30,7 +31,9 @@ import { UserReq } from '../../interface/user-req.interface';
     RouterLink,
     TranslateModule,
     NgMultiSelectDropDownModule,
-    ModalComponent
+    ModalComponent,
+    CommonModule,
+    FormsModule
   ],
   templateUrl: './header.component.html',
   styleUrl: './header.component.css'
@@ -64,6 +67,8 @@ export class HeaderComponent implements OnInit {
   dropdownSettings: any = {};
   listCategories: Array<Category> = [];
   bodyModal!: SafeHtml | string;
+  searchTerm: string = '';
+  filteredCategories: Category[] = [];
   constructor(
     private trans: TranslateService,
     private router: Router,
@@ -230,5 +235,47 @@ export class HeaderComponent implements OnInit {
     });
 
   }
+  onSearch(searchTerm: string) {
+    console.log('Search term:', searchTerm);
+  }
+  searchCategory(term: string, event?: Event) {
+    if (event) {
+      event.preventDefault(); // Evita el refresco de la página
+    }
+    const found = this.listCategories.find(
+      (cat: Category) => cat.name.toLowerCase() === term.trim().toLowerCase()
+    );
+    if (found) {
+      this.navigateToServices(found);
+    } else {
+      // Opcional: mostrar mensaje de no encontrado
+    }
+  }
 
+  navigateToServices(item: Category) {
+    if (this.authService.isAuthenticated()) {
+      this.router.navigate(['/client/multi']);
+      this.leadService.updateDataLead('categoryId', item.id);
+      this.leadService.updateDataLead('categoryName', item.name);
+    } else {
+      this.router.navigate(['/auth/login']);
+    }
+  }
+
+  onSearchInputChange() {
+    const term = this.searchTerm.trim().toLowerCase();
+    if (term.length === 0) {
+      this.filteredCategories = [];
+      return;
+    }
+    this.filteredCategories = this.listCategories.filter(cat =>
+      cat.name.toLowerCase().includes(term)
+    );
+  }
+
+  onCategorySelect(cat: Category) {
+    this.searchTerm = cat.name;
+    this.filteredCategories = [];
+    this.navigateToServices(cat);
+  }
 }

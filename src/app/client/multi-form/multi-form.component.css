@@ -103,8 +103,8 @@
   
   .preview-item {
     position: relative;
-    width: 100px;
-    height: 100px;
+    width: 150px;
+    height: 150px;
     overflow: hidden;
     border-radius: 5px;
   }

@@ -70,8 +70,9 @@
                         @for (status of orderStatus; track status) {
                         <div class="m-1">
                             <button type="button" class="btn btn-primary"
-                                (click)="updatedOrderStatus(order.id, status)">
+                                (click)="updatedOrderStatus(order.id, status)"  [disabled]="order.orderStatus.name === 'Completed' || order.orderStatus.name === 'Canceled'">
                                 {{ status.name }}
+
                             </button>
                         </div>
                         }

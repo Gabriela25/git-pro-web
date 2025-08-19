@@ -1,4 +1,5 @@
 import { Order } from "./order.interface";
+import { User } from "./user.interface";
 
 
 export interface Review  {
@@ -7,6 +8,7 @@ export interface Review  {
   comment?: string;
   order: Order
   orderId: string, 
+  client?: User;
   clientId: string;
   proId:string
 }

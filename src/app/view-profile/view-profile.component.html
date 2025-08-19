@@ -1,0 +1,67 @@
+<app-header></app-header>
+
+<div class="container p-5 mt-5 bg-white" *ngIf="user">
+    <div class="row mt-5">
+        <!-- Imagen principal -->
+        <div class="col-md-5 text-center">
+            <img [src]="urlUploads + user.profile?.imagePersonal || 'https://via.placeholder.com/300'" alt="Foto"
+                class="img-fluid rounded shadow" style="max-height: 300px; object-fit: cover;">
+        </div>
+
+        <!-- Información -->
+        <div class="col-md-7">
+            <h2 class="fw-bold">{{ user.firstname }} {{ user.lastname }}</h2>
+
+            <div class="d-flex align-items-center mb-2">
+                <ng-container *ngFor="let star of [1,2,3,4,5]">
+                    <i class="bi" [ngClass]="{
+                    'bi-star-fill': star <= getAverageStars(user),
+                    'bi-star': star > getAverageStars(user)
+                }" style="font-size: 1.3rem; color: #ffc107; margin-right: 2px;">
+                    </i>
+                </ng-container>
+                <span class="ms-2 text-muted">{{ getAverageStars(user) | number:'1.1-1' }}/5</span>
+            </div>
+
+            <h4>Categories</h4>
+            <p class="mb-3">
+                <ng-container *ngFor="let cat of user.profile?.profileCategories; let last = last">
+                    {{ cat.category?.name }}
+                    <span *ngIf="!last">, </span>
+                </ng-container>
+            </p>
+            <p class="text-justify text-muted">{{ user.profile?.introduction }}</p>
+
+
+        </div>
+    </div>
+
+    <!-- Secciones adicionales -->
+    <div class="row mt-5">
+
+
+        <div class="col-12 mt-4">
+            <h4>Review</h4>
+            <div *ngIf="user.reviewPro?.length; else noReviews">
+                <div *ngFor="let review of user.reviewPro" class="border-bottom py-2">
+                    <strong>{{ review.client?.firstname }} {{ review.client?.lastname }}</strong>
+                    <div class="d-flex align-items-center mb-1" style="gap:0;">
+                        <ng-container *ngFor="let star of [1,2,3,4,5]">
+                            <i class="bi" [ngClass]="{
+                                 'bi-star-fill': star <= review.rating,
+                                 'bi-star': star > review.rating
+                               }" style="font-size: 1.1rem; color: #ffc107; margin-right: 2px;">
+                            </i>
+                        </ng-container>
+
+                    </div>
+                    <p class="mb-1">{{ review.comment }}</p>
+                </div>
+            </div>
+            <ng-template #noReviews>
+                <p class="text-muted">Aún no hay reseñas.</p>
+            </ng-template>
+        </div>
+    </div>
+</div>
+<app-footer></app-footer>

@@ -15,10 +15,13 @@
   border-radius: 50%;
 }
 .container-center-img {
-  transition: all 0.3s ease-in-out;
-  border-radius: 1rem !important;
-  background-color: #ffffff;
-  border: 1px solid #e0e0e0;
+  background-color: #ffffff; /* Blanco limpio */
+  border-radius: 12px;       /* Esquinas suaves */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* Sombra elegante */
+  padding: 30px 20px;
+  text-align: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
 }
 
 .container-center-img:hover {

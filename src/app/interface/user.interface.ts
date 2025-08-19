@@ -1,4 +1,5 @@
 import { Profile } from "./profile.interface";
+import { Review } from "./review.interface";
 
 export interface User {
   id?: string;
@@ -17,4 +18,5 @@ export interface User {
   updatedBy?: string;
   deletedBy?: string | null;
   profile?: Profile;
+  reviewPro?: Array<Review>;
 }

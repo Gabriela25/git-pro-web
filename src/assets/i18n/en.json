@@ -5,16 +5,16 @@
     "add": "Add",
     "send": "Send",
     "next": "Next",
-    "previous":"Previous",
+    "previous": "Previous",
     "select": "Select",
     "reject": "Reject",
     "accept": "Accept",
     "isWhitespace": "The field must have valid characters",
-    "allow":"Allow",
+    "allow": "Allow",
     "dontAllow": "Don't allow",
     "sendReview": "Send review",
-    "loading":"Loading...",
-    "activateCategoryAndPay":"Activate categories and pay"
+    "loading": "Loading...",
+    "activateCategoryAndPay": "Activate categories and pay"
   },
   "header": {
     "profile": "Profile",
@@ -69,11 +69,11 @@
     "updateLincenses": "Update licenses",
     "licenseTitle": "License title",
     "requireLicense": "Requires license",
-    "uploadLicense/Document":"Upload license/Document",
+    "uploadLicense/Document": "Upload license/Document",
     "uploadFile": "Upload file",
     "file": "File",
     "pdfDocument": "PDF document",
-    "rememberToPress":"Remember to press",
+    "rememberToPress": "Remember to press",
     "toSendYourUploadedDocuments": "to send your uploaded documents",
     "zipCode": "ZIP Code",
     "imgProfile": "Image profile",
@@ -112,36 +112,60 @@
     "notANumber": "The field must be numeric"
   },
   "lead": {
-   
     "showDetails": "Show details"
   },
-
-  "multiForm":{
+  "multiForm": {
     "category": "Category",
     "isCategoryRequired": "Category is required",
     "zipCode": "Zipcode",
     "isZipcodeRequired": "Zipcode is required",
     "phone": "Phone",
     "isPhoneRequired": "Phone is required",
-    "description": "Description", 
-    "isDescriptionRequired":"Description is required "
+    "description": "Description",
+    "isDescriptionRequired": "Description is required "
   },
-
-  "fielIsInvalid":{
-    "fielIsRequired":"The field is required"
+  "fielIsInvalid": {
+    "fielIsRequired": "The field is required"
   },
-  "review":{
-    "whatDidYouThinkProServices":"What did you think of the pro's service?",
-    "veryBad":"Very bad",
-    "veryGood":"Very good",
-    "writeAComment":"Write a comment (optional)",
-    "noCommentProvided":"No comment provided",
+  "review": {
+    "whatDidYouThinkProServices": "What did you think of the pro's service?",
+    "veryBad": "Very bad",
+    "veryGood": "Very good",
+    "writeAComment": "Write a comment (optional)",
+    "noCommentProvided": "No comment provided",
     "yourRating": "Your rating"
   },
- "paymentSuccess": {
+  "paymentSuccess": {
     "successMessage": "Payment successful!",
     "thankYouMessage": "Thank you for your purchase. The selected categories are now active in your profile.",
     "goFixi": "Go fixi"
+  },
+  "about": {
+    "title": "What is fixi?",
+    "description": "Fixi connects users with reliable local professionals instantly and hassle-free.",
+    "missionTitle": "Our mission",
+    "missionDesc": "We want solving home problems to be as useful as it is simple.",
+    "howTitle": "How it works",
+    "step1": "Tell us what you need",
+    "step2": "Choose the ideal professional",
+    "step3": "Book in one click",
+    "step4": "Problem solved stress-free",
+    "benefitsTitle": "Why choose fixi?",
+    "benefit1": "Verified local professionals",
+    "benefit2": "Fast and secure response",
+    "benefit3": "Continuous support",
+    "teamTitle": "Behind fixi",
+    "teamDesc": "A team dedicated to making your life easier. We trust in efficiency, transparency, and your satisfaction.",
+    "cta": "Start your first service"
+  },
+  "features": {
+    "title": "Features",
+    "description": "Discover the main features of fixi that make your life easier.",
+    "feature1Title": "Fast service",
+    "feature1Desc": "Get professional help quickly and efficiently.",
+    "feature2Title": "Trusted professionals",
+    "feature2Desc": "All professionals are verified and reliable.",
+    "feature3Title": "Quality guarantee",
+    "feature3Desc": "We ensure high-quality service every time."
   }
-
 }

@@ -1,3 +1,5 @@
+
+
 <app-modal #modal [title]="title" [rejectButtonText]="'general.cancel'| translate"
   [acceptButtonText]="'general.accept'| translate" (confirmAction)="acceptLogOut()">
   <div [innerHTML]="bodyModal"></div>
@@ -16,12 +18,34 @@
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <form class="d-flex w-100 mt-2 mt-lg-0 p-2 justify-content-center" role="search">
-          <ng-multiselect-dropdown [placeholder]="'Search' | translate" class="form-control"
-            [settings]="dropdownSettings" [data]="listCategories" formControlName="categories"
-            (onSelect)="onItemSelect($event)" style="max-width: 500px; background: #fff; margin: 0 auto;">
-          </ng-multiselect-dropdown>
-        </form>
+        <div class="w-100 d-flex justify-content-center">
+          <form class="search-form position-relative" (submit)="searchCategory(searchTerm, $event)">
+            <div class="search-box d-flex align-items-center bg-white rounded shadow px-3 py-1"
+              style="min-width:300px;">
+              <i class="bi bi-search me-2"></i>
+              <input
+                type="text"
+                [(ngModel)]="searchTerm"
+                name="searchTerm"
+                class="search-input border-0 flex-grow-1"
+                placeholder="{{ 'Search' | translate }}"
+                autocomplete="off"
+                style="background:transparent;outline:none;"
+                (input)="onSearchInputChange()"
+              />
+            </div>
+            <ul *ngIf="filteredCategories.length > 0" class="list-group position-absolute w-100 mt-1 shadow"
+              style="z-index:100;">
+              <li *ngFor="let cat of filteredCategories"
+                  class="list-group-item list-group-item-action cursor-pointer"
+                  (click)="onCategorySelect(cat)">
+                {{ cat.name }}
+              </li>
+            </ul>
+          </form>
+        </div>
+
+
         <div class="d-flex align-items-center ms-auto">
 
           @if(isAuthenticated){

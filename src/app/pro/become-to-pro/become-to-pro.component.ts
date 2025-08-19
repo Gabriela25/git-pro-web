@@ -114,7 +114,7 @@ export default class BecomeToProComponent implements OnInit {
     url: string;
     mimetype: string;
   }[] = [];
-  isLoadingPayment: boolean = false;
+
   errorMessagePayment: string | null = null;
   paymentInitiated: boolean = false;
   selectedCategoryIds: string[] = [];
@@ -709,7 +709,7 @@ export default class BecomeToProComponent implements OnInit {
     }
   }
   async initiateStripeCheckout(profileId: string): Promise<void> {
-    this.isLoadingPayment = true; // Activa el spinner de carga
+    this.isLoading = true; // Activa el spinner de carga
     this.errorMessagePayment = null; // Limpia cualquier mensaje de error previo
     this.paymentInitiated = true; // Indica que el proceso de pago ha comenzado para mostrar la UI correspondiente
 
@@ -753,9 +753,8 @@ export default class BecomeToProComponent implements OnInit {
         'Hubo un problema al iniciar el pago. Intenta más tarde.';
       this.paymentInitiated = false; // Permite que el usuario vea la opción de reintentar
     } finally {
-      // El bloque 'finally' SIEMPRE se ejecuta después de que el bloque 'try' o 'catch' ha terminado.
-      // Esto asegura que el spinner se desactive, sin importar el resultado.
-      this.isLoadingPayment = false; // Desactiva el spinner
+      
+      this.isLoading = false; // Desactiva el spinner
     }
   }
   retryPayment(): void {}
@@ -822,9 +821,11 @@ export default class BecomeToProComponent implements OnInit {
     combinedData: any,
     profileIdToUse: string
   ) {
+    console.log('Editing profile with data:', profile);
     this.userService.updateMe({ ...this.user, profile }).subscribe({
       next: async (response) => {
         this.user = response.user;
+        console.log('User profile updated:', this.user);
         if (combinedData.licensesDetails.length > 0) {
           for (const license of combinedData.licensesDetails) {
             // Solo crear licencias nuevas (que tienen file pero no url)
