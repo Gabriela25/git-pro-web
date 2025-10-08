@@ -24,6 +24,9 @@ import { LeadService } from '../../services/lead.service';
 import { ServiceWorkersService } from '../../services/service-workers.service';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { UserReq } from '../../interface/user-req.interface';
+import { profile } from 'console';
+import { ProfileReviewCommentService } from '../../services/profile-review-comment.service';
+import { ProfileReviewComment } from '../../interface/profile-review-comment.interface';
 @Component({
   selector: 'app-header',
   standalone: true,
@@ -69,21 +72,23 @@ export class HeaderComponent implements OnInit {
   bodyModal!: SafeHtml | string;
   searchTerm: string = '';
   filteredCategories: Category[] = [];
+  profileReviewComments: ProfileReviewComment[] = [];
   constructor(
     private trans: TranslateService,
     private router: Router,
     private sanitizer: DomSanitizer,
     private cdr: ChangeDetectorRef,
     private userService: UserService,
+    private profileReviewCommentService: ProfileReviewCommentService,
     private categoryService: CategoryService,
     private authService : AuthService,
     private leadService: LeadService,
     private serviceWorkersService: ServiceWorkersService
+
   ) {
     this.trans.addLangs(['es', 'en']);
     this.isAuthenticated = this.authService.isAuthenticated()
-    console.log('esperando autenticacion')
-    console.log(this.isAuthenticated )
+
   }
   ngOnInit() {
     this.trans.get('header.becomeToPro').subscribe((res: string) => {
@@ -91,7 +96,7 @@ export class HeaderComponent implements OnInit {
 
     });
     this.authService.user$.subscribe((data: any) => {
-      console.log('entre1')
+
       if (data) {
         this.nameUser = data.name;
         this.emailUser = data.email; 
@@ -112,22 +117,36 @@ export class HeaderComponent implements OnInit {
         this.cdr.detectChanges();
       }
     });
-   
-    this.dropdownSettings = {
-      singleSelection: true,
-      idField: 'id',
-      textField: 'name',
-      selectAllText: 'Select All',
-      unSelectAllText: 'UnSelect All',
-      itemsShowLimit: 4,
-      allowSearchFilter: true,
-      closeDropDownOnSelection: true,
-      singleSelect: true
-    };
+  
     
     this.categoryService.getAllCategories().subscribe({
       
       next: (response) => this.listCategories = response.categories,
+      error: (error) => this.handleError(error)
+    });
+
+    this.userService.getMe().subscribe({
+      next: (response) => {  
+        const user:User = response.user;
+        if(user.profile){
+          const profileId: string = user.profile.id || '';
+          this.profileReviewCommentService.getProfileReviewComment(profileId).subscribe({
+            next: (response) => { 
+              console.log('Comentarios del perfil:')
+              console.log(response)
+              if(response.profileReviewComment.length > 0){
+                for(let comment of response.profileReviewComment){
+                  if(comment.statusProfile === 'NEEDS_CORRECTION')
+                  {
+                    this.profileReviewComments.push(comment);
+                  }
+                }
+              }
+            },
+            error: (error) => this.handleError(error)
+          });   
+        }
+      },
       error: (error) => this.handleError(error)
     });
   }
@@ -155,7 +174,7 @@ export class HeaderComponent implements OnInit {
       phone: '',
       profile: {
         categoryIds: [],
-        zipcodeId: '',
+        zipcodeIds: [],
         address: '',
         imagePersonal: '',
         introduction: '',

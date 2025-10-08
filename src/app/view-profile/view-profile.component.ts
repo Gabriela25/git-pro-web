@@ -31,6 +31,7 @@ export class ViewProfileComponent implements OnInit {
         id: '',
         profileCategories: [],
         zipcodeId: '',
+        zipcodes: [],
         address: '',
         imagePersonal: '',
         introduction: '',
@@ -52,7 +53,7 @@ export class ViewProfileComponent implements OnInit {
         next: (response) => {
           
           this.user = response.user;
-          console.log(this.user);
+       
         },
         error: (err) => console.error(err)
       });

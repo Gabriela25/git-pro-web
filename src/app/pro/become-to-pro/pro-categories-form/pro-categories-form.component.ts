@@ -24,6 +24,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { CheckStripeService } from '../../../services/checkout-stripe.service';
 import e from 'express';
 import { profile } from 'console';
+import { stat } from 'fs';
 declare var bootstrap: any;
 // Ajusta la ruta
 
@@ -46,6 +47,7 @@ export class ProCategoriesFormComponent implements OnInit, OnChanges {
   hasPendingLicensesToSave = false;
   @Input() parentForm!: FormGroup;
   @Input() listCategories: Category[] = [];
+  @Input() isPendingApproval: boolean = false;
 
   showSelect: boolean = false;
   searchTerm: string = '';
@@ -63,7 +65,7 @@ export class ProCategoriesFormComponent implements OnInit, OnChanges {
   readonly maxSelections = 5; // Límite de selecciones
   @Output() licensesChanged = new EventEmitter<any[]>();
   @Input() initialLicenses: any[] = [];
-  stripeSubscriptionId: string | null = null;
+  stripeSubscriptionItemId: string | null = null;
   profileCategoryId: string = '';
   errorMessagePayment: string | null = null;
   paymentInitiated: boolean = false;
@@ -97,6 +99,8 @@ export class ProCategoriesFormComponent implements OnInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     console.log('Changes detected:', changes);
+    console.log('isPendingApproval value:', this.isPendingApproval);
+    
     if (changes['listCategories']) {
       this.filterCategories();
       this.updateFinalSelectedCategories();
@@ -104,7 +108,7 @@ export class ProCategoriesFormComponent implements OnInit, OnChanges {
 
     if (
       changes['initialLicenses'] &&
-      this.initialLicenses?.length > 0 &&
+      this.parentForm.get('categories')?.value?.length > 0 &&
       this.listCategories?.length > 0
     ) {
       console.log('Initial licenses changed:', this.initialLicenses);
@@ -113,6 +117,7 @@ export class ProCategoriesFormComponent implements OnInit, OnChanges {
   }
   initializeFromEdit(): void {
     // Paso 1: Cargar las categorías que tienen licencia
+   
     this.selectedCategoryIdsInForm = this.initialLicenses.map(
       (l) => l.categoryId
     );
@@ -147,10 +152,10 @@ export class ProCategoriesFormComponent implements OnInit, OnChanges {
             categoriesAllLicenses.find(
               (cat: any) => cat.categoryId === license.categoryId
             )?.status || '',
-          stripeSubscriptionId:
+          stripeSubscriptionItemId:
             categoriesAllLicenses.find(
               (cat: any) => cat.categoryId === license.categoryId
-            )?.stripeSubscriptionId || null,
+            )?.stripeSubscriptionItemId || null,
           cancellationRequestedAt:
             categoriesAllLicenses.find(
               (cat: any) => cat.categoryId === license.categoryId
@@ -164,6 +169,7 @@ export class ProCategoriesFormComponent implements OnInit, OnChanges {
       (this.parentForm.get('categories')?.value as string[]) || [];
 
     // Paso 5: Detectar categorías seleccionadas que no tienen licencia aún
+     console.log('antes del paso 5');
     const newCategories = selectedCategoryIds
       .filter((id) => !withLicense.find((wl) => wl.category.id === id)) // categorías nuevas o sin licencia
       .map((id) => {
@@ -179,9 +185,9 @@ export class ProCategoriesFormComponent implements OnInit, OnChanges {
           status:
             categoriesAllLicenses.find((cat: any) => cat.categoryId === id)
               ?.status || '',
-          stripeSubscriptionId:
+          stripeSubscriptionItemId:
             categoriesAllLicenses.find((cat: any) => cat.categoryId === id)
-              ?.stripeSubscriptionId || null,
+              ?.stripeSubscriptionItemId || null,
           cancellationRequestedAt:
             categoriesAllLicenses.find((cat: any) => cat.categoryId === id)
               ?.cancellationRequestedAt || null,
@@ -190,6 +196,7 @@ export class ProCategoriesFormComponent implements OnInit, OnChanges {
       .filter(Boolean) as SelectedCategoryWithImage[];
 
     // Paso 6: Combinar todo
+    console.log('antes del paso 6');
     this.finalSelectedCategoriesWithImages = [...withLicense, ...newCategories];
     console.log(
       'Final categories with images:',
@@ -210,6 +217,11 @@ export class ProCategoriesFormComponent implements OnInit, OnChanges {
   }
 
   onSelectChange(event: Event): void {
+    // No permitir cambios si está pendiente de aprobación
+    if (this.isPendingApproval) {
+      return;
+    }
+    
     const selectElement = event.target as HTMLSelectElement;
     const selectedOption = selectElement.value;
 
@@ -253,6 +265,14 @@ export class ProCategoriesFormComponent implements OnInit, OnChanges {
   // --- Lógica de visibilidad del select ---
   toggleSelectVisibility(): void {
     console.log('Toggle select visibility called');
+    console.log('isPendingApproval in toggle:', this.isPendingApproval);
+    
+    // No permitir cambios si está pendiente de aprobación
+    if (this.isPendingApproval) {
+      console.log('Blocking toggle because isPendingApproval is true');
+      return;
+    }
+    
     if (this.showSelect) {
       // Si ya está abierto, simplemente se cierra
       this.showSelect = false;
@@ -331,7 +351,7 @@ export class ProCategoriesFormComponent implements OnInit, OnChanges {
             title: '',
             mimetype: '',
             status: '',
-            stripeSubscriptionId: null,
+            stripeSubscriptionItemId: null,
             cancellationRequestedAt: null,
           }); // Crear una nueva entrada sin imagen
         }
@@ -374,8 +394,11 @@ export class ProCategoriesFormComponent implements OnInit, OnChanges {
     if (entry) {
       entry.uploadedImageBase64 = null;
       entry.uploadedImageFile = null;
-      entry.title = '';
+      //entry.title = '';
       entry.mimetype = '';
+      entry.status = '';
+      entry.stripeSubscriptionItemId = null;
+      entry.cancellationRequestedAt = null;
       this.hasPendingLicensesToSave = true;
       // Emitir cambios automáticamente al eliminar un archivo
       this.emitLicensesChanged();
@@ -429,7 +452,8 @@ export class ProCategoriesFormComponent implements OnInit, OnChanges {
         file: entry.uploadedImageFile,
         mimetype: entry.mimetype || '',
         licenseRequired: entry.category.licenseRequired,
-        stripeSubscriptionId: entry.stripeSubscriptionId || null,
+        status: entry.status || '',
+        stripeSubscriptionItemId: entry.stripeSubscriptionItemId || null,
         cancellationRequestedAt: entry.cancellationRequestedAt || null,
       })
     );
@@ -457,9 +481,10 @@ export class ProCategoriesFormComponent implements OnInit, OnChanges {
 
   // Método que se llama al cambiar el switch
   onToggleSubscription(entry: any) {
+    console.log('Toggling subscription for:', entry);
     this.profileCategoryId = entry.id;
     if (entry.status === 'ACTIVE' || entry.status === 'REACTIVATED') {
-      this.stripeSubscriptionId = entry.stripeSubscriptionId;
+      this.stripeSubscriptionItemId = entry.stripeSubscriptionItemId;
       const modalEl = document.getElementById('cancelSubscriptionModal');
       if (modalEl) {
         const modal = new bootstrap.Modal(modalEl);
@@ -467,16 +492,16 @@ export class ProCategoriesFormComponent implements OnInit, OnChanges {
       }
     } else {
       if (entry.status === 'CANCEL_AT_PERIOD_END') {
-        this.stripeSubscriptionId = entry.stripeSubscriptionId;
-        const modalEl = document.getElementById('cancelSubscriptionModal');
+        this.stripeSubscriptionItemId = entry.stripeSubscriptionItemId;
+        const modalEl = document.getElementById('reactiveSubscriptionModal');
         if (modalEl) {
           const modal = new bootstrap.Modal(modalEl);
           modal.show();
         }
       }
-      if (entry.status === 'CANCELED' || entry.stripeSubscriptionId === '') {
-        this.stripeSubscriptionId = entry.stripeSubscriptionId;
-        const modalEl = document.getElementById('reactiveSubscriptionModal');
+      if (entry.status === 'CANCELED' || entry.stripeSubscriptionItemId === '') {
+        this.stripeSubscriptionItemId = entry.stripeSubscriptionItemId;
+        const modalEl = document.getElementById('newSubscriptionModal');
         if (modalEl) {
           const modal = new bootstrap.Modal(modalEl);
           modal.show();
@@ -486,10 +511,10 @@ export class ProCategoriesFormComponent implements OnInit, OnChanges {
   }
 
   confirmCancelSubscription() {
-    if (!this.stripeSubscriptionId) return;
+    if (!this.stripeSubscriptionItemId) return;
 
     this.checkoutStripeService
-      .cancelSubscription(this.stripeSubscriptionId)
+      .cancelSubscription(this.stripeSubscriptionItemId)
       .subscribe({
         next: (response) => {
           console.log(
@@ -497,7 +522,7 @@ export class ProCategoriesFormComponent implements OnInit, OnChanges {
             response.profileCategory
           );
           // Actualiza el estado localmente o vuelve a cargar los datos
-          this.stripeSubscriptionId = null;
+          this.stripeSubscriptionItemId = null;
           // Puedes cerrar el modal usando Bootstrap
           const modalEl = document.getElementById('cancelSubscriptionModal');
           if (modalEl) {
@@ -514,9 +539,9 @@ export class ProCategoriesFormComponent implements OnInit, OnChanges {
   }
 
   confirmReactiveSubscription() {
-    if (!this.stripeSubscriptionId) return;
+    if (!this.stripeSubscriptionItemId) return;
     this.checkoutStripeService
-      .reactiveSubscription(this.stripeSubscriptionId)
+      .reactiveSubscription(this.stripeSubscriptionItemId)
       .subscribe({
         next: (response) => {
           console.log(
@@ -524,9 +549,9 @@ export class ProCategoriesFormComponent implements OnInit, OnChanges {
             response.profileCategory
           );
           // Actualiza el estado localmente o vuelve a cargar los datos
-          this.stripeSubscriptionId = null;
+          this.stripeSubscriptionItemId = null;
           // Puedes cerrar el modal usando Bootstrap
-          const modalEl = document.getElementById('cancelSubscriptionModal');
+          const modalEl = document.getElementById('reactiveSubscriptionModal');
           if (modalEl) {
             const modal = bootstrap.Modal.getInstance(modalEl);
             modal.hide();

@@ -3,7 +3,7 @@
     <div [innerHTML]="image"></div>
 </app-modal>
 
-<div class="container-fluid">
+<div class="container-fluid" style="margin-top: 5rem;">
     <div class="row">
         <div class="col-lg-3">
         </div>
@@ -91,7 +91,7 @@
                     @if(currentStep === 2){
                     @if(myLeads.length===0){
                     <div class="p-3 d-flex justify-content-end">
-                        <button class="btn btn-primary" routerLink="/client/multi"><i class="bi bi-plus-circle"></i>
+                        <button class="btn btn-primary btn-lg btn-block mt-3" routerLink="/client/multi"><i class="bi bi-plus-circle"></i>
                             Lead</button>
                     </div>
                     <div>
@@ -101,7 +101,7 @@
                     }
                     @else{
                     <div class="p-3 d-flex justify-content-end">
-                        <button class="btn btn-primary" routerLink="/client/multi"><i class="bi bi-plus-circle"></i>
+                        <button class="btn btn-primary btn-lg btn-block " routerLink="/client/multi"><i class="bi bi-plus-circle"></i>
                             Lead</button>
                     </div>
                     <div class="fade-in">

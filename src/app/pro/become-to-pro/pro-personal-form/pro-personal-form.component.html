@@ -6,16 +6,14 @@
     <div class="form-group text-center position-relative">
       <div class="mb-3">
         <div class="position-relative d-inline-block">
-          <img [src]="getImagePersonalSrc()" alt="Image Personal"
-            class="rounded-circle mb-3" style="object-fit: cover; cursor: pointer;" width="100" height="100"
-            (click)="triggerFileInput()">
+          <img [src]="getImagePersonalSrc()" alt="Image Personal" class="rounded-circle mb-3"
+            style="object-fit: cover; cursor: pointer;" width="100" height="100" (click)="triggerFileInput()">
           <i class="bi bi-pen position-absolute" style="right: 5px; bottom: 5px; font-size: 18px; cursor: pointer;"
             (click)="triggerFileInput()"></i>
         </div>
 
-        <input type="file" class="form-control" id="imagePersonal" #fileInputPersonal
-          (change)="onFileSelected($event)" style="display: none;"
-          [ngClass]="{
+        <input type="file" class="form-control" id="imagePersonal" #fileInputPersonal (change)="onFileSelected($event)"
+          style="display: none;" [ngClass]="{
               'is-invalid':
                 parentForm.get('imagePersonal')?.invalid &&
                 (parentForm.get('imagePersonal')?.dirty || parentForm.get('imagePersonal')?.touched)
@@ -32,28 +30,42 @@
   </div>
 
   <!--Add categories and licenses-->
-  <app-pro-categories-form
-    [parentForm]="parentForm"
-    [listCategories]="listCategories"
-    (licensesChanged)="onLicensesChangedFromChild($event)"
-    [initialLicenses]="initialLicenses">
+  <app-pro-categories-form [parentForm]="parentForm" [listCategories]="listCategories"
+    (licensesChanged)="onLicensesChangedFromChild($event)" [initialLicenses]="initialLicenses" [isPendingApproval]="isPendingApproval">
   </app-pro-categories-form>
   <!--end categories-->
 
   <div class="form-group mt-3">
     <div class="mb-3">
       <label for="zipcode" class="form-label fw-bold">{{ 'profile.zipCode' | translate }}</label>
-      <select class="form-select" aria-label="select" id="zipcode" formControlName="zipcode"
+
+      <ng-multiselect-dropdown
+        [placeholder]="'general.select' | translate"
+        [data]="listZipcode"
+        [(ngModel)]="selectedZipcodes"
+        [ngModelOptions]="{standalone: true}"
+        [settings]="zipcodeDropdownSettings"
         [ngClass]="{
-            'is-invalid':
-              parentForm.get('zipcode')?.invalid &&
-              (parentForm.get('zipcode')?.dirty || parentForm.get('zipcode')?.touched)
-          }">
-        <option value="" selected>{{ 'general.select' | translate }}</option>
-        <option *ngFor="let item of listZipcode; " [value]="item.id">
-          {{ item.code }} - {{ item.name }}
-        </option>
-      </select>
+          'is-invalid':
+            parentForm.get('zipcode')?.invalid &&
+            (parentForm.get('zipcode')?.dirty || parentForm.get('zipcode')?.touched)
+        }"
+        [disabled]="isPendingApproval"
+        (onSelect)="isPendingApproval ? null : onZipcodeSelect($event)"
+        (onDeSelect)="isPendingApproval ? null : onZipcodeDeSelect($event)"
+        (onSelectAll)="isPendingApproval ? null : onSelectAllZipcodes($event)"
+        (onDeSelectAll)="isPendingApproval ? null : onDeSelectAllZipcodes()">
+      </ng-multiselect-dropdown>
+
+      <!-- Para mostrar los zipcodes seleccionados -->
+      <div class="mt-2" *ngIf="getSelectedZipcodes().length > 0">
+        <small class="text-muted">
+          Seleccionados:
+          <span *ngFor="let zip of getSelectedZipcodes(); let last = last">
+            {{ zip.code }}{{ !last ? ', ' : '' }}
+          </span>
+        </small>
+      </div>
 
       <div *ngIf="parentForm.get('zipcode')?.invalid &&
                   (parentForm.get('zipcode')?.dirty || parentForm.get('zipcode')?.touched)">

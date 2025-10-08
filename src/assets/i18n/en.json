@@ -14,7 +14,11 @@
     "dontAllow": "Don't allow",
     "sendReview": "Send review",
     "loading": "Loading...",
-    "activateCategoryAndPay": "Activate categories and pay"
+    "activateCategoryAndPay": "Activate categories and pay",
+    "yes": "Yes", 
+    "no": "No",
+    "close": "Close"
+   
   },
   "header": {
     "profile": "Profile",
@@ -22,7 +26,8 @@
     "becomeToPro": "Become to pro",
     "leads": "Leads",
     "orders": "Orders",
-    "payments": "Payments"
+    "payments": "Payments",
+    "youDontHaveNotifications": "You don't have notifications"
   },
   "auth": {
     "login": "Login",
@@ -53,6 +58,7 @@
     "atLeastOneUppercaseLetter": "At least one uppercase letter",
     "oneLowercaseLetterAndOneNumber": "One lowercase letter and one number",
     "thePasswordsDoNotMatch": "The passwords do not match"
+    
   },
   "profile": {
     "personal": "Personal",
@@ -99,7 +105,17 @@
     "isImagePersonalRequired": "Image is required",
     "isNameBusinessRequired": "Business name is required",
     "isYearFoundedRequired": "The year of foundation is required",
-    "isNumberOfemployeesRequired": "The number of employees is required"
+    "isNumberOfemployeesRequired": "The number of employees is required",
+    "cancelSubscription": "Cancel subscription",
+    "confirmCancelSubscription": "Confirm that you want to unsubscribe from the category",
+    "reactivateSubscription": "Reactivate subscription",
+    "confirmReactivateSubscription": "Confirm that you want to reactivate the subscription",
+    "newSubscription": "New subscription",
+    "confirmNewSubscription": "Confirm that you want to create a new subscription",
+    "thanksForJoining": "Thanks for joining!",
+    "thanksForBecomingProfessional": "Thank you for becoming our professional. Our team will review your profile and we will contact you shortly.",
+    "pendingApproval": "Your profile is pending approval.",
+    "pendingApprovalMessage": "You cannot make changes to your profile while it is under review. We will notify you once the review is complete."
   },
   "payment": {
     "plans": "Payment plans",
@@ -109,7 +125,18 @@
     "isReferenceRequired": "Reference is required",
     "isAmountRequired": "The amount is required",
     "amountInvalid": "The amount must be greater than",
-    "notANumber": "The field must be numeric"
+    "notANumber": "The field must be numeric",
+    "noOutstandingCategories": "There are no outstanding categories to pay or they are under review.",
+    "preparingPayment": "Preparing your payment",
+    "redirectingToStripe": "You will be redirected to the secure Stripe page shortly.",
+    "errorInitiatingPayment": "Error initiating payment",
+    "retryPayment": "Retry payment",    
+    "goBackToCategorySelection": "Go back to category selection",
+    "startYourPayment": "Start your payment",
+    "status": "Status",
+    "payments": "Payments",
+    "showPayments": "Show payments",
+    "thereAreNoPayments": "There are no payments recorded for this category."
   },
   "lead": {
     "showDetails": "Show details"
@@ -167,5 +194,12 @@
     "feature2Desc": "All professionals are verified and reliable.",
     "feature3Title": "Quality guarantee",
     "feature3Desc": "We ensure high-quality service every time."
+  },
+  "allPro": {
+    "title": "Be among the first at Fixi!",
+    "description": "There are no registered professionals in this category yet. ¡Register for free and connect with new clients!",
+    "textButton": "Register as a Professional",
+    "becomeToPro": "Become a Professional"
   }
+
 }

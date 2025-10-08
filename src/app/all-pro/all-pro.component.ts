@@ -8,6 +8,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { Review } from '../interface/review.interface';
 import { HeaderComponent } from "../shared/header/header.component";
 import { FooterComponent } from "../shared/footer/footer.component";
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-all-pro',
@@ -27,16 +28,19 @@ export class AllProComponent {
   users: Array<User> = [];
   stars = [1, 2, 3, 4, 5];
   review: Array<Review> = [];
-  constructor(private userService: UserService) { }
+  isAuthenticated: boolean = false;
+  constructor(
+    private authService: AuthService,
+    private userService: UserService
+  ) { }
 
   ngOnInit(): void {
+    this.isAuthenticated = this.authService.isAuthenticated()
     this.userService.getAllPro().subscribe({
       next: (response) => {
-        console.log(response.users)
-        this.users = response.users;
-        
-
-        //console.log('All pro users fetched successfully:', this.users);
+        this.users = response.users.sort((a: any, b: any) => 
+          this.getAverageStars(b) - this.getAverageStars(a)
+        );
       },
       error: (error) => {
         console.error('Error fetching all pro users:', error);

@@ -1,10 +1,11 @@
 <app-header></app-header>
 
-<div class="container-fluid">
+<div class="container-fluid" style="margin-top: 5rem;">
+    <app-floating-alert [alertMessage]="alertMessage" [backendMessage]="backendMessage" />
     <div class="row">
-        <div class="col-lg-3">
+        <div class="col-lg-2">
         </div>
-        <div class="col-lg-6 p-5">
+        <div class="col-lg-8 p-lg-5">
             <div class="card container-box">
                 <div class="card-header">
                     <ul class="nav nav-tabs card-header-tabs">
@@ -20,184 +21,135 @@
                 <div class="card-body">
 
                     @if(currentStep === 1){
-                    <app-floating-alert [alertMessage]="alertMessage" [backendMessage]="backendMessage" />    
-                    <form [formGroup]="paymentForm" (ngSubmit)="onSubmit()" autocomplete="off">
-                        <div class="fade-in">
-                            <div class="form-group">
-                                <div class="mb-3">
-                                    <label for="serviceId" class="form-label fw-bold">{{'payment.plans'|
-                                        translate}}</label>
-                                    <select class="form-select" aria-label="select" id="serviceId"
-                                        (change)="onService()" formControlName="serviceId">
-                                        <option [ngValue]="null">Select</option>
-                                        @for (item of listServices; track item) {
-                                        <option [ngValue]="item">{{item.name}} - {{item.price}}</option>
-                                        }
+                    <div *ngIf="selectedCategoryIds.length == 0">
+                        <div class="alert alert-info" role="alert">
+                            <h4 class="alert-heading">{{'profile.categories' | translate}}</h4>
+                            <p>{{'payment.noOutstandingCategories' | translate}}</p>
+                            <hr>
 
-                                    </select>
-                                    @if(paymentForm.get('serviceId')?.invalid && (paymentForm.get('serviceId')?.dirty ||
-                                    paymentForm.get('serviceId')?.touched )){
-                                    <div class="alert alert-danger mt-2">
-                                        @if(paymentForm.get('serviceId')?.errors?.['required']){
-                                        <span>
-                                            {{'payment.isPlanRequired' | translate}}
-                                        </span>
-                                        }
-                                    </div>
-                                    }
-                                </div>
-                            </div>
-                            <div class="form-group">
-
-                                <div class="mb-3">
-
-                                    <div class="accordion" id="accordionPayment">
-                                        @for (item of paymentMethod; track item) {
-                                        <div class="accordion-item">
-                                            <h2 class="accordion-header" id="heading{{item.key}}">
-                                                <button
-                                                    class="accordion-button {{item.key === 'cash' ? '' : 'collapsed'}}"
-                                                    type="button" data-bs-toggle="collapse"
-                                                    attr.data-bs-target="#collapse{{item.key}}"
-                                                    attr.aria-expanded="{{item.key === 'cash' ? 'true' : 'false'}}"
-                                                    attr.aria-controls="#collapse{{item.key}}">
-                                                    {{item.value}}
-                                                </button>
-                                            </h2>
-                                            <div id="collapse{{item.key}}" data-bs-parent="#accordionPayment"
-                                                class="accordion-collapse collapse {{item.key === 'cash' ? 'show' : ''}}">
-                                                <div class="accordion-body">
-                                                    @if(item.key === 'cash'){
-                                                    <div class="row mb-3">
-                                                        <div class="col-12 col-lg-6">
-                                                            <label for="reference"
-                                                                class="form-label fw-bold">{{'payment.reference' |
-                                                                translate}}</label>
-                                                            <input type="text" class="form-control" placeholder=""
-                                                                id="reference" formControlName="reference" />
-                                                            <div id="referencetHelp" class="form-text">
-                                                                Enter your payment reference number
-                                                            </div>
-                                                            @if(paymentForm.get('reference')?.invalid &&
-                                                            (paymentForm.get('reference')?.dirty ||
-                                                            paymentForm.get('reference')?.touched
-                                                            )){
-                                                            <div class="alert alert-danger mt-2 mt-2">
-                                                                @if(paymentForm.get('reference')?.errors?.['required']){
-                                                                <span>
-                                                                    {{'payment.isReferenceRequired' | translate}}
-                                                                </span>
-                                                                }
-                                                            </div>
-                                                            }
-                                                        </div>
-                                                        <div class="col-12 col-lg-6">
-                                                            <label for="amount"
-                                                                class="form-label fw-bold">{{'payment.amount' |
-                                                                translate}}</label>
-                                                            <input type="text" class="form-control" placeholder=""
-                                                                id="amount" formControlName="amount"
-                                                                (input)="calculateWeek()" />
-                                                            <div id="amountHelp" class="form-text">
-                                                                Enter multiples of {{price}} US$ to cover your leads.
-                                                            </div>
-                                                            @if(paymentForm.get('amount')?.invalid &&
-                                                            (paymentForm.get('amount')?.dirty
-                                                            || paymentForm.get('amount')?.touched )){
-                                                            <div class="alert alert-danger mt-2">
-                                                                @if(paymentForm.get('amount')?.errors?.['required']){
-                                                                <span>{{'payment.isAmountRequired' | translate}}</span>
-                                                                }
-                                                                @if(paymentForm.get('amount')?.errors?.['notANumber']){
-                                                                <span>{{'payment.notANumber' | translate }}</span>
-                                                                }
-                                                                @if(paymentForm.get('amount')?.errors?.['amountInvalid']){
-                                                                <span>{{'payment.amountInvalid' | translate }} {{ price
-                                                                    }} US$.</span>
-                                                                }
-                                                            </div>
-                                                            }
-                                                        </div>
-                                                    </div>
-                                                    <div class="mb-3">
-                                                        <label for="week" class="form-label fw-bold">Weeks
-                                                            completed</label>
-                                                        <input type="text" class="form-control" id="week" readonly
-                                                            [value]="weeks">
-                                                    </div>
-                                                    <div *ngIf="remainingAmount > 0" class="alert alert-info mt-3">
-                                                        The difference in <strong>{{ formattedAmount }}</strong> will be
-                                                        accumulated until another week is completed, for plan
-                                                        {{nameService}}.
-                                                    </div>
-
-                                                    }
-                                                    @else {<strong>Atención: </strong> Próximamente podrás hacer estos
-                                                    pagos}
-                                                </div>
-                                            </div>
-                                        </div>
-                                        }
-
-                                    </div>
-                                </div>
-
-                            </div>
-                            <div class="d-flex justify-content-end mt-3">
-                                <button type="submit" class="btn btn-primary"
-                                    [disabled]="!paymentForm.valid">{{'general.save' | translate}}</button>
-                            </div>
                         </div>
-                        @if(isLoading){
-                        <div class="d-flex justify-content-center mt-3">
-                            <div class="spinner-border" role="status">
-                            </div>
+
+                    </div>
+                    <div class="payment-container" *ngIf="selectedCategoryIds.length > 0">
+                        <table class="table table-bordered mb-4">
+                            <thead>
+                                <tr>
+                                    <th>{{'profile.categories' | translate}}</th>
+                                    <th>{{'profile.status' | translate}}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let cat of user.profile?.profileCategories">
+
+                                    <td *ngIf="cat.status === 'PENDING_PAYMENT' || cat.status === 'PAYMENT_FAILED'">
+                                        {{ cat.category?.name }}
+                                    </td>
+                                    <td *ngIf="cat.status === 'PENDING_PAYMENT' || cat.status === 'PAYMENT_FAILED'">
+                                        {{ cat.status }}
+                                    </td>
+
+                                </tr>
+
+                            </tbody>
+                        </table>
+                        <div *ngIf="isLoading">
+                            <h2>{{'payment.preparingPayment' | translate}}...</h2>
+                            <p>{{'payment.redirectingToStripe' | translate}}</p>
+                            <div class="spinner"></div>
                         </div>
-                        }
-                        
-                    </form>
+
+                        <div *ngIf="!isLoading && errorMessage">
+                            <h2>{{'payment.errorInitiatingPayment' | translate}}</h2>
+                            <p>{{ errorMessage }}</p>
+                            <button (click)="retryPayment()" class="btn btn-primary">{{'payment.retryPayment' |
+                                translate}}</button>
+                            <button (click)="goToCategorySelection()"
+                                class="btn btn-secondary">{{'payment.goBackToCategorySelection' | translate}}</button>
+                        </div>
+
+                        <div *ngIf="!isLoading && !errorMessage && !paymentInitiated">
+                            <h2>{{'payment.startYourPayment' | translate}}</h2>
+                            <p>{{'payment.clickButtonToRedirect' | translate}}</p>
+                            <button (click)="initiateStripeCheckout()" class="btn btn-primary">Proceder al Pago</button>
+                        </div>
+                    </div>
+
                     }
                     @if(currentStep === 2){
 
                     <div class="fade-in">
                         <div class="table-responsive">
-                            <table class="table">
+                            <table class="table table-bordered">
                                 <thead>
                                     <tr>
-                                        <th scope="col">#</th>
-                                        <th scope="col">Amount</th>
-                                        <th scope="col">Surplus</th>
-                                        <th scope="col">Status</th>
-                                        <th scope="col">Activation date </th>
-                                        <th scope="col">Expiration date</th>
+                                        <th>{{'profile.categories' | translate}}</th>
+                                        <th>{{'payment.status' | translate}}</th>
+                                        <th>{{'payment.payments' | translate}}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @for (item of listPayment; track item; let i = $index) {
-                                    <tr>
-                                        <th scope="row">{{i+1}}</th>
-                                        <td>{{ item.amount | currency:'USD':'symbol':'1.2-2' }}</td>
-                                        @if( item.surplus! > 0){
-                                        <td>{{ item.surplus| currency:'USD':'symbol':'1.2-2' }}</td>
-                                        }
-                                        @else{
-                                        <td></td>
-                                        }
-                                        <td>{{item.status}}</td>
-                                        <td>{{ item.activationDate | date: 'dd/MM/yyyy hh:mm a' }}</td>
-                                        <td>{{ item.expirationDate | date: 'dd/MM/yyyy hh:mm a' }}</td>
-
-
-                                    </tr>
-                                    }
+                                    <ng-container *ngFor="let cat of user.profile?.profileCategories; let i = index">
+                                        <tr>
+                                            <td>{{ cat.category?.name }}</td>
+                                            <td>{{ cat.status }}</td>
+                                            <td>
+                                                <button class="btn btn-sm btn-outline-primary" type="button"
+                                                    data-bs-toggle="collapse" [attr.data-bs-target]="'#collapse-' + i"
+                                                    aria-expanded="false" [attr.aria-controls]="'collapse-' + i">
+                                                    {{'payment.showPayments' | translate}}
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <tr class="collapse" [attr.id]="'collapse-' + i">
+                                            <td colspan="5">
+                                                <div *ngIf="cat.subscriptionPayments!.length > 0; else noPayments">
+                                                    <table class="table table-sm table-striped mb-0">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>{{'profile.invoices' | translate}}</th>
+                                                                <th>{{'profile.paidAt' | translate}}</th>
+                                                                <th>{{'profile.startsAt' | translate}}</th>
+                                                                <th>{{'profile.endsAt' | translate}}</th>
+                                                                <th>{{'profile.amount' | translate}}</th>
+                                                                <th>{{'profile.discount' | translate}}</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr *ngFor="let p of cat.subscriptionPayments">
+                                                                <td><a [href]="p.urlInvoice" target="_blank">{{
+                                                                        'profile.showInvoices' | translate }}</a></td>
+                                                                <td>{{ p.paidAt | date: 'short' }}</td>
+                                                                <td>{{ p.startsAt | date: 'shortDate' }}</td>
+                                                                <td>{{ p.endsAt | date: 'shortDate' }}</td>
+                                                                <td>{{ p.amount / 100 | currency: 'USD' }}</td>
+                                                                <td>
+                                                                    <ng-container *ngIf="p.discountPercent">
+                                                                        {{ p.discountPercent }}% (-{{ p.discountAmount!
+                                                                        /
+                                                                        100 | currency: 'USD' }})
+                                                                    </ng-container>
+                                                                    <ng-container *ngIf="!p.discountPercent">
+                                                                        —
+                                                                    </ng-container>
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                                <ng-template #noPayments>
+                                                    <p class="text-muted mb-0">{{'payment.thereAreNoPayments' |
+                                                        translate}}</p>
+                                                </ng-template>
+                                            </td>
+                                        </tr>
+                                    </ng-container>
                                 </tbody>
                             </table>
+
                             <div class="d-flex justify-content-end">
-                                <pagination-controls 
-                                (pageChange)="page = $event" 
-                                previousLabel="Previous" 
-                                nextLabel="Next">
-                              </pagination-controls>
+                                <pagination-controls (pageChange)="page = $event" previousLabel="Previous"
+                                    nextLabel="Next">
+                                </pagination-controls>
                             </div>
                         </div>
                     </div>
@@ -209,7 +161,7 @@
 
             </div>
         </div>
-        <div class="col-lg-3">
+        <div class="col-lg-2">
         </div>
     </div>
 </div>

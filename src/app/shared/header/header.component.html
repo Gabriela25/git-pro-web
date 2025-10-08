@@ -1,5 +1,3 @@
-
-
 <app-modal #modal [title]="title" [rejectButtonText]="'general.cancel'| translate"
   [acceptButtonText]="'general.accept'| translate" (confirmAction)="acceptLogOut()">
   <div [innerHTML]="bodyModal"></div>
@@ -23,22 +21,14 @@
             <div class="search-box d-flex align-items-center bg-white rounded shadow px-3 py-1"
               style="min-width:300px;">
               <i class="bi bi-search me-2"></i>
-              <input
-                type="text"
-                [(ngModel)]="searchTerm"
-                name="searchTerm"
-                class="search-input border-0 flex-grow-1"
-                placeholder="{{ 'Search' | translate }}"
-                autocomplete="off"
-                style="background:transparent;outline:none;"
-                (input)="onSearchInputChange()"
-              />
+              <input type="text" [(ngModel)]="searchTerm" name="searchTerm" class="search-input border-0 flex-grow-1"
+                placeholder="{{ 'Search' | translate }}" autocomplete="off" style="background:transparent;outline:none;"
+                (input)="onSearchInputChange()" />
             </div>
             <ul *ngIf="filteredCategories.length > 0" class="list-group position-absolute w-100 mt-1 shadow"
               style="z-index:100;">
-              <li *ngFor="let cat of filteredCategories"
-                  class="list-group-item list-group-item-action cursor-pointer"
-                  (click)="onCategorySelect(cat)">
+              <li *ngFor="let cat of filteredCategories" class="list-group-item list-group-item-action cursor-pointer"
+                (click)="onCategorySelect(cat)">
                 {{ cat.name }}
               </li>
             </ul>
@@ -57,6 +47,32 @@
               style="width: 25px; height: 25px;">
             </button> -->
           }
+
+
+          <div class="dropdown pe-3">
+            <a class="nav-link p-0 position-relative" href="#" role="button" data-bs-toggle="dropdown">
+              <i class="bi bi-bell fs-4 text-white"></i>
+
+              <!-- Badge -->
+              <span *ngIf="profileReviewComments.length > 0"
+                class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                {{ profileReviewComments.length }}
+              </span>
+            </a>
+
+           
+            <ul class="dropdown-menu dropdown-menu-end p-2" style="width: 300px; max-height: 300px; overflow-y: auto;">
+              <li *ngIf="profileReviewComments.length === 0" class="text-center text-muted">
+                {{'header.youDontHaveNotifications' | translate}}
+              </li>
+              <li *ngFor="let comment of profileReviewComments"
+                class="dropdown-item d-flex justify-content-between align-items-center">
+                <span>{{ comment.comment }}</span>
+                  <small class="text-muted">{{ comment.createdAt | date: 'short' }}</small>
+              </li>
+            </ul>
+          </div>
+
 
           <!-- Menú desplegable usando la imagen del avatar -->
           <div class="dropdown">
@@ -99,7 +115,7 @@
           <div class="d-flex">
 
 
-            <button type="button" class="btn btn-outline-light me-2 d-flex align-items-center" 
+            <button type="button" class="btn btn-outline-light me-2 d-flex align-items-center"
               routerLink="/auth/sign-up" [queryParams]="{ isCustomer: false }">
               <i class="bi bi-person-plus me-1"></i>Sign&nbsp;up
             </button>

@@ -17,6 +17,7 @@ import { CapitalizeFirstDirective } from '../../shared/directives/capitalize-fir
 import { NoWhitespaceDirective } from '../../shared/directives/no-whitespace';
 import { CommonModule } from '@angular/common';
 import { FloatingAlertComponent } from '../../shared/floating-alert/floating-alert.component';
+import { PhoneService } from '../../services/phone.service';
 
 @Component({
   selector: 'app-sign-up',
@@ -51,7 +52,8 @@ export default class SignUpComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private platformService: PlatformService,
-    private authService: AuthService
+    private authService: AuthService,
+    private phoneService: PhoneService
   ) {
     this.initializeSignUpForm();
   }
@@ -101,9 +103,22 @@ export default class SignUpComponent implements OnInit {
         password: formData.password || '',
         enabled: false
       };
-      this.authService.postRegister(user).subscribe({
-        next: (response) => this.handleSuccessfulSubmission(response),
-        error: (error) => this.handleError(error)
+      this.phoneService.getPhoneValidate(user.phone).subscribe({
+        next: (phoneValidationResult) => {
+          if (phoneValidationResult.phone.valid) {
+            this.authService.postRegister(user).subscribe({
+              next: (response) => this.handleSuccessfulSubmission(response),
+              error: (error) => this.handleError(error)
+            });
+          } else {
+            this.handleError({ error: { message: 'Invalid phone number' } });
+            
+          }
+        },
+        error: (error) => {
+          
+          this.handleError(error);
+        }
       });
     }
   }
@@ -113,9 +128,15 @@ export default class SignUpComponent implements OnInit {
     this.router.navigate(['/auth/verify-email']);
   }
   handleError(error: any) {
-    this.alertMessage = 'alert-danger';
-    this.backendMessage = error.error.message || 'An error occurred';
     this.isLoading = false;
+    this.backendMessage = '';
+    const message = typeof error === 'string' ? error : (error.error?.message || 'An error occurred');
+    setTimeout(() => {
+      this.alertMessage = 'alert-danger';
+      this.backendMessage = message;
+    });
+
+    
     
   }
  

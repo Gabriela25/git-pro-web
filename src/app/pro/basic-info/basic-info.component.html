@@ -4,7 +4,7 @@
 >
     <div [innerHTML]="bodyModal"></div>
 </app-modal>
-<div class="container-fluid">
+<div class="container-fluid" style="margin-top: 5rem;">
     <div class="row">
         <div class="col-lg-3">
         </div>
@@ -90,7 +90,7 @@
                                     <input type="email" class="form-control" id="email" formControlName="email" 
                                     noWhitespace 
                                     [ngClass]="{'is-invalid': basicInfoForm.get('email')?.invalid && (basicInfoForm.get('email')?.dirty || basicInfoForm.get('email')?.touched)}" 
-                                    />
+                                    readonly/>
                                     @if(basicInfoForm.get('email')?.invalid &&
                                     (basicInfoForm.get('email')?.dirty || basicInfoForm.get('email')?.touched
                                     )){
@@ -111,7 +111,7 @@
                                 </label>
                               </div>
                             <div class="d-flex justify-content-end mt-3">
-                                <button type="submit" class="btn btn-primary  btn-lg btn-block mt-3">
+                                <button type="submit" class="btn btn-primary btn-lg btn-block   btn-lg btn-block mt-3">
                                     @if(!isLoading){
                                         <span class="sr-only">{{'general.save' | translate}}</span>
 

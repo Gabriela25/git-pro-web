@@ -1,6 +1,8 @@
 import { Routes } from "@angular/router";
 import { VerifyAccountComponent } from "./verify-account/verify-account.component";
-import { NewPasswordComponent } from "./new-password/new-password.component";
+import{ NewPasswordComponent} from "./new-password/new-password.component";
+
+
 
 
 
@@ -21,6 +23,7 @@ export const  routes: Routes = [
     },
     
     { path: 'verify-email', loadComponent:() => import('./verify-email/verify-email.component')},
+    
     {
         path:'verify/:id',
         component:VerifyAccountComponent

@@ -1,40 +1,63 @@
 <app-header></app-header>
-<div class="m-5">
-    <div class="row justify-content-center">
-        <div class="col-12 col-md-3"></div>
-        <div class="col-12 col-md-6 mt-5 justify-content-center">
-            <div *ngFor="let user of users" class="card mb-3 shadow-sm">
-                <div class="card-body m-2">
-                    <div class="row align-items-center">
-                        <div class="col-5 d-flex justify-content-center">
-                            <img [src]="urlUploads+ user.profile?.imagePersonal || 'https://via.placeholder.com/120'"
-                                alt="Foto" class="img-fluid rounded-circle"
-                                style="width: 150px; height: 150px; object-fit: cover;">
-                        </div>
-                        <div class="col-7">
-                            <div class="d-flex align-items-center mb-2" style="gap:0;">
-                                <ng-container *ngFor="let star of [1,2,3,4,5]">
-                                    <i class="bi"
-                                       [ngClass]="{
-                                         'bi-star-fill': star <= getAverageStars(user),
-                                         'bi-star': star > getAverageStars(user)
-                                       }"
-                                       style="font-size: 1.5rem; color: #ffc107; margin-right: 2px;">
-                                    </i>
-                                </ng-container>
-                                <span class="ms-2 text-muted" style="font-size:1rem;">
-                                    {{ getAverageStars(user) | number:'1.1-1' }}/5
-                                </span>
-                            </div>
-                            <strong><i><h5 class="card-title">{{ user.firstname }} {{ user.lastname }}</h5></i></strong>
-                            <p class="card-text text-muted">{{ user.profile?.introduction }}</p>
-                            <a [routerLink]="['/view-profile', user.id]" class="btn btn-primary">View Profile</a>
-                        </div>
-                    </div>
+<div style="margin-top: 5rem;">
+  <div class="row justify-content-center">
+    <div class="col-12 col-md-3"></div>
+    <div class="col-12 col-md-6 mt-5 justify-content-center">
+
+      <!-- ✅ Si hay usuarios, muestro la lista -->
+      <div *ngIf="users && users.length > 0; else noUsers">
+        <div *ngFor="let user of users" class="card mb-3 shadow-sm">
+          <div class="card-body m-2">
+            <div class="row align-items-center">
+              <div class="col-5 d-flex justify-content-center">
+                <img [src]="urlUploads+ user.profile?.imagePersonal || 'https://via.placeholder.com/120'"
+                     alt="Foto" class="img-fluid rounded-circle"
+                     style="width: 150px; height: 150px; object-fit: cover;">
+              </div>
+              <div class="col-7">
+                <div class="d-flex align-items-center mb-2" style="gap:0;">
+                  <ng-container *ngFor="let star of [1,2,3,4,5]">
+                    <i class="bi"
+                       [ngClass]="{
+                         'bi-star-fill': star <= getAverageStars(user),
+                         'bi-star': star > getAverageStars(user)
+                       }"
+                       style="font-size: 1.5rem; color: #ffc107; margin-right: 2px;">
+                    </i>
+                  </ng-container>
+                  <span class="ms-2 text-muted" style="font-size:1rem;">
+                    {{ getAverageStars(user) | number:'1.1-1' }}/5
+                  </span>
                 </div>
+                <strong><i><h5 class="card-title">{{ user.firstname }} {{ user.lastname }}</h5></i></strong>
+                <p class="card-text text-muted">{{ user.profile?.introduction }}</p>
+                <a [routerLink]="['/view-profile', user.id]" class="btn btn-primary btn-lg btn-block ">View Profile</a>
+              </div>
             </div>
+          </div>
         </div>
-        <div class="col-12 col-md-3"></div>
+      </div>
+
+      <!-- ✅ Cuando no hay profesionales -->
+      <ng-template #noUsers>
+        <div class="text-center p-5 bg-light rounded shadow-sm">
+          <img src="assets/logo.png" alt="Fixi Logo"
+               style="width:120px; height:120px; border-radius:50%; object-fit:cover; margin-bottom:15px;">
+          <h3 class="fw-bold">¡{{ 'allPro.title' | translate }}!</h3>
+          <p class="text-muted">
+            {{ 'allPro.description' | translate }}
+          </p>
+          <a *ngIf="!isAuthenticated" routerLink="/auth/sign-up" class="btn btn-primary btn-lg btn-block  btn-lg">
+            {{ 'allPro.textButton' | translate }}
+          </a>
+          <a *ngIf="isAuthenticated" routerLink="/pro/become-to-pro" class="btn btn-primary btn-lg btn-block  btn-lg">
+            {{ 'allPro.becomeToPro' | translate }}
+          </a>
+        </div>
+      </ng-template>
+
     </div>
+    <div class="col-12 col-md-3"></div>
+  </div>
 </div>
 <app-footer></app-footer>

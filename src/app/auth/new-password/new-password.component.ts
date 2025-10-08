@@ -2,7 +2,7 @@ import { afterNextRender, afterRender, Component, Inject, makeStateKey, PLATFORM
 import { AuthService } from '../../services/auth.service';
 import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { HeaderComponent } from '../../shared/header/header.component';
 import { isPlatformBrowser } from '@angular/common';
 import { errorMonitor } from 'events';
@@ -19,7 +19,7 @@ import { errorMonitor } from 'events';
   templateUrl: './new-password.component.html',
   styleUrl: './new-password.component.css'
 })
-export class NewPasswordComponent {
+export  class NewPasswordComponent {
 
   isLoading = false;
   backendMessage = '';
@@ -30,6 +30,7 @@ export class NewPasswordComponent {
   showConfirmPassword: boolean = false;
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private authService: AuthService,
     @Inject(PLATFORM_ID) private platformId: Object,
     private transferState: TransferState
@@ -59,26 +60,26 @@ export class NewPasswordComponent {
     
   }
   onSubmit() {
-    // TODO: Use EventEmitter with form value
     this.isLoading = true;
     const formData = this.newPasswordForm.value;
     this.newPasswordForm.markAllAsTouched();
     if (this.newPasswordForm.valid) {
       const password: any = {
-        password: formData.newPassword || '',
+      password: formData.newPassword || '',
       };
       this.authService.postNewPassword(password).subscribe({
-        next: (response) => {
-          console.log(response)
-          this.handleSuccessfulSubmission(response)}
-        ,
-        error: (error) => {
-          console.log(error)
-          this.handleError(error)
-        }
+      next: (response) => {
+        this.handleSuccessfulSubmission(response);
+        setTimeout(() => {
+        // Redirigir al login después de 3 segundos usando Router
+        this.router.navigate(['/auth/login']);
+        }, 3000);
+      },
+      error: (error) => {
+        this.handleError(error);
+      }
       });
     }
-
   }
   handleSuccessfulSubmission(response: any) {
     this.alertMessage = 'alert-success';

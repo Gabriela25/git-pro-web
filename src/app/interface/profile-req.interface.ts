@@ -5,7 +5,7 @@ import { ProfileCategory } from "./profile-category.interface";
 export interface ProfileReq {
     id?: string;
     userId?: string;
-    zipcodeId: string;
+    zipcodeIds: [];
     address: string;
     imagePersonal?: string;
     introduction: string;

@@ -83,7 +83,7 @@
               }
             </div>
             <div class="d-flex justify-content-end mt-3">
-              <button type="button" class="btn btn-primary" (click)="nextStep()">{{'general.next' | translate}}</button>
+              <button type="button" class="btn btn-primary btn-lg btn-block" (click)="nextStep()">{{'general.next' | translate}}</button>
             </div>
             }
           </div>
@@ -121,7 +121,7 @@
 
           <div class="d-flex justify-content-between mt-3">
             <button type="button" class="btn btn-outline-primary" (click)="prevStep()">{{'general.previous' | translate}}</button>
-            <button type="button" class="btn btn-primary" (click)="nextStep()">{{'general.next' | translate}}</button>
+            <button type="button" class="btn btn-primary btn-lg btn-block" (click)="nextStep()">{{'general.next' | translate}}</button>
           </div>
 
         </div>
@@ -155,7 +155,7 @@
             <div class="upload-container">
               <input #fileInput type="file" multiple (change)="onFileSelected1($event)" class="hidden"
                 accept="image/*" />
-              <button (click)="openFileSelector(fileInput)" class="btn btn-primary">
+              <button (click)="openFileSelector(fileInput)" class="btn btn-primary btn-lg btn-block">
                 Add images
               </button>
               <p class="error-message" *ngIf="errorMessage">{{ errorMessage }}</p>
@@ -174,7 +174,7 @@
           </div>
           <div class="d-flex justify-content-between mt-3">
             <button type="button" class="btn btn-outline-primary" (click)="prevStep()">Previous</button>
-            <button type="button" class="btn btn-primary" (click)="onSubmit()">{{'general.send' | translate}}</button>
+            <button type="button" class="btn btn-primary btn-lg btn-block" (click)="onSubmit()">{{'general.send' | translate}}</button>
           </div>
 
           @if(isLoading){

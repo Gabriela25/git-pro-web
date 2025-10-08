@@ -20,6 +20,7 @@ export class ProBusinessFormComponent {
   @Input() parentForm!: FormGroup;
   @Input() previewImgBusiness: string | ArrayBuffer | null = null;
   @Input() imageBusiness: string = '';
+  @Input() isPendingApproval: boolean = false;
 
   @Output() fileSelected = new EventEmitter<File>();
 

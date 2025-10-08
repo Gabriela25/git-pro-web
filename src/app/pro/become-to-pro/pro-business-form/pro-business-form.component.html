@@ -7,10 +7,17 @@
         <div class="position-relative d-inline-block">
 
           <img [src]="getImageBusinessSrc()" alt="Image Business"
-            class="rounded-circle mb-3" width="100" height="100" style="object-fit: cover; cursor: pointer;"
-            (click)="triggerFileInput()" />
-          <i class="bi bi-pen position-absolute" style="right: 5px; bottom: 5px; font-size: 18px; cursor: pointer;"
-            (click)="triggerFileInput()"></i>
+            class="rounded-circle mb-3" width="100" height="100" 
+            [style.object-fit]="'cover'" 
+            [style.cursor]="isPendingApproval ? 'not-allowed' : 'pointer'"
+            (click)="isPendingApproval ? null : triggerFileInput()" />
+          <i class="bi bi-pen position-absolute" 
+            [style.right]="'5px'" 
+            [style.bottom]="'5px'" 
+            [style.font-size]="'18px'" 
+            [style.cursor]="isPendingApproval ? 'not-allowed' : 'pointer'"
+            [style.opacity]="isPendingApproval ? '0.5' : '1'"
+            (click)="isPendingApproval ? null : triggerFileInput()"></i>
         </div>
 
         <input type="file" class="form-control" id="imageBusiness" #fileInputBusiness (change)="onFileSelected($event)"
@@ -38,7 +45,7 @@
             'is-invalid':
               parentForm.get('nameBusiness')?.invalid &&
               (parentForm.get('nameBusiness')?.dirty || parentForm.get('nameBusiness')?.touched)
-          }" />
+          }" [disabled]="isPendingApproval" />
         <div *ngIf="parentForm.get('nameBusiness')?.invalid &&
                     (parentForm.get('nameBusiness')?.dirty || parentForm.get('nameBusiness')?.touched)">
           <small class="form-text text-danger" *ngIf="parentForm.get('nameBusiness')?.errors?.['required']">
@@ -57,7 +64,7 @@
             'is-invalid':
               parentForm.get('yearFounded')?.invalid &&
               (parentForm.get('yearFounded')?.dirty || parentForm.get('yearFounded')?.touched)
-          }" />
+          }" [disabled]="isPendingApproval" />
         <div *ngIf="parentForm.get('yearFounded')?.invalid &&
                     (parentForm.get('yearFounded')?.dirty || parentForm.get('yearFounded')?.touched)">
           <small class="form-text text-danger" *ngIf="parentForm.get('yearFounded')?.errors?.['required']">
@@ -78,7 +85,7 @@
             'is-invalid':
               parentForm.get('numberOfemployees')?.invalid &&
               (parentForm.get('numberOfemployees')?.dirty || parentForm.get('numberOfemployees')?.touched)
-          }" />
+          }" [disabled]="isPendingApproval" />
         <div *ngIf="parentForm.get('numberOfemployees')?.invalid &&
                     (parentForm.get('numberOfemployees')?.dirty || parentForm.get('numberOfemployees')?.touched)">
           <small class="form-text text-danger" *ngIf="parentForm.get('numberOfemployees')?.errors?.['required']">

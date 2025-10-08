@@ -31,14 +31,14 @@ export class CheckStripeService {
     return this._http.post<{checkoutStripe: CheckoutStripe }>(`${this.apiUrlBackend}/checkout-stripe`, { profileId, categoryIds },  uploadOptions );
   }
 
-  cancelSubscription(stripeSubscriptionId: string): Observable<{ profileCategory: ProfileCategory }> {
+  cancelSubscription(stripeSubscriptionItemId: string): Observable<{ profileCategory: ProfileCategory }> {
      const headers = this.authHeadersService.getHeaders(); 
      console.log(headers);
-    return this._http.put<{ profileCategory: ProfileCategory }>(`${this.apiUrlBackend}/checkout-stripe/cancel-subscription/${stripeSubscriptionId}`, {},headers );
+    return this._http.put<{ profileCategory: ProfileCategory }>(`${this.apiUrlBackend}/checkout-stripe/cancel-subscription/${stripeSubscriptionItemId}`, {},headers );
   }
-  reactiveSubscription(stripeSubscriptionId: string) {
+  reactiveSubscription(stripeSubscriptionItemId: string) {
     const headers = this.authHeadersService.getHeaders();
-    return this._http.put<{ profileCategory: ProfileCategory }>(`${this.apiUrlBackend}/checkout-stripe/reactive-subscription/${stripeSubscriptionId}`, {}, headers);
+    return this._http.put<{ profileCategory: ProfileCategory }>(`${this.apiUrlBackend}/checkout-stripe/reactive-subscription/${stripeSubscriptionItemId}`, {}, headers);
   }
 
   newSubscriptionByCategoryExists(profileCategoryId: string): Observable<{ checkoutStripe: CheckoutStripe }> {

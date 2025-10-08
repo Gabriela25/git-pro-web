@@ -1,6 +1,12 @@
 import { CommonModule } from '@angular/common';
 import { Component, numberAttribute, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { UserService } from '../../services/user.service';
 import { User } from '../../interface/user.interface';
 import { TranslateModule } from '@ngx-translate/core';
@@ -9,7 +15,7 @@ import { HeaderComponent } from '../../shared/header/header.component';
 
 import { NgxMaskDirective } from 'ngx-mask';
 import { AuthService } from '../../services/auth.service';
-import { SocketComponent } from "../../shared/socket/socket.component";
+import { SocketComponent } from '../../shared/socket/socket.component';
 import { CapitalizeFirstDirective } from '../../shared/directives/capitalize-first.directive';
 import { NoWhitespaceDirective } from '../../shared/directives/no-whitespace';
 import { ServiceWorkersService } from '../../services/service-workers.service';
@@ -19,6 +25,7 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { FloatingAlertComponent } from '../../shared/floating-alert/floating-alert.component';
 import { UploadsService } from '../../services/uploads.service';
 import { UserReq } from '../../interface/user-req.interface';
+import { PhoneService } from '../../services/phone.service';
 
 @Component({
   selector: 'app-basic-info',
@@ -32,13 +39,12 @@ import { UserReq } from '../../interface/user-req.interface';
     CapitalizeFirstDirective,
     NoWhitespaceDirective,
     ModalComponent,
-    FloatingAlertComponent
+    FloatingAlertComponent,
   ],
   templateUrl: './basic-info.component.html',
-  styleUrl: './basic-info.component.css'
+  styleUrl: './basic-info.component.css',
 })
 export default class BasicInfoComponent implements OnInit {
-
   isLoading = false;
   backendMessage = '';
   alertMessage = '';
@@ -60,14 +66,13 @@ export default class BasicInfoComponent implements OnInit {
     profile: {
       id: '',
       categoryIds: [],
-      zipcodeId: '',
+      zipcodeIds: [],
       address: '',
       imagePersonal: '',
       introduction: '',
       isBusiness: false,
-    
-    }
-  }
+    },
+  };
 
   notification: Notification = {
     userId: '',
@@ -78,46 +83,48 @@ export default class BasicInfoComponent implements OnInit {
       phone: '',
     },
     permission: '',
-    device: ''
-  }
+    device: '',
+  };
 
   constructor(
     private fb: FormBuilder,
     private sanitizer: DomSanitizer,
     private userService: UserService,
     private authService: AuthService,
+    private phoneService: PhoneService,
     private serviceWorkersService: ServiceWorkersService
   ) {
     this.initializebasicInfoForm();
-
   }
 
   ngOnInit(): void {
-    this.checkUser()
-    this.statusWindowNotification = this.serviceWorkersService.getPushNavigatorStatus()!;
+    this.checkUser();
+    this.statusWindowNotification =
+      this.serviceWorkersService.getPushNavigatorStatus()!;
   }
 
   initializebasicInfoForm() {
     this.basicInfoForm = this.fb.group({
       firstname: new FormControl('', [Validators.required]),
       lastname: new FormControl('', [Validators.required]),
-      phone: new FormControl('', [Validators.required, Validators.pattern(/^\d{10}$/)]),
+      phone: new FormControl('', [
+        Validators.required,
+        Validators.pattern(/^\d{10}$/),
+      ]),
       email: new FormControl('', [Validators.required, Validators.email]),
-
     });
   }
   checkUser() {
     this.userService.getMe().subscribe({
       next: (response) => {
-        console.log(response)
-        this.populateUser(response.user)
+        console.log(response);
+        this.populateUser(response.user);
       },
-      error: (error) => this.handleError(error)
+      error: (error) => this.handleError(error),
     });
-    this.allowNotificationsControl.valueChanges.subscribe(value => {
+    this.allowNotificationsControl.valueChanges.subscribe((value) => {
       this.onCheckboxChange(value!);
     });
-
   }
   populateUser(user: User) {
     this.basicInfoForm.patchValue({
@@ -131,10 +138,9 @@ export default class BasicInfoComponent implements OnInit {
         this.notification = response.notification;
         this.getPushNavigatorStatus();
       },
-      error: (error) => this.handleError(error)
+      error: (error) => this.handleError(error),
     });
   }
-
 
   onSubmit() {
     this.isLoading = true;
@@ -153,97 +159,111 @@ export default class BasicInfoComponent implements OnInit {
         profile: {
           id: '',
           categoryIds: [],
-          zipcodeId: '',
+          zipcodeIds: [],
           address: '',
           imagePersonal: '',
           introduction: '',
-          isBusiness: false
-        }
-      };
-      this.userService.updateMe(user).subscribe({
-        next: (response) => {
-          console.log(response);
-          this.handleSuccessfulSubmission(response.message)
-
-          this.authService.updateUser('name', `${response.user.firstname}  ${response.user.lastname}`);
-          this.authService.updateUser('email', `${response.user.email} `);
+          isBusiness: false,
         },
-        error: (error) => this.handleError(error)
+      };
+      this.phoneService.getPhoneValidate(user.phone).subscribe({
+        next: (phoneValidationResult) => {
+          if (phoneValidationResult.phone.valid) {
+            this.userService.updateMe(user).subscribe({
+              next: (response) => {
+                console.log(response);
+                this.handleSuccessfulSubmission(response.message);
+
+                this.authService.updateUser(
+                  'name',
+                  `${response.user.firstname}  ${response.user.lastname}`
+                );
+                this.authService.updateUser('email', `${response.user.email} `);
+              },
+              error: (error) => this.handleError(error),
+            });
+          } else {
+            this.handleError({ error: { message: 'Invalid phone number' } });
+          }
+        },
+        error: (error) => {
+          this.handleError(error);
+        },
       });
     }
   }
 
   getPushNavigatorStatus() {
     if (this.statusWindowNotification) {
-
-      if (this.statusWindowNotification === 'denied' || this.statusWindowNotification === 'default') {
+      if (
+        this.statusWindowNotification === 'denied' ||
+        this.statusWindowNotification === 'default'
+      ) {
         this.allowNotificationsControl.setValue(false);
-      }
-      else if (this.statusWindowNotification === 'granted') {
-        this.serviceWorkersService.getSubscriptionActive().then(subscription => {
-          if (subscription === 'subscribed') {
-            this.allowNotificationsControl.setValue(true);
-          }
-          else {
-            this.allowNotificationsControl.setValue(false);
-          }
-
-        })
+      } else if (this.statusWindowNotification === 'granted') {
+        this.serviceWorkersService
+          .getSubscriptionActive()
+          .then((subscription) => {
+            if (subscription === 'subscribed') {
+              this.allowNotificationsControl.setValue(true);
+            } else {
+              this.allowNotificationsControl.setValue(false);
+            }
+          });
       }
     }
   }
   onCheckboxChange(isChecked: boolean) {
-
     if (isChecked) {
-      if (this.statusWindowNotification === 'default' && this.notification.userId === "") {
-
+      if (
+        this.statusWindowNotification === 'default' &&
+        this.notification.userId === ''
+      ) {
         this.subscribeToPushNotifications();
       }
-      if (this.statusWindowNotification === 'default' && this.notification.userId != "") {
-        this.serviceWorkersService.removeNotification(this.notification.id!).subscribe({
-          next: (response) => {
-            if (response.message) {
-              this.subscribeToPushNotifications();
-            }
-          },
-          error: (error) => {
-
-          }
-        })
-
-      }
-      else if (this.statusWindowNotification === 'denied') {
-        this.modalInformation()
-        //enviar modal para opciones de habilitar manualmente
-
-      }
-      else if (this.statusWindowNotification === 'granted') {
-        this.serviceWorkersService.getSubscriptionActive().then(subscription => {
-          if (subscription != 'subscribed') {
-            this.serviceWorkersService.removeNotification(this.notification.id!).subscribe({
-              next: (response) => {
-                if (response.message) {
-                  this.subscribeToPushNotifications();
-                }
-              },
-              error: (error) => {
-
+      if (
+        this.statusWindowNotification === 'default' &&
+        this.notification.userId != ''
+      ) {
+        this.serviceWorkersService
+          .removeNotification(this.notification.id!)
+          .subscribe({
+            next: (response) => {
+              if (response.message) {
+                this.subscribeToPushNotifications();
               }
-            })
-          }
-
-        })
+            },
+            error: (error) => {},
+          });
+      } else if (this.statusWindowNotification === 'denied') {
+        this.modalInformation();
+        //enviar modal para opciones de habilitar manualmente
+      } else if (this.statusWindowNotification === 'granted') {
+        this.serviceWorkersService
+          .getSubscriptionActive()
+          .then((subscription) => {
+            if (subscription != 'subscribed') {
+              this.serviceWorkersService
+                .removeNotification(this.notification.id!)
+                .subscribe({
+                  next: (response) => {
+                    if (response.message) {
+                      this.subscribeToPushNotifications();
+                    }
+                  },
+                  error: (error) => {},
+                });
+            }
+          });
       }
-
     }
   }
   subscribeToPushNotifications() {
-
     this.serviceWorkersService.subscribeToPushNotifications().subscribe({
       next: (response) => {
-        console.log("Notificación push suscrita con éxito:", response);
+        console.log('Notificación push suscrita con éxito:', response);
       },
-      error: (error) => this.handleError(error)
+      error: (error) => this.handleError(error),
     });
   }
 
@@ -274,7 +294,7 @@ export default class BasicInfoComponent implements OnInit {
       </div>
 
     `);
-    this.openModal()
+    this.openModal();
   }
   closeModal() {
     this.modal.close();
@@ -282,7 +302,6 @@ export default class BasicInfoComponent implements OnInit {
   openModal() {
     this.modal.open();
   }
-
 
   handleSuccessfulSubmission(message: string) {
     this.isLoading = false;
@@ -299,8 +318,5 @@ export default class BasicInfoComponent implements OnInit {
       this.alertMessage = 'alert-danger';
       this.backendMessage = error.error.message || 'An error occurred';
     });
-
   }
-
-
 }

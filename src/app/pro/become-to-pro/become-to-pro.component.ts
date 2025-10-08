@@ -57,6 +57,7 @@ import { AuthService } from '../../services/auth.service';
 export default class BecomeToProComponent implements OnInit {
   urlUploads = environment.urlUploads;
   @ViewChild('modal') modal!: ModalComponent;
+  @ViewChild('confirmationModal') confirmationModal!: ModalComponent;
 
   proPersonalForm!: FormGroup;
   proBusinessForm!: FormGroup;
@@ -91,6 +92,7 @@ export default class BecomeToProComponent implements OnInit {
   imagesToDelete: Image[] = [];
   errorMessage = '';
   categoryStatus: string = '';
+  isPendingApproval: boolean = false;
   user: User = {
     id: '',
     firstname: '',
@@ -101,6 +103,7 @@ export default class BecomeToProComponent implements OnInit {
       id: '',
       profileCategories: [],
       zipcodeId: '',
+      zipcodes: [],
       address: '',
       imagePersonal: '',
       introduction: '',
@@ -113,6 +116,7 @@ export default class BecomeToProComponent implements OnInit {
     title: string;
     url: string;
     mimetype: string;
+    stripeSubscriptionItemId?: string | null;
   }[] = [];
 
   errorMessagePayment: string | null = null;
@@ -138,11 +142,10 @@ export default class BecomeToProComponent implements OnInit {
   checkUserProfile() {
     this.userService.getMe().subscribe({
       next: (response) => {
-        this.user = response.user;
-        console.log('User profile:', this.user);
+        this.user = response.user;     
         this.populateUserProfile();
       },
-      error: (error) => console.error(error),
+      error: (error) => this.handleError(error),
     });
   }
   populateUserProfile() {
@@ -150,8 +153,13 @@ export default class BecomeToProComponent implements OnInit {
       //asignamos si el perfil es personal o business
       this.isUserProPersonal = this.user.profile.isBusiness!;
       this.imagePersonal = `${this.user.profile.imagePersonal}`;
+      
+      // Verificar si el perfil está pendiente de aprobación
+      this.isPendingApproval = this.user.profile.status === 'PENDING_APPROVAL';
+      console.log('Profile status:', this.user.profile.status);
+      console.log('Is pending approval:', this.isPendingApproval);
+      
       // Asignacion de licencias del perfil
-      console.log('Licenses from user profile:', this.user.profile.licenses);
       this.initialLicenses = (this.user.profile.licenses || []).map(
         (license: any) => ({
           categoryId: license.categoryId,
@@ -187,7 +195,7 @@ export default class BecomeToProComponent implements OnInit {
             url: existingLicense?.url || '',
             mimetype: existingLicense?.mimetype || '',
             licenseRequired: category?.licenseRequired || false,
-            stripeSubscriptionId: pc.stripeSubscriptionId || null,
+            stripeSubscriptionItemId: pc.stripeSubscriptionItemId || null,
             cancellationRequestedAt: pc.cancellationRequestedAt || null,
             status: pc.status || '',
           };
@@ -198,12 +206,21 @@ export default class BecomeToProComponent implements OnInit {
         categories: this.user.profile.profileCategories.map(
           (pc) => pc.categoryId
         ),
-        zipcode: this.user.profile.zipcodeId,
+        zipcode: this.user.profile.zipcodes?.map(z => z.id) || 
+               (this.user.profile.zipcodeId ? [this.user.profile.zipcodeId] : []),
         address: this.user.profile.address,
         imagePersonal: `${this.user.profile.imagePersonal}`,
         introduction: this.user.profile.introduction,
         licenses: initialLicensesForForm,
+        status: this.user.profile.status,
       });
+      
+      // Bloquear formularios si el perfil está pendiente de aprobación
+      if (this.isPendingApproval) {
+        console.log('Blocking forms due to PENDING_APPROVAL status');
+        this.proPersonalForm.disable();
+      }
+      
       if (this.user.profile.isBusiness) {
         this.isSelectOption = 'isBusiness';
         this.isDisabled = true;
@@ -214,6 +231,12 @@ export default class BecomeToProComponent implements OnInit {
           yearFounded: this.user.profile.yearFounded,
           numberOfemployees: this.user.profile.numberOfemployees,
         });
+        
+        // Bloquear formulario de business si está pendiente de aprobación
+        if (this.isPendingApproval) {
+          console.log('Blocking business form due to PENDING_APPROVAL status');
+          this.proBusinessForm.disable();
+        }
       }
     } else {
       this.openModalOnPageLoad();
@@ -229,14 +252,12 @@ export default class BecomeToProComponent implements OnInit {
   initForms(): void {
     this.proPersonalForm = this.fb.group({
       categories: new FormControl([], [Validators.required]),
-      zipcode: new FormControl('', [Validators.required]),
-      address: new FormControl('', [
-        Validators.required,
-        Validators.minLength(10),
-      ]),
+      zipcode: new FormControl([], [Validators.required]), // Array vacío por defecto
+      address: new FormControl('', [Validators.required, Validators.minLength(10)]),
       imagePersonal: new FormControl(null, [Validators.required]),
       introduction: new FormControl(''),
       licenses: new FormControl([], [this.licenseConditionalValidator()]),
+      status: new FormControl(''),
     });
 
     this.proBusinessForm = this.fb.group({
@@ -303,13 +324,13 @@ export default class BecomeToProComponent implements OnInit {
 
       // Si no hay categorías seleccionadas, no hay error
       if (selectedCategoryIds.length === 0) {
-        console.log('No categories selected, validation passes');
+      
         return null;
       }
 
       // Si no tenemos la lista de categorías cargada aún, no validar
       if (!this.listCategories || this.listCategories.length === 0) {
-        console.log('Categories not loaded yet, skipping validation');
+        
         return null;
       }
 
@@ -374,10 +395,12 @@ export default class BecomeToProComponent implements OnInit {
         url: existingLicense?.url || '', // Preservar URL existente
         mimetype: cat.mimetype || existingLicense?.mimetype || '',
         licenseRequired: cat.licenseRequired,
+        status: cat.status || '',
+        stripeSubscriptionId: cat.stripeSubscriptionId || existingLicense?.stripeSubscriptionItemId || null,
+        
       };
     });
-
-    console.log('Final license data for form:', allCategoriesForTracking);
+    
     this.proPersonalForm.get('licenses')?.setValue(allCategoriesForTracking);
     this.proPersonalForm.get('licenses')?.updateValueAndValidity();
   }
@@ -498,12 +521,7 @@ export default class BecomeToProComponent implements OnInit {
             },
           });
         }
-        console.log(
-          'Form invalid:',
-          this.proPersonalForm.invalid,
-          'License validation:',
-          this.isLicenceRequiredForSelectedCategories()
-        );
+        
         return;
       }
 
@@ -576,7 +594,7 @@ export default class BecomeToProComponent implements OnInit {
 
     // Si no tenemos la lista de categorías, no podemos validar
     if (!this.listCategories || this.listCategories.length === 0) {
-      console.log('Categories not loaded yet');
+     
       return false;
     }
 
@@ -617,12 +635,12 @@ export default class BecomeToProComponent implements OnInit {
   async processFormSubmission(isBusiness: boolean): Promise<void> {
     const isFirstTime = !this.user.profile || !this.user.profile.id;
     const allLicensesData = this.proPersonalForm.get('licenses')?.value || [];
-
+    
     // Filtrar solo las licencias que requieren archivo (tienen licenseRequired = true y file)
     const licensesWithFiles = allLicensesData.filter(
       (lic: any) => lic.licenseRequired && lic.file
     );
-
+  
     const combinedData = {
       ...this.proPersonalForm.value,
       ...(isBusiness ? this.proBusinessForm.value : {}),
@@ -653,15 +671,20 @@ export default class BecomeToProComponent implements OnInit {
         combinedData.imageBusiness = '';
       }
     }
-
+    console.log('Combined data before processing licenses:', combinedData.licensesDetails);
     // Subir archivos de licencias (si existen)
     for (const license of combinedData.licensesDetails) {
+    
       if (license.file) {
-        license.file = await this.uploadImageWithFile(license.file);
+        const uploadedFileName = await this.uploadImageWithFile(license.file);
+        license.filename = uploadedFileName; // usa filename
+        license.url = uploadedFileName;      // si tu backend también espera url
+        delete license.file;                 // elimina file si no lo necesita el backend
       }
     }
 
     const profile = this.buildProfile(combinedData, isBusiness);
+    
     let profileIdToUse: string;
     if (isFirstTime) {
       this.userService.becomeToPro(profile).subscribe({
@@ -670,11 +693,12 @@ export default class BecomeToProComponent implements OnInit {
           // Crear licencias asociadas al perfil
           if (combinedData.licensesDetails.length > 0) {
             for (const license of combinedData.licensesDetails) {
+              
               const licenseToCreate: License = {
                 title: license.title || '',
-                url: license.file || '',
+                url: license.filename || '',
                 categoryId: license.categoryId || '',
-                filename: license.file || '',
+                filename: license.filename || '',
                 profileId: profileIdToUse,
               };
 
@@ -688,7 +712,7 @@ export default class BecomeToProComponent implements OnInit {
            
           }*/
           //this.handleSuccessfulSubmission(response.message);
-          console.log('Profile created antes de crear');
+          
           this.authService.updateUser('isPro', true);
 
           if (response.profile.imagePersonal) {
@@ -697,9 +721,10 @@ export default class BecomeToProComponent implements OnInit {
               response.profile.imagePersonal
             );
           }
-          this.checkUserProfile();
-          this.handleSuccessfulSubmission(response.message);
-          this.activateCategoryAndPay();
+          this.checkUserProfile();      
+          this.confirmationModal.open();
+          this.isLoading = false;
+         
         },
         error: (err) => this.handleError(err),
       });
@@ -708,69 +733,30 @@ export default class BecomeToProComponent implements OnInit {
       this.handleProfileEdit(profile, combinedData, profile.id!);
     }
   }
-  async initiateStripeCheckout(profileId: string): Promise<void> {
-    this.isLoading = true; // Activa el spinner de carga
-    this.errorMessagePayment = null; // Limpia cualquier mensaje de error previo
-    this.paymentInitiated = true; // Indica que el proceso de pago ha comenzado para mostrar la UI correspondiente
-
-    try {
-      const categoryIds = this.selectedCategoryIds; // Obtiene los IDs de las categorías seleccionadas
-      if (!categoryIds || categoryIds.length === 0) {
-        // Si no se ha seleccionado ninguna categoría, lanza un error y sale
-        throw new Error('Selecciona al menos una categoría para continuar.');
-      }
-
-      // --- ESTA ES LA CORRECCIÓN CRÍTICA ---
-      // Convertimos el Observable a una Promesa y esperamos a que se resuelva.
-      // Opción para RxJS 7+:
-      const response = await firstValueFrom(
-        this.checkStripe.createCheckoutSession(profileId, categoryIds)
-      );
-      // O, si estás usando una versión anterior de RxJS y 'toPromise()' no está deprecado o lo tienes importado:
-      // const response = await this.checkStripe.createCheckoutSession(profileId, categoryIds).toPromise();
-
-      // Una vez que 'await' ha finalizado, 'response' contendrá la respuesta exitosa del backend.
-      if (response && response.checkoutStripe.url) {
-        window.location.href = response.checkoutStripe.url; // Redirige al usuario a la página de pago de Stripe
-        // La ejecución de este método se detendrá aquí ya que el navegador cambia de página.
-      } else {
-        // Este bloque se ejecutaría si el backend respondiera OK, pero sin la URL esperada.
-        // (Lo cual sería un error en el backend si siempre debe devolver una URL).
-        this.errorMessagePayment =
-          'No se pudo obtener la URL de pago de Stripe. Por favor, intenta de nuevo.';
-        this.paymentInitiated = false; // Permite que el usuario reintente el pago
-      }
-    } catch (error: any) {
-      // Este bloque 'catch' capturará cualquier error que ocurra durante la operación asíncrona:
-      // - Errores de red
-      // - Errores HTTP (4xx, 5xx) devueltos por el backend
-      // - Errores lanzados explícitamente, como el de "Selecciona al menos una categoría".
-      console.error('Error al crear la sesión de Checkout:', error);
-
-      // Intenta obtener un mensaje de error más específico de la respuesta del backend
-      this.errorMessagePayment =
-        error.error?.message ||
-        'Hubo un problema al iniciar el pago. Intenta más tarde.';
-      this.paymentInitiated = false; // Permite que el usuario vea la opción de reintentar
-    } finally {
-      
-      this.isLoading = false; // Desactiva el spinner
-    }
-  }
+  //metodo para iniciar el pago esta copiado en paiment
+  
   retryPayment(): void {}
   goToCategorySelection(): void {
     this.router.navigate(['/profile/edit']); // O la ruta a tu selección de categorías
   }
   // Construye el objeto ProfileReq a partir de los datos combinados
   private buildProfile(combinedData: any, isBusiness: boolean): ProfileReq {
+    console.log('Final profile data for submission 1:', combinedData);
+    // Always prefer licensesDetails if it has data, otherwise fallback to licenses
+    const licenses =
+      Array.isArray(combinedData.licensesDetails) && combinedData.licensesDetails.length > 0
+        ? combinedData.licensesDetails
+        : Array.isArray(combinedData.licenses)
+        ? combinedData.licenses
+        : [];
     return {
       categoryIds: combinedData.categories || [],
-      zipcodeId: combinedData.zipcode || '',
+      zipcodeIds: combinedData.zipcode || [],
       address: combinedData.address || '',
       imagePersonal: combinedData.imagePersonal || '',
       introduction: combinedData.introduction,
       isBusiness,
-      licenses: combinedData.licensesDetails || [],
+      licenses,
 
       ...(isBusiness && {
         nameBusiness: combinedData.nameBusiness || '',
@@ -786,7 +772,7 @@ export default class BecomeToProComponent implements OnInit {
     formData.append('file', file);
     try {
       const response = await this.uploadImage(formData);
-
+      
       return response.fileName;
     } catch (error) {
       this.handleError(error);
@@ -821,11 +807,12 @@ export default class BecomeToProComponent implements OnInit {
     combinedData: any,
     profileIdToUse: string
   ) {
-    console.log('Editing profile with data:', profile);
+     console.log('Final profile data for submission 2:', profile);
+     console.log('User data to use:',  this.user);
     this.userService.updateMe({ ...this.user, profile }).subscribe({
       next: async (response) => {
         this.user = response.user;
-        console.log('User profile updated:', this.user);
+        
         if (combinedData.licensesDetails.length > 0) {
           for (const license of combinedData.licensesDetails) {
             // Solo crear licencias nuevas (que tienen file pero no url)
@@ -860,8 +847,8 @@ export default class BecomeToProComponent implements OnInit {
           for (const category of this.user.profile.profileCategories) {
            
             if (category.status == 'PENDING_PAYMENT') {
-              
-              await this.activateCategoryAndPay()
+              //28/8/25 comentado porque se va hacer la revision primero del perfil y luego el pago
+              //await this.activateCategoryAndPay()
               break
             }
           }
@@ -873,7 +860,5 @@ export default class BecomeToProComponent implements OnInit {
     });
   }
 
-  async activateCategoryAndPay() {
-    await this.initiateStripeCheckout(this.user.profile?.id!);
-  }
+  
 }

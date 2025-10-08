@@ -1,11 +1,13 @@
 import { Category } from "./category.interface";
 import { License } from "./license.interace";
 import { ProfileCategory } from "./profile-category.interface";
+import { Zipcode } from "./zipcode.interface";
 
 export interface Profile {
     id?: string;
     userId?: string;
     zipcodeId: string;
+    zipcodes: Array<Zipcode>;
     address: string;
     imagePersonal?: string;
     introduction: string;
