@@ -99,8 +99,8 @@
 
           <div class="d-flex justify-content-end mt-3">
             <button *ngIf="isSelectOption === 'isPersonal'" type="button" 
-              class="btn btn-primary btn-lg btn-block  btn-lg btn-block"
-              (click)="onSubmit()" [disabled]="isPendingApproval">
+              class="btn btn-primary btn-lg btn-block btn-lg btn-block"
+              (click)="onSubmit()" [disabled]="isPendingApproval || isLoading">
               
 
              
@@ -132,7 +132,7 @@
               {{ 'general.previous' | translate }}
             </button>
             <button type="button" class="btn btn-primary   btn-lg btn-block mt-3" 
-              (click)="onSubmit()" [disabled]="isPendingApproval">
+              (click)="onSubmit()" [disabled]="isPendingApproval || isLoading">
              
               <small *ngIf="!isLoading" class="sr-only">{{ 'general.save' | translate }}</small>
               <small *ngIf="isLoading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"> </small>

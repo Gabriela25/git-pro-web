@@ -136,7 +136,9 @@
     "status": "Status",
     "payments": "Payments",
     "showPayments": "Show payments",
-    "thereAreNoPayments": "There are no payments recorded for this category."
+    "thereAreNoPayments": "There are no payments recorded for this category.",
+    "proceedToPayment": "Proceed to payment",
+    "clickButtonToRedirect": "Click the button below to be redirected to the secure Stripe payment page."
   },
   "lead": {
     "showDetails": "Show details"

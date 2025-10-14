@@ -156,6 +156,7 @@ export default class BecomeToProComponent implements OnInit {
       
       // Verificar si el perfil está pendiente de aprobación
       this.isPendingApproval = this.user.profile.status === 'PENDING_APPROVAL';
+      console.log('User profile loaded:', this.user.profile);
       console.log('Profile status:', this.user.profile.status);
       console.log('Is pending approval:', this.isPendingApproval);
       
