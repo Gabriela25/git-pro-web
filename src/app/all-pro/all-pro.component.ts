@@ -24,7 +24,7 @@ import { AuthService } from '../services/auth.service';
   styleUrl: './all-pro.component.css'
 })
 export class AllProComponent {
-  urlUploads = environment.urlUploads;
+
   users: Array<User> = [];
   stars = [1, 2, 3, 4, 5];
   review: Array<Review> = [];

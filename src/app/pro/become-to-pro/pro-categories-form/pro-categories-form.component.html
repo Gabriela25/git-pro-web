@@ -116,24 +116,27 @@
                 <i class="bi bi-trash"></i>
               </button>
             </div>
-            <div *ngIf="entry.uploadedImageBase64" class="text-center">
+            <!-- Mostrar previsualización de imagen -->
+            <div *ngIf="entry.uploadedImageBase64 && entry.uploadedImageBase64 !== 'pdf-file'" class="text-center">
               <img [src]="entry.uploadedImageBase64" alt="Imagen cargada" class="img-fluid" style="max-height: 150px;">
+            </div>
 
-              <div *ngIf="entry.mimetype ==='pdf'">
-                <iframe [src]="entry.uploadedImageBase64" width="100%" height="200px">
-                </iframe>
+            <!-- Mostrar información del archivo PDF -->
+            <div *ngIf="entry.uploadedImageBase64 === 'pdf-file' || (entry.uploadedImageFile && entry.uploadedImageFile.type === 'application/pdf')" class="text-center">
+              <i class="bi bi-file-earmark-pdf fs-3 text-danger"></i>
+              <div class="mt-2">
+                <strong>{{'profile.pdfDocument' | translate}}: </strong>
+                <span>{{ entry.uploadedImageFile?.name || 'PDF Document' }}</span>
               </div>
-
             </div>
 
-            <div *ngIf="entry.uploadedImageFile && entry.uploadedImageFile.type === 'application/pdf'">
-              <i class="bi bi-file-earmark-pdf fs-3"></i> {{'profile.pdfDocument' | translate}}: <strong>{{
-                entry.uploadedImageFile.name
-                }}</strong>
-            </div>
-            <div *ngIf="entry.uploadedImageFile && entry.uploadedImageFile.type !== 'application/pdf'">
-              <i class="bi bi-file-earmark fs-3"></i> {{'profile.file' | translate}}: <strong>{{
-                entry.uploadedImageFile.name }}</strong>
+            <!-- Mostrar información de otros tipos de archivos -->
+            <div *ngIf="entry.uploadedImageFile && entry.uploadedImageFile.type !== 'application/pdf' && !entry.uploadedImageBase64" class="text-center">
+              <i class="bi bi-file-earmark fs-3"></i>
+              <div class="mt-2">
+                <strong>{{'profile.file' | translate}}: </strong>
+                <span>{{ entry.uploadedImageFile.name }}</span>
+              </div>
             </div>
           </div>
         </div>

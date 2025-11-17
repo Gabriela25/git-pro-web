@@ -59,7 +59,7 @@ export class HeaderComponent implements OnInit {
   isPro: boolean = false;
   textPro: string = '';
   title: string = '';
-  urlUploads: string = environment.urlUploads
+
   @ViewChild('modal') modal!: ModalComponent;
   @ViewChild('profilePicModal') profilePicModal!: ElementRef;
   @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
@@ -101,7 +101,7 @@ export class HeaderComponent implements OnInit {
         this.nameUser = data.name;
         this.emailUser = data.email; 
         if (data.imagePersonal) {
-          this.imagePersonal = `${this.urlUploads}${data.imagePersonal}`; 
+          this.imagePersonal = `${data.imagePersonal}`; 
         }
         else {
           this.imagePersonal = "";

@@ -37,7 +37,7 @@ import { PaginationComponent } from '../../shared/pagination/pagination.componen
   styleUrl: './leads.component.css'
 })
 export default class GetLeadsComponent {
-  urlUploads: string = environment.urlUploads;
+  //urlUploads: string = environment.urlUploads;
   currentStep: number = 1;
   leads: Array<Lead> = [];
   myLeads: Array<Lead> = [];

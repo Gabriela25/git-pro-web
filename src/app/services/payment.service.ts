@@ -5,6 +5,7 @@ import { Payment } from '../interface/payment.interface';
 import { Observable } from 'rxjs';
 import { AuthService } from './auth.service';
 import { AuthHeaders } from './auth-headers.service';
+import { PaymentDiscount } from '../interface/payment-discount.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -31,5 +32,9 @@ export class PaymentService {
   postPayment(body:Payment): Observable<{payment:Payment,message:string}>{
     const headers = this.authHeadersService.getHeaders();
     return this._http.post<{payment:Payment,message:string}>(`${this.apiUrlBackend}/payments`,body, headers);
+  }
+  postPricePendingByPayment(categoryIds:string[]): Observable<{paymentDiscount:PaymentDiscount[]}>{
+    const headers = this.authHeadersService.getHeaders();
+    return this._http.post<{paymentDiscount:PaymentDiscount[]}>(`${this.apiUrlBackend}/checkout-stripe/price-stripe`,{categoryIds}, headers);
   }
 }

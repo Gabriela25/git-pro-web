@@ -19,6 +19,8 @@ import { firstValueFrom } from 'rxjs';
 import { UserService } from '../../services/user.service';
 import { ProfileCategory } from '../../interface/profile-category.interface';
 import { User } from '../../interface/user.interface';
+import { stat } from 'fs';
+import { PaymentDiscount } from '../../interface/payment-discount.interface';
 
 @Component({
   selector: 'app-payments',
@@ -52,16 +54,13 @@ export default class PaymentsComponent {
   price: number = 0;
   nameService: string = '';
   errorMessage: string = '';
-  paymentMethod: Array<{ key: string, value: string }> = [
-    { key: 'cash', value: 'Cash' },
-    { key: 'card', value: 'Credit or Debit Card' },
-    { key: 'zelle', value: 'Zelle' },
-    { key: 'paypal', value: 'Paypal' }
-  ];
+
   page: number = 1;
   pageSize: number = 5;
   paymentInitiated: boolean = false;
   selectedCategoryIds: string[] = [];
+  totalAmountToPay: number = 0;
+  paymentDiscountByCategoryId: Array<PaymentDiscount> = [];
   user: User = {
       id: '',
       firstname: '',
@@ -88,15 +87,7 @@ export default class PaymentsComponent {
     private checkStripe: CheckStripeService,
     private userService: UserService
   ) {
-    /*this.paymentForm = this.fb.group({
-      serviceId: new FormControl(null, [Validators.required]),
-      reference: new FormControl('', [Validators.required]),
-      amount: new FormControl('', [
-        Validators.required,
-        Validators.pattern('^[0-9]*$'),
-        this.amountValidator.bind(this) 
-      ]),
-    });*/
+    
   }
 
   ngOnInit(): void {
@@ -113,14 +104,18 @@ export default class PaymentsComponent {
             .filter((cat: ProfileCategory) => cat.status === 'PENDING_PAYMENT' || cat.status === 'PAYMENT_FAILED')
             .map((cat: ProfileCategory) => cat.categoryId)
             .filter((categoryId): categoryId is string => typeof categoryId === 'string') || [];
-          
-        }               
+          this.priceByCategoryIds(this.selectedCategoryIds);
+        }
       },
       error: (error) => console.error(error),
     });
     this.paymentService.getMePayment().subscribe({
       next: (response) => {
+        this.listPayment= response.payments;
+       
+
         this.listPayment = response.payments.sort((a, b) => {
+          console.log('this.listPayment ,', this.listPayment);
           return new Date(b.activationDate ?? 0).getTime() - new Date(a.activationDate ?? 0).getTime();
         });
       },
@@ -139,80 +134,6 @@ export default class PaymentsComponent {
     this.currentStep = step;  
   }
 
- /* onSubmit() {
-    this.isLoading = true;
-    if (this.paymentForm.valid) {
-      const paymentMethod = 'cash';
-      const status = 'pending';
-      const formData = this.paymentForm.value;
-
-      const payment: Payment = {
-        serviceId: formData.serviceId.id || '',
-        amount: formData.amount,
-        paymentMethod: paymentMethod,
-        status: status,
-        reference: formData.reference || '',
-      };
-      this.paymentService.postPayment(payment).subscribe({
-        next: (response) => {
-          console.log(response)
-          this.handleSuccessfulSubmission(response);
-          this.paymentService.getMePayment().subscribe({
-            next: (response) => {
-              this.listPayment = response.payments.sort((a, b) => {
-                return new Date(b.activationDate ?? 0).getTime() - new Date(a.activationDate ?? 0).getTime();
-              });
-            },
-            error: (error) => {
-              console.log(error);
-            }
-          });
-          
-        },
-        error: (error) => this.handleError(error)
-      });
-    }
-  }
-  
-  calculateWeek() {
-    if (this.paymentForm.value.serviceId != null) {
-      this.price = this.paymentForm.value.serviceId.price;
-      this.nameService = this.paymentForm.value.serviceId.name;
-      const amount = this.paymentForm.value.amount;
-      if (amount) {
-        this.weeks = Math.floor(amount / this.price); 
-        this.remainingAmount = amount % this.price; 
-        this.formattedAmount = new Intl.NumberFormat('en-EN', { 
-          style: 'currency', 
-          currency: 'USD' 
-        }).format(this.remainingAmount);
-      }
-     
-    }
-  }
-
-  onService() {
-    this.calculateWeek();
-  }
-
-  amountValidator(control: any) {
-    const amount = parseFloat(control.value);
-  
-    if (this.price === undefined || this.price === null) {
-      console.warn("Precio no definido");
-      return null;
-    }
-    if(isNaN(amount)){
-      return { notANumber: true }; 
-    }
-    if (typeof amount === 'number' && amount < this.price) {
-
-      return { amountInvalid: true }; 
-    }
-    
-    
-    return null; 
-  }*/
 
  
   retryPayment() {
@@ -314,6 +235,32 @@ export default class PaymentsComponent {
         this.isLoading = false; // Desactiva el spinner
       }
     }
+
+    priceByCategoryIds(categoryIds: string[]) {
+     
+      this.paymentService.postPricePendingByPayment(categoryIds).subscribe({
+        next: (response) => {
+          console.log('response priceByCategoryIds', response);
+          const paymentDiscountArray = Array.isArray(response.paymentDiscount) ? response.paymentDiscount : [];
+          //const paymentDiscountArray = response.paymentDiscount;
+          console.log('paymentDiscountArrayxx', paymentDiscountArray);
+          for (const paymentDiscount of paymentDiscountArray) {
+            for(const category of this.user.profile!.profileCategories!){
+              if(category.categoryId === paymentDiscount.categoryId){
+                const status = category.status;
+                 paymentDiscount['status'] = status;
+              }
+            }
+            this.totalAmountToPay += paymentDiscount.discountedPrice; 
+          }
+          this.paymentDiscountByCategoryId = paymentDiscountArray;
+         //console.log('response priceByCategoryIds', thispaymentDiscountByCategoryId)
+         // this.backendMessage = response.message;
+        },
+        error: (error) => {
+          this.handleError(error);
+        }
+      });
+    }
+
   }
-
-

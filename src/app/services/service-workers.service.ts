@@ -59,7 +59,7 @@ export class ServiceWorkersService {
         const convertedVapidKey = this.urlB64ToUint8Array(this.vapidPublicKey);
         return from(registration.pushManager.subscribe({
           userVisibleOnly: true,
-          applicationServerKey: convertedVapidKey
+          applicationServerKey: convertedVapidKey as BufferSource
         }));
       }),
       tap(subscription => {

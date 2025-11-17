@@ -36,7 +36,7 @@ export class AppComponent {
   messageProRejected!: SafeHtml | string;
   alertTimeout: any;
   leadId: string = '';
-  urlUploads: string = environment.urlUploads;
+  
   listLeadStatus: Array<LeadStatus> = [];
   constructor(
     private sanitizer: DomSanitizer,
@@ -63,23 +63,23 @@ export class AppComponent {
       }
       const { leads } = response;
       //const { message , order}= orders;
-      this.titleModal = 'You have received an order';
+      this.titleModal = 'You have received a new order request';
       this.messageOrder = this.sanitizer.bypassSecurityTrustHtml(`
         <div class="container" style="font-family: Arial, sans-serif;">
             <h2 class="mb-4 fw-bold text-center">${leads.category.name}</h2>
     
-            <div class="mb-2">
+            <!--div class="mb-2">
                 <span><i class="bi bi-person"></i> ${leads.user.firstname} ${leads.user.lastname}</span>
-            </div>
+            </div-->
             <div class="mb-2">
                 <span><i class="bi bi-calendar"></i> ${this.datePipe.transform(leads.createdAt, 'dd/MM/yyyy')}</span>
             </div>
             <div class="mb-2">
                 <span><i class="bi bi-geo-alt-fill"></i> ${leads.zipcode.name}</span>
             </div>
-            <div class="mb-2">
+            <!--div class="mb-2">
                 <span><i class="bi bi-telephone"></i> ${leads.phone}</span>
-            </div>
+            </div-->
             <div class="mb-2">
                 <span><i class="bi bi-card-text"></i> ${leads.description}</span>
             </div>
@@ -92,8 +92,8 @@ export class AppComponent {
                     .filter(image => image)
                     .map(image => `
                         <div class="col-12 mb-3 text-center">
-                            <img src="${this.urlUploads}${image}" class="img-fluid rounded shadow-sm cursor"
-                                onclick="showImage('${this.urlUploads}${image}')" 
+                            <img src="${image}" class="img-fluid rounded shadow-sm cursor"
+                                onclick="showImage('${image}')" 
                                  style="width: 75%; max-width: 500px; aspect-ratio: 16/9; object-fit: cover;">
                         </div>
                     `)
@@ -216,7 +216,7 @@ export class AppComponent {
       this.messageOrder = this.sanitizer.bypassSecurityTrustHtml(`
         <div style="font-family: Arial, sans-serif;">
           <div class="text-center">
-            <img  src="${this.urlUploads}${professional.image}" 
+            <img  src="${professional.image}" 
                    class="rounded-circle img-logo-pro"/>
             <h2>${professional.fullname}</h2>
           </div>

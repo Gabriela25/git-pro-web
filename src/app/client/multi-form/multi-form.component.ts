@@ -65,7 +65,7 @@ export default class MultiFormComponent {
 
   previewImages: Record<string, string | ArrayBuffer | null> = {};
   selectedFiles: Record<string, File | null> = {};
-  urlUploads: string = environment.urlUploads || '';
+
 
   title: string = 'Lead';
   messageLead!: SafeHtml | string;
@@ -296,11 +296,11 @@ export default class MultiFormComponent {
           try {
           // Subir la imagen y obtener la URL
           const response = await this.uploadImage(formData);
-          if (response.fileName !== 'Error al subir el archivo') {
-            (lead as any)[fileData.key] = response.fileName;
+          if (response.filePath !== 'Error al subir el archivo') {
+            (lead as any)[fileData.key] = response.filePath;
           }
 
-          response.fileName
+          response.filePath;
 
         } catch (error) {
             console.error(`Error asignando la URL para ${fileData.key}:`, error);
@@ -313,7 +313,7 @@ export default class MultiFormComponent {
   }
   
   async uploadImage(formData: FormData): Promise<any> {
-      return await firstValueFrom(this.uploadsService.postUploadsImageAll(formData));
+      return await firstValueFrom(this.uploadsService.postUploadsImageAll(formData, 'leads/images'));
   }
   onCreatedLead(payload: unknown) {
     if (!payload) {
@@ -390,7 +390,7 @@ export default class MultiFormComponent {
       <div style="font-family: Arial, sans-serif;">
     <div style="text-align: center; margin-bottom: 20px;">
         ${professional.image
-        ? `<img src="${this.urlUploads}${professional.image}" 
+        ? `<img src="${professional.image}" 
                    class="rounded-circle img-pro"/>`
         : `<img src="assets/avatar_profile.png" 
                    class="rounded-circle img-pro"/>`}

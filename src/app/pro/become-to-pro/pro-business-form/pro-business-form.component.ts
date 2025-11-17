@@ -16,7 +16,7 @@ import { environment } from '../../../../environments/environment';
   styleUrls: ['./pro-business-form.component.css']
 })
 export class ProBusinessFormComponent {
-  urlUploads: string = environment.urlUploads; 
+  
   @Input() parentForm!: FormGroup;
   @Input() previewImgBusiness: string | ArrayBuffer | null = null;
   @Input() imageBusiness: string = '';
@@ -59,7 +59,7 @@ export class ProBusinessFormComponent {
       return `data:image/png;base64,${base64String}`;
     }
   }
-  if (this.imageBusiness) return this.urlUploads + this.imageBusiness;
+  if (this.imageBusiness) return  this.imageBusiness;
   return 'assets/avatar_profile.png';
 }
 } 

@@ -20,7 +20,7 @@ import { FooterComponent } from '../shared/footer/footer.component';
   styleUrl: './view-profile.component.css'
 })
 export class ViewProfileComponent implements OnInit {
-  urlUploads = environment.urlUploads;
+
   user: User = {
       id: '',
       firstname: '',

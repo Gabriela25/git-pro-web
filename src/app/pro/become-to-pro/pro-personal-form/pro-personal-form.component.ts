@@ -39,7 +39,7 @@ import { environment } from '../../../../environments/environment.development';
   styleUrls: ['./pro-personal-form.component.css'],
 })
 export class ProPersonalFormComponent implements OnInit, OnChanges {
-  urlUploads: string = environment.urlUploads;
+
   @Input() parentForm!: FormGroup;
   @Input() listCategories: any[] = [];
   @Input() listZipcode: any[] = [];
@@ -267,7 +267,7 @@ export class ProPersonalFormComponent implements OnInit, OnChanges {
         return `data:image/png;base64,${base64String}`;
       }
     }
-    if (this.imagePersonal) return this.urlUploads + this.imagePersonal;
+    if (this.imagePersonal) return this.imagePersonal;
     return 'assets/avatar_profile.png';
   }
 

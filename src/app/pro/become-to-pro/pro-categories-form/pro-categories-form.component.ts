@@ -369,19 +369,34 @@ export class ProCategoriesFormComponent implements OnInit, OnChanges {
     if (input.files && input.files.length > 0) {
       const file = input.files[0];
 
-      const reader = new FileReader();
-      reader.onload = () => {
-        const entry = this.finalSelectedCategoriesWithImages.find(
-          (item) => item.category.id === categoryId
-        );
-        if (entry) {
-          entry.uploadedImageBase64 = reader.result;
-          entry.uploadedImageFile = file;
+      const entry = this.finalSelectedCategoriesWithImages.find(
+        (item) => item.category.id === categoryId
+      );
+      
+      if (entry) {
+        entry.uploadedImageFile = file;
+        
+        // Detectar si es PDF
+        const isPDF = file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf');
+        
+        if (isPDF) {
+          // Para PDFs, solo mostrar el nombre del archivo
+          entry.uploadedImageBase64 = 'pdf-file';
+          entry.mimetype = 'application/pdf';
           // Emitir cambios automáticamente al cargar un archivo
           this.emitLicensesChanged();
+        } else {
+          // Para imágenes, leer como Base64 para previsualizar
+          const reader = new FileReader();
+          reader.onload = () => {
+            entry.uploadedImageBase64 = reader.result;
+            entry.mimetype = file.type;
+            // Emitir cambios automáticamente al cargar un archivo
+            this.emitLicensesChanged();
+          };
+          reader.readAsDataURL(file);
         }
-      };
-      reader.readAsDataURL(file); // Leer como Base64 para previsualizar
+      }
     }
     this.hasPendingLicensesToSave = true;
   }

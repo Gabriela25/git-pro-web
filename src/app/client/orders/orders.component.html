@@ -41,8 +41,8 @@
                             <td>{{ order.lead.description | slice:0:10}}... </td>
                             <td>
                                 @if(order.lead.imageUrl1){
-                                <img [src]="urlUploads+order.lead.imageUrl1" class="cursor-pointer" width="80"
-                                    height="60" alt="Image" (click)="showImage(urlUploads+order.lead.imageUrl1)" />
+                                <img [src]="order.lead.imageUrl1" class="cursor-pointer" width="80"
+                                    height="60" alt="Image" (click)="showImage(order.lead.imageUrl1)" />
                                 }
                             <td>
 

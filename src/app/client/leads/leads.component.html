@@ -40,8 +40,8 @@
                             <td>{{lead.description | slice:0:10}}... </td>
                             <td>
                                 @if(lead.imageUrl1){
-                                <img [src]="urlUploads+lead.imageUrl1" class="cursor-pointer" width="80" height="60"
-                                    alt="Image" (click)="showImage(urlUploads+lead.imageUrl1)" />
+                                <img [src]="lead.imageUrl1" class="cursor-pointer" width="80" height="60"
+                                    alt="Image" (click)="showImage(lead.imageUrl1)" />
                                 }
                             </td>
                         </tr>

@@ -47,8 +47,10 @@ descargar:
 
 
 docker pull gabriela2014/frontend-fixi:5 
-docker run --name frontend-fixi -p 8083:80 gabriela2014/frontend-fixi:5
 
+docker pull fixideveloper73/fixi:2 
+docker run --name frontend-fixi -p 8083:80 gabriela2014/frontend-fixi:5
+docker run --name fixi -p 8083:80 fixideveloper73/fixi:2
 ## production
 ng build --configuration=production 
 npx http-server dist/git-pro-web/browser  -p 8063

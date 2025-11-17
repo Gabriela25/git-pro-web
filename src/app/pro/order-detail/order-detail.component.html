@@ -70,13 +70,22 @@
                         @for (status of orderStatus; track status) {
                         <div class="m-1">
                             <button type="button" class="btn btn-primary"
-                                (click)="updatedOrderStatus(order.id, status)"  [disabled]="order.orderStatus.name === 'Completed' || order.orderStatus.name === 'Canceled'">
+                                (click)="updatedOrderStatus(order.id, status)" 
+                                [disabled]="isButtonDisabled()">
+                                <span *ngIf="isUpdatingStatus" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
                                 {{ status.name }}
-
                             </button>
                         </div>
                         }
                     </div>
+                    
+                    <!-- Mensaje de loading durante la actualización -->
+                    @if(isUpdatingStatus) {
+                    <div class="alert alert-info mt-3 text-center">
+                        <div class="spinner-border spinner-border-sm me-2" role="status"></div>
+                        Updating order status...
+                    </div>
+                    }
 
                 </div>
                 <div class="row mt-3">
@@ -85,8 +94,8 @@
                     order.lead.imageUrl6]; track image) {
                     @if(image){
                     <div class="col-6 col-md-4 mb-3 text-center">
-                        <img [src]="urlUploads + image" class="img-fluid w-100 rounded shadow-sm cursor"
-                            (click)="showImage(urlUploads + image)" style="aspect-ratio: 16/9; object-fit: cover;">
+                        <img [src]="image" class="img-fluid w-100 rounded shadow-sm cursor"
+                            (click)="showImage( image)" style="aspect-ratio: 16/9; object-fit: cover;">
                     </div>
                     }
                     }

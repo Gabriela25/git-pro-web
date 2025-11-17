@@ -3,9 +3,9 @@
 <div class="container-fluid" style="margin-top: 5rem;">
     <app-floating-alert [alertMessage]="alertMessage" [backendMessage]="backendMessage" />
     <div class="row">
-        <div class="col-lg-2">
+        <div class="col-lg-1">
         </div>
-        <div class="col-lg-8 p-lg-5">
+        <div class="col-lg-10 p-lg-5">
             <div class="card container-box">
                 <div class="card-header">
                     <ul class="nav nav-tabs card-header-tabs">
@@ -34,16 +34,22 @@
                         <table class="table table-bordered mb-4">
                             <thead>
                                 <tr>
-                                    <th>{{'profile.categories' | translate}}</th>
-                                    <th>{{'profile.status' | translate}}</th>
+                                    <th>{{'payment.categories' | translate}}</th>
+                                    <th>{{'payment.price' | translate}}</th>
+                                    <th>{{'payment.discountDescription' | translate}}</th>
+                                    <th>{{'payment.discountedPrice' | translate}}</th>
+                                    <th>{{'payment.status' | translate}}</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr *ngFor="let cat of user.profile?.profileCategories">
+                                <tr *ngFor="let cat of paymentDiscountByCategoryId">
 
                                     <td *ngIf="cat.status === 'PENDING_PAYMENT' || cat.status === 'PAYMENT_FAILED'">
-                                        {{ cat.category?.name }}
+                                        {{ cat.categoryName }}
                                     </td>
+                                    <td>{{ cat.basePrice | currency }}</td>
+                                    <td>{{ cat.appliedRule?.description ?? '' }}</td>
+                                    <td class="bg-secondary">{{ cat.discountedPrice | currency }}</td>
                                     <td *ngIf="cat.status === 'PENDING_PAYMENT' || cat.status === 'PAYMENT_FAILED'">
                                         {{ cat.status }}
                                     </td>
@@ -52,6 +58,9 @@
 
                             </tbody>
                         </table>
+                        <div>
+                            
+                        </div>
                         <div *ngIf="user.profile?.status=='PENDING_APPROVAL'" class="alert alert-warning d-flex align-items-center mb-4" role="alert">
                             <div>
                                 <h5 class="alert-heading mb-1">{{ 'profile.pendingApproval' | translate }}</h5>
@@ -76,6 +85,10 @@
 
                         <div *ngIf="!isLoading && !errorMessage && !paymentInitiated">
                             <h2>{{'payment.startYourPayment' | translate}}</h2>
+                            <h5 class="bg-secondary p-3" >
+                                Total to pay: {{ totalAmountToPay | currency }}
+                               
+                            </h5>
                             <p>{{'payment.clickButtonToRedirect' | translate}}</p>
                             <button (click)="initiateStripeCheckout()" class="btn btn-primary" [disabled]="user.profile?.status=='PENDING_APPROVAL'">{{'payment.proceedToPayment' | translate}}</button>
                         </div>
@@ -92,6 +105,7 @@
                                         <th>{{'profile.categories' | translate}}</th>
                                         <th>{{'payment.status' | translate}}</th>
                                         <th>{{'payment.payments' | translate}}</th>
+                                        
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -99,6 +113,7 @@
                                         <tr>
                                             <td>{{ cat.category?.name }}</td>
                                             <td>{{ cat.status }}</td>
+                                            
                                             <td>
                                                 <button class="btn btn-sm btn-outline-primary" type="button"
                                                     data-bs-toggle="collapse" [attr.data-bs-target]="'#collapse-' + i"
@@ -168,7 +183,7 @@
 
             </div>
         </div>
-        <div class="col-lg-2">
+        <div class="col-lg-1">
         </div>
     </div>
 </div>

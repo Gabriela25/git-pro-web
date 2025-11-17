@@ -134,11 +134,16 @@
     "goBackToCategorySelection": "Go back to category selection",
     "startYourPayment": "Start your payment",
     "status": "Status",
+    "categories": "Categories",
+    "price": "Price", 
+    "discountDescription": "Discount description",
+    "discountedPrice": "Discounted price",
     "payments": "Payments",
     "showPayments": "Show payments",
     "thereAreNoPayments": "There are no payments recorded for this category.",
     "proceedToPayment": "Proceed to payment",
     "clickButtonToRedirect": "Click the button below to be redirected to the secure Stripe payment page."
+    
   },
   "lead": {
     "showDetails": "Show details"

@@ -55,7 +55,7 @@ import { AuthService } from '../../services/auth.service';
   ],
 })
 export default class BecomeToProComponent implements OnInit {
-  urlUploads = environment.urlUploads;
+
   @ViewChild('modal') modal!: ModalComponent;
   @ViewChild('confirmationModal') confirmationModal!: ModalComponent;
 
@@ -165,7 +165,7 @@ export default class BecomeToProComponent implements OnInit {
         (license: any) => ({
           categoryId: license.categoryId,
           title: license.title,
-          url: `${this.urlUploads}${license.url}`,
+          url: `${license.url}`,
           mimetype: license.mimetype || '',
         })
       );
@@ -677,7 +677,8 @@ export default class BecomeToProComponent implements OnInit {
     for (const license of combinedData.licensesDetails) {
     
       if (license.file) {
-        const uploadedFileName = await this.uploadImageWithFile(license.file);
+        const uploadedFileName = await this.uploadLicenseFile(license.file);
+        console.log('Uploaded license file name:', uploadedFileName);
         license.filename = uploadedFileName; // usa filename
         license.url = uploadedFileName;      // si tu backend también espera url
         delete license.file;                 // elimina file si no lo necesita el backend
@@ -773,8 +774,32 @@ export default class BecomeToProComponent implements OnInit {
     formData.append('file', file);
     try {
       const response = await this.uploadImage(formData);
+
+      return response.filePath;
+    } catch (error) {
+      this.handleError(error);
+      throw error;
+    }
+  }
+
+  // Método específico para subir licencias (detecta si es PDF)
+  private async uploadLicenseFile(file: File): Promise<string> {
+    const formData = new FormData();
+    formData.append('file', file);
+    
+    try {
+      // Detectar si el archivo es PDF
+      const isPDF = file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf');
       
-      return response.fileName;
+      if (isPDF) {
+        // Usar el endpoint específico para PDFs
+        const response = await this.uploadLicenseDocument(formData);
+        return response.filePath;
+      } else {
+        // Usar el endpoint normal para imágenes
+        const response = await this.uploadImage(formData);
+        return response.filePath;
+      }
     } catch (error) {
       this.handleError(error);
       throw error;
@@ -783,11 +808,18 @@ export default class BecomeToProComponent implements OnInit {
 
   async uploadImage(formData: FormData): Promise<any> {
     return await firstValueFrom(
-      this.uploadsService.postUploadsImageAll(formData)
+      this.uploadsService.postUploadsImageAll(formData, 'users/profiles')
+    );
+  }
+
+  async uploadLicenseDocument(formData: FormData): Promise<any> {
+    return await firstValueFrom(
+      this.uploadsService.uploadLicenseDocument(formData)
     );
   }
 
   handleSuccessfulSubmission(message?: string) {
+    console.log('entro a handleSuccessfulSubmission');
     this.isLoading = false;
     this.backendMessage = '';
     setTimeout(() => {
@@ -819,11 +851,14 @@ export default class BecomeToProComponent implements OnInit {
             // Solo crear licencias nuevas (que tienen file pero no url)
             if (license.file && !license.url) {
               
+              // Subir el archivo de licencia primero
+              const uploadedFileName = await this.uploadLicenseFile(license.file);
+              
               const licenseToCreate: License = {
                 title: license.title || '',
-                url: license.file || '',
+                url: uploadedFileName,
                 categoryId: license.categoryId || '',
-                filename: license.file || '',
+                filename: uploadedFileName,
                 profileId: this.user.profile?.id!,
               };
               this.licenseService.createLicense(licenseToCreate).subscribe({
@@ -855,7 +890,7 @@ export default class BecomeToProComponent implements OnInit {
           }
         }
          
-        
+        this.handleSuccessfulSubmission(response.message);
       },
       error: (error) => this.handleError(error),
     });

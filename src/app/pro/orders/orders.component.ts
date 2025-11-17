@@ -25,7 +25,7 @@ import { PaginationComponent } from '../../shared/pagination/pagination.componen
 })
 export default class GetOrdersComponent {
   orders: Array<Order> = [];
-  urlUploads: string = environment.urlUploads;
+  //urlUploads: string = environment.urlUploads;
   messageLead!: SafeHtml | string;
   title: string = '';
   @ViewChild('modal') modal!: ModalComponent;

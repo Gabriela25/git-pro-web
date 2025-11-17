@@ -29,7 +29,7 @@ import { PaginationComponent } from '../../shared/pagination/pagination.componen
 })
 export default class LeadListComponent {
   leads: Array<Lead> = [];
-  urlUploads: string = environment.urlUploads;
+  //urlUploads: string = environment.urlUploads;
   messageLead!: SafeHtml | string;
   title: string = '';
   total:number = 0;

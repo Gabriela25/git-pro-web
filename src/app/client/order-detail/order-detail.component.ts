@@ -133,7 +133,7 @@ export default class DetailLeadComponent {
     qtyPro: 0,
     leadRequests: []
   };
-  urlUploads: string = environment.urlUploads;
+  //urlUploads: string = environment.urlUploads;
   listUserPro: Array<any> = [];
   listOrderTemp: Array<Order> = [];
   orderStatus: Array<OrderStatus> = [];

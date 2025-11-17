@@ -76,6 +76,7 @@ export class UserService {
     );
   }
   updateMe(body: UserReq): Observable<{ user: User; message: string }> {
+    console.log('Updating user with data:', body);
     const headers = this.authHeadersService.getHeaders();
     return this._http.put<{ user: User; message: string }>(
       `${this.apiUrlBackend}/users/me`,

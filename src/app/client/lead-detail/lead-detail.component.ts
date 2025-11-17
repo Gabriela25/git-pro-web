@@ -60,7 +60,7 @@ export default class LeadDetailComponent implements OnInit {
   alertTimeout: any;
   userId: string | undefined = '';
   isNotAcceptOrder: boolean = false;
-  urlUploads: string = environment.urlUploads;
+  
 
   @ViewChild('modal') modal!: ModalComponent;
 

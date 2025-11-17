@@ -18,12 +18,7 @@ export class UploadsService {
   constructor(
     private authService: AuthService,
     private authHeadersService :AuthHeaders
-  ) { 
- 
-   
-  }
-
- 
+  ) { }
   postUploads(body: FormData): Observable<{uploads:any}>{
     const token = this.authService.getToken();
     const uploadOptions = {
@@ -44,7 +39,7 @@ export class UploadsService {
     return this._http.post<{files:any}>(`${this.apiUrlBackend}/pro/uploads/multi`,body, uploadOptions);
   }*/
 
-  postUploadsImageAll(body: FormData): Observable<{ fileName: string }> {
+  postUploadsImageAll( body: FormData, folder: string): Observable<{  filePath: string ,fileName: string }> {
     const token = this.authService.getToken();
     const uploadOptions = {
       headers: {
@@ -52,6 +47,17 @@ export class UploadsService {
       }
     };
    const headers= this.authHeadersService.getHeaders();
-    return this._http.post<{ fileName: string }>(`${this.apiUrlBackend}/files/uploads`, body,uploadOptions);
+    return this._http.post<{ filePath: string , fileName: string }>(`${this.apiUrlBackend}/images/uploads/?folder=${folder}`, body,uploadOptions);
   }
+  uploadLicenseDocument( body: FormData, ): Observable<any> {
+     const token = this.authService.getToken();
+    const uploadOptions = {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    };
+   const headers= this.authHeadersService.getHeaders();
+    return this._http.post<{ filePath: string , fileName: string }>(`${this.apiUrlBackend}/images/uploads/license`, body,uploadOptions);
+  }
+
 }

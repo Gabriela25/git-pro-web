@@ -89,9 +89,9 @@
             @if (image) {
               <div class="col-6 col-md-4 mb-3 text-center">
                 <img
-                  [src]="urlUploads + image"
+                  [src]="image"
                   class="img-fluid w-100 rounded shadow-sm cursor"
-                  (click)="showImage(urlUploads + image)"
+                  (click)="showImage(image)"
                   style="aspect-ratio: 16/9; object-fit: cover;"
                 />
               </div>

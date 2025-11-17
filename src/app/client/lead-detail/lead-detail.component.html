@@ -26,9 +26,9 @@
                 <div style="margin-bottom: 10px;">
                     <span><i class="bi bi-geo-alt-fill"></i> {{lead.zipcode.name}} </span>
                 </div>
-                <div style="margin-bottom: 10px;">
+                <!--div style="margin-bottom: 10px;">
                     <span><i class="bi bi-telephone"></i> {{lead.phone}}</span>
-                </div>
+                </!--div-->
                 <div style="margin-bottom: 20px;" class="description">
                     <span><i class="bi bi-card-text"></i> {{lead.description}}</span>
                 </div>
@@ -37,8 +37,8 @@
                     lead.imageUrl6]; track image) {
                     @if(image){
                     <div class="col-6 col-md-4 mb-3">
-                        <img [src]="urlUploads + image" class="img-fluid w-100 rounded shadow-sm cursor"
-                            (click)="showImage(urlUploads + image)" style="aspect-ratio: 16/9; object-fit: cover;">
+                        <img [src]=" image" class="img-fluid w-100 rounded shadow-sm cursor"
+                            (click)="showImage(image)" style="aspect-ratio: 16/9; object-fit: cover;">
                     </div>
                     }
                 }
