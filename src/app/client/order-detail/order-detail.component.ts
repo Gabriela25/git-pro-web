@@ -141,6 +141,7 @@ export default class DetailLeadComponent {
   orderStatusId: string = '';
   orderIdUserPro: string = '';
   isLoading = false;
+  isUpdatingStatus = false;
   backendMessage = '';
   alertMessage = '';
   alertTimeout: any;
@@ -334,6 +335,10 @@ export default class DetailLeadComponent {
 
 
   onConfirmAction() {
+    // Activar loading
+    this.isUpdatingStatus = true;
+    this.toggleModal(this.modalUpdateStatus, 'close');
+    
     let data = {}
     const selectedOptionCanceled = this.orderCanceledForm.value.optionsCanceled;
     // Es porque el usuario no seleccionó ninguna opción del radio.
@@ -372,8 +377,19 @@ export default class DetailLeadComponent {
 
           this.socketService.sendMessage('forwarding-lead', { lead });
         }
+
+        // Actualizar el objeto order con el nuevo status
+        this.order.orderStatus = response.order.orderStatus;
+        
+        // Desactivar loading después de un breve delay
+        setTimeout(() => {
+          this.isUpdatingStatus = false;
+        }, 1500);
       },
-      error: (error) => this.handleError(error)
+      error: (error) => {
+        this.isUpdatingStatus = false;
+        this.handleError(error);
+      }
     });
   }
 
@@ -384,5 +400,12 @@ export default class DetailLeadComponent {
 
   onRadioChange(selectedItem: any) {
     this.selectedLabel = selectedItem.name;
+  }
+
+  // Método para verificar si los botones deben estar desactivados
+  isButtonDisabled(item: any): boolean {
+    return this.isUpdatingStatus || 
+           item.orderStatus.name === 'Completed' || 
+           item.orderStatus.name === 'Canceled';
   }
 }

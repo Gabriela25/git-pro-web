@@ -130,12 +130,20 @@
                             type="button"
                             class="btn btn-sm btn-primary"
                             (click)="updatedOrderStatus(item.orderId, status)"
-                            [disabled]="item.orderStatus.name === 'Completed' || item.orderStatus.name === 'Canceled'"
-
+                            [disabled]="isButtonDisabled(item)"
                           >
+                            <span *ngIf="isUpdatingStatus" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
                             {{ status.name }}
                           </button>
                         </div>
+                      }
+                      
+                      <!-- Mensaje de loading durante la actualización -->
+                      @if(isUpdatingStatus) {
+                      <div class="alert alert-info mt-2 text-center">
+                        <div class="spinner-border spinner-border-sm me-2" role="status"></div>
+                        Updating order status...
+                      </div>
                       }
                     </td>
                   </tr>
